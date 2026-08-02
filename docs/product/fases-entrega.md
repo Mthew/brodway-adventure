@@ -1,4 +1,4 @@
-# Brodway Adventure — Fases de entrega (Next.js / Vercel)
+# BroWay Adventures — Fases de entrega (Next.js / Vercel)
 
 Basado en el análisis de investigación y en el alcance definido: (1) darle seriedad/credibilidad a la empresa con un sitio web propio, (2) landing pages para captar leads de pauta paga, y (3) campañas con CTA directo a WhatsApp.
 
@@ -72,7 +72,7 @@ Basado en el análisis de investigación y en el alcance definido: (1) darle ser
 **Objetivo:** convertir el sitio en una plataforma de reserva y fidelización, no solo de captación.
 
 - **Booking engine con cupos y salidas en tiempo real**, reserva online parcial o completa (evaluar Trekksoft, Bókun o Checkfront vs. desarrollo propio).
-- **Programa creator-led** (estilo TrovaTrip) si el modelo de pauta se expande a influencers: itinerarios de biblioteca, margen del creador, pagos y soporte gestionados por Brodway Adventure.
+- **Programa creator-led** (estilo TrovaTrip) si el modelo de pauta se expande a influencers: itinerarios de biblioteca, margen del creador, pagos y soporte gestionados por BroWay Adventures.
 - **Personalización dinámica y remarketing avanzado**: contenido y ofertas según comportamiento del usuario, audiencias de remarketing por destino visitado.
 - **App/portal de cliente**: seguimiento de reserva, documentos de viaje, soporte 24/7 post-compra.
 - **Lead scoring avanzado** y automatizaciones de nurturing en el CRM.

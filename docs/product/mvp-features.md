@@ -1,4 +1,4 @@
-# Brosway Adventure — Features MVP (Next.js / Vercel)
+# BroWay Adventures — Features MVP (Next.js / Vercel)
 
 ## Nota sobre el stack
 
@@ -113,4 +113,4 @@ Convertir tráfico pago (Google, Meta, TikTok) en leads calificados, vía WhatsA
 - Elegir el CMS headless (Sanity vs Contentful vs Strapi) según presupuesto y quién va a editar contenido (equipo de marketing sin código vs. developer).
 - Confirmar con Wompi/PayU el flujo de integración exacto (checkout hospedado vs. widget embebido) antes de diseñar el componente de pago.
 - Definir si el tracking server-side se monta con GTM Server-Side (requiere un contenedor adicional en un servidor, ej. Google Cloud Run) o si las API routes de Next.js bastan para el volumen inicial — para un MVP, las API routes propias son más simples y suficientes.
-- Verificar el número de RNT y datos legales reales de Brosway Adventure antes de publicar el footer/página legal.
+- Verificar el número de RNT y datos legales reales de BroWay Adventures antes de publicar el footer/página legal.

@@ -1,4 +1,4 @@
-# Brodway Adventure — Especificación Técnica del Sitio Web
+# BroWay Adventures — Especificación Técnica del Sitio Web
 
 **Stack:** Next.js (App Router) + Vercel
 **Requisitos transversales desde Fase 0:** sitio multilenguaje (Español/Inglés) y sistema de diseño propio, escalable según la fase del proyecto.

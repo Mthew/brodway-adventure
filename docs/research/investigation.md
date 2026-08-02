@@ -1,4 +1,4 @@
-# Investigación y estrategia web para "Broadway Adventure" (Medellín, Colombia)
+# Investigación y estrategia web para "BroWay Adventures" (Medellín, Colombia)
 
 ## TL;DR
 - **Para un modelo de "contenido + pauta + lead", el sitio no es un catálogo: es una máquina de captación.** Debe combinar landing pages dedicadas por campaña con *message match*, WhatsApp como CTA dominante (canal de mayor intención en Colombia), fichas de paquete potentes con "desde $" y cuotas, y tracking server-side (Meta CAPI, TikTok Events API, GA4). La mediana de conversión de landings de turismo es 4.8% (Unbounce 2024) y el 83% del tráfico llega por móvil, así que la velocidad y el móvil-first son innegociables.
@@ -30,7 +30,7 @@
 - **GetYourGuide / Viator**: reseñas verificadas, cancelación gratis hasta 24h, reserva instantánea, app móvil. Confianza vía reviews (Viator integra TripAdvisor). *Aplica parcialmente*: son marketplaces de actividades, pero su ficha de producto (galería, reviews, "lo que incluye", badges de cancelación) es referencia de oro.
 - **Exoticca** (Barcelona, 2013): digitaliza el paquete multi-día internacional; precio en tiempo real, checkout online, 430+ itinerarios, "Flex Cancellation" ($99), garantía de mejor precio, soporte 24/7 en app. *Aplica*: estructura de itinerario y opciones de cancelación/garantía.
 - **Intrepid / G Adventures**: viajes grupales en grupos pequeños, enfoque en sostenibilidad, sin vuelos en la base. *Aplica*: formato grupal y presentación de "qué incluye/no incluye".
-- **TrovaTrip** (creator-led, marketplace de 3 lados): el host (creador) elige un itinerario de biblioteca, fija su margen y lo promueve; Trova maneja pagos, formularios, seguro y soporte; hay encuesta de audiencia previa. *Aplica mucho al modelo "contenido + pauta"*: si Broadway trabaja con influencers, este es el modelo a estudiar.
+- **TrovaTrip** (creator-led, marketplace de 3 lados): el host (creador) elige un itinerario de biblioteca, fija su margen y lo promueve; Trova maneja pagos, formularios, seguro y soporte; hay encuesta de audiencia previa. *Aplica mucho al modelo "contenido + pauta"*: si BroWay trabaja con influencers, este es el modelo a estudiar.
 
 ### 2. Anatomía de la ficha de paquete (para convertir)
 
