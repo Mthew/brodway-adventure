@@ -1,9 +1,10 @@
 # BroWay Adventures — Especificación Técnica del Sitio Web
 
-**Stack:** Next.js (App Router) + Vercel
+**Stack:** Next.js 16 (App Router) + React 19 + Tailwind CSS v4 + shadcn/ui, sobre Vercel
+**Runtime:** Node.js 24.14.1 · **Gestor de paquetes:** pnpm 10.34.3
 **Requisitos transversales desde Fase 0:** sitio multilenguaje (Español/Inglés) y sistema de diseño propio, escalable según la fase del proyecto.
 
-Este documento complementa `investigation.md` (research), `mvp-features.md` (features del MVP) y `fases-entrega.md` (roadmap por fases). Aquí se define **cómo se construye técnicamente**, no qué se construye — ese "qué" no cambia; lo que se agrega es que el multilenguaje y el design system dejan de ser features de fase 2 y pasan a ser cimientos desde el día 1.
+Este documento complementa `sistema-comercial.md` (el roadmap comercial del cliente, del cual este sitio es una pieza — ver §8), `investigation.md` (research), `mvp-features.md` (features del MVP) y `fases-entrega.md` (roadmap por fases). Aquí se define **cómo se construye técnicamente**, no qué se construye — ese "qué" no cambia; lo que se agrega es que el multilenguaje y el design system dejan de ser features de fase 2 y pasan a ser cimientos desde el día 1.
 
 ---
 
@@ -16,20 +17,74 @@ Este documento complementa `investigation.md` (research), `mvp-features.md` (fea
 
 ## 2. Arquitectura técnica
 
+### 2.0 Versiones fijadas del entorno
+
+Estas versiones no son "mínimos sugeridos": son las versiones con las que se construye y se
+despliega. Fijarlas evita que un `pnpm install` en otra máquina resuelva un árbol distinto.
+
+| | Versión | Cómo se fija |
+|---|---|---|
+| Node.js | **24.14.1** | `.nvmrc` + `engines.node` en `package.json` + versión de Node en Vercel |
+| pnpm | **10.34.3** | `packageManager` en `package.json` (Corepack lo respeta automáticamente) |
+| Next.js | **16.x** | dependencia exacta |
+| React / React DOM | **19.x** | dependencia exacta |
+| Tailwind CSS | **4.x** | dependencia exacta |
+
+```jsonc
+// package.json (fragmento)
+{
+  "packageManager": "pnpm@10.34.3",
+  "engines": { "node": ">=24.14.1 <25" }
+}
+```
+
+Habilitar Corepack (`corepack enable`) para que la versión de pnpm se tome del campo
+`packageManager` y nadie tenga que instalarla a mano. En Vercel, fijar la versión de Node en
+la configuración del proyecto para que coincida con `.nvmrc`.
+
 ### 2.1 Stack base
 
 | Capa | Herramienta | Fase |
 |---|---|---|
-| Framework | Next.js 14+ (App Router) | 0 |
+| Runtime | Node.js 24.14.1 | 0 |
+| Gestor de paquetes | pnpm 10.34.3 (vía Corepack) | 0 |
+| Framework | Next.js 16 (App Router, Turbopack) | 0 |
+| Librería UI | React 19 | 0 |
 | Hosting | Vercel (Edge Network, Image Optimization) | 0 |
 | i18n | `next-intl` | 0 |
-| Estilos / tokens | Tailwind CSS + CSS variables | 0 |
-| Componentes UI | Componentes propios sobre Tailwind (base shadcn/ui opcional) | 0 |
-| CMS headless | Sanity, Contentful o Strapi (con soporte multilenguaje nativo) | 0 (setup) / 1 (contenido real) |
-| Formularios/Leads | API routes → webhook a CRM | 0-1 |
+| Estilos / tokens | Tailwind CSS v4 (configuración CSS-first con `@theme`) | 0 |
+| Componentes UI | shadcn/ui como base + componentes propios | 0 |
+| CMS headless | Sanity, Contentful o Strapi (con soporte multilenguaje nativo) — solo contenido editorial | 0 (setup) / 1 (contenido real) |
+| Base de ofertas | BD estructurada externa (fuera de este repo) — fuente de verdad de tarifas | 1 |
+| CRM | **GoHighLevel** (Starter + add-on de WhatsApp) — fuera de este repo, lo monta el proveedor del sistema comercial | 1 (en paralelo) |
+| Formularios/Leads | API routes → webhook a GoHighLevel (§8) | 0-1 |
 | Pagos | Wompi o PayU | 2 |
-| Tracking server-side | Meta CAPI, TikTok Events API (API routes) | 2 |
+| Tracking server-side | Meta CAPI, TikTok Events API (API routes) — solo el evento `Lead`; el embudo posterior lo emite el CRM (§8.5) | 2 |
 | Documentación del design system | Página `/design-system` interna | 0-1 → Storybook en Fase 2-3 |
+
+### 2.1.1 Consecuencias de Next.js 16 que afectan al código desde el día 1
+
+No son detalles de actualización: cambian cómo se escribe el código base, así que hay que
+construirlo así desde el inicio en lugar de migrarlo después.
+
+- **`params` y `searchParams` son asíncronos.** El acceso síncrono fue eliminado por
+  completo. Toda página, layout y route handler que los use debe declararse `async` y
+  hacer `await`. Igual para `cookies()` y `headers()`. Como el sitio entero vive bajo
+  `app/[locale]/...`, esto aplica a **todas** las páginas:
+
+  ```tsx
+  export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+    const { locale } = await params;
+    // ...
+  }
+  ```
+
+- **`middleware.ts` se llama ahora `proxy.ts`.** Relevante porque la detección de idioma de
+  `next-intl` (§3.3) vive justamente ahí.
+- **Turbopack es el bundler por defecto** en `next dev` y `next build`; webpack ya no lo es.
+  No agregar configuración de webpack salvo necesidad comprobada.
+- **Cache Components y la directiva `use cache`** reemplazan el modelo de caché anterior.
+  Revisar cómo se expresa el ISR (§2.2) al configurar el proyecto.
 
 ### 2.2 Renderizado
 
@@ -66,7 +121,7 @@ Justificación: la audiencia primaria es hispanohablante en Colombia; no forzar 
 
 ### 3.3 Selector y detección de idioma
 
-- Middleware de Next.js detecta `Accept-Language` del navegador en la primera visita y redirige al locale correspondiente (fallback a `es`).
+- El **`proxy.ts`** de Next.js (lo que hasta la v15 era `middleware.ts`) detecta `Accept-Language` del navegador en la primera visita y redirige al locale correspondiente (fallback a `es`). Verificar que la versión de `next-intl` que se instale ya soporte esta convención de Next.js 16.
 - Selector de idioma visible en header/footer; la elección se persiste en cookie (`NEXT_LOCALE`) para visitas futuras.
 - El cambio de idioma debe mantener al usuario en la misma página (no rebota al home) — crítico para no romper el *message match* de una landing de campaña.
 
@@ -93,6 +148,8 @@ Justificación: la audiencia primaria es hispanohablante en Colombia; no forzar 
 ### 3.7 Legal por idioma
 
 - Política de datos (Ley 1581 de 2012) y RNT se muestran en español como versión legal oficial; la versión en inglés se marca como traducción informativa, no sustituye el documento legal en español, para evitar ambigüedad regulatoria.
+- El **Registro de Números Excluidos (RNE)** — vigente desde abril de 2024, permite excluirse de mensajería comercial por apps de mensajería, correo y llamadas — se menciona en `/legal` en ambos idiomas, con el canal para ejercerlo. La lista de supresión operativa vive en el CRM, no en el sitio; lo que el sitio debe garantizar es que no promete lo contrario: enviar el formulario no equivale a autorizar campañas indefinidas por todos los canales.
+- La **versión** del texto de la política es un dato, no una nota al pie: se versiona (`v1`, `v2`…) y se registra en cada lead (§8.3). Si el texto cambia, la versión cambia — es lo que permite demostrar después qué aceptó exactamente cada persona.
 
 ---
 
@@ -102,14 +159,39 @@ El principio es **un solo sistema que crece**, no un rediseño en cada fase. Fas
 
 ### 4.1 Fase 0 — Fundaciones (obligatorio antes de construir cualquier página)
 
-**Design tokens** (como CSS variables + config de Tailwind):
-- Color: marca primaria, secundaria, acento (CTA/WhatsApp usa un color de alto contraste dedicado, ver informe sobre CTA de alta visibilidad), escala de neutros, estados (éxito/error/advertencia).
+**Design tokens.** Con Tailwind v4 la configuración es **CSS-first**: los tokens se declaran en
+un bloque `@theme` dentro del CSS y Tailwind genera a partir de ahí tanto las clases utilitarias
+como las CSS variables en tiempo de ejecución. **Ya no existe `tailwind.config.ts`** como
+mecanismo principal — la directiva `@config` solo sobrevive para compatibilidad con proyectos
+heredados y aquí no aplica, porque el proyecto arranca en v4.
+
+```css
+/* app/globals.css */
+@import "tailwindcss";
+
+@theme {
+  --color-brand-navy: #003062;
+  --color-brand-turquoise: #00aac3;
+  --color-brand-orange: #ff6a03;
+  --color-whatsapp: #25d366;
+  /* tipografía, espaciado, radios, breakpoints… */
+}
+```
+
+Esto elimina la duplicación que existía en v3 (declarar la variable en CSS y volver a mapearla
+en el config): un token declarado en `@theme` ya queda disponible como `bg-brand-navy` y como
+`var(--color-brand-navy)` sin trabajo adicional.
+
+Tokens a definir:
+- Color: marca primaria, secundaria, acento (CTA/WhatsApp usa un color de alto contraste dedicado, ver informe sobre CTA de alta visibilidad), escala de neutros, estados (éxito/error/advertencia). Los valores de marca están en [`../design/brief-v0.md`](../design/brief-v0.md) §2, extraídos del logo oficial y con sus ratios de contraste verificados.
 - Tipografía: familia (legible, nivel de lectura simple según el informe), escala tipográfica (mobile-first: definir tamaños para móvil primero, luego escalar a desktop), pesos.
 - Espaciado: escala consistente (4/8px base).
 - Radios y sombras: set reducido (2-3 valores), no ad-hoc por componente.
 - Breakpoints: mobile-first, con el breakpoint principal pensado para el 83% de tráfico móvil.
 
-**Componentes base** (los mínimos para construir el MVP sin improvisar):
+**Componentes base** (los mínimos para construir el MVP sin improvisar). Se parte de shadcn/ui
+y se ajusta a los tokens de marca; con React 19 no hace falta `forwardRef` para exponer la ref,
+`ref` se pasa como una prop más:
 - Botón (primario, secundario, WhatsApp — variante con ícono).
 - Input / Textarea / Checkbox (para el formulario corto y el checkbox de autorización de datos).
 - Card (destino, paquete).
@@ -144,6 +226,7 @@ No agregar infraestructura de design system (Storybook, tokens sync, testing vis
 
 ```
 app/
+  globals.css                   → @import "tailwindcss" + @theme con los design tokens
   [locale]/
     layout.tsx                  → layout con NavBar, Footer, WhatsApp flotante, provider de i18n
     page.tsx                    → Home
@@ -151,17 +234,21 @@ app/
       page.tsx
       [slug]/page.tsx
     paquetes/
+      page.tsx                  → listado de ofertas vigentes
       [slug]/page.tsx
     lp/
       [campana]/page.tsx
     nosotros/page.tsx
     contacto/page.tsx
+    gracias/page.tsx            → confirmación post-lead (no indexada)
+    faq/page.tsx
     legal/page.tsx
     design-system/page.tsx      → guía viva de componentes (no indexada)
   api/
-    lead/route.ts
-    meta-capi/route.ts          → Fase 2
-    tiktok-events/route.ts      → Fase 2
+    lead/route.ts               → valida, normaliza E.164, registra consentimiento,
+                                  webhook a GoHighLevel, emite Lead (§8.2)
+    meta-capi/route.ts          → Fase 2 — solo el evento Lead (§8.5)
+    tiktok-events/route.ts      → Fase 2 — solo el evento Lead (§8.5)
   sitemap.ts
   robots.ts
 messages/
@@ -172,13 +259,19 @@ components/
   sections/                     → Hero, PackageCard, ItinerarySection, TrustBadges
   layout/                       → NavBar, Footer, WhatsAppFloating, LanguageSwitcher
 lib/
-  i18n/                         → config next-intl, middleware
-  cms/                          → clientes/queries al CMS headless
-  tracking/                     → helpers de eventos (GA4, pixels)
-styles/
-  tokens.css                    → CSS variables del design system
-tailwind.config.ts              → mapea tokens a clases utilitarias
+  i18n/                         → config next-intl
+  cms/                          → clientes/queries al CMS headless (contenido editorial)
+  offers/                       → acceso a la base de ofertas + helpers de vigencia (§8.4)
+  crm/                          → payload y cliente del webhook a GoHighLevel (§8.2)
+  consent/                      → versión de la política y armado del registro (§8.3)
+  tracking/                     → helpers de eventos (GA4, pixels), eventId/externalId
+proxy.ts                        → detección de locale (en Next.js ≤15 esto era middleware.ts)
+.nvmrc                          → 24.14.1
+package.json                    → packageManager: pnpm@10.34.3, engines.node
 ```
+
+Nota: ya no hay `tailwind.config.ts` ni `styles/tokens.css`. En Tailwind v4 ambos se colapsan en
+el bloque `@theme` de `app/globals.css` (§4.1).
 
 ---
 
@@ -193,12 +286,137 @@ tailwind.config.ts              → mapea tokens a clases utilitarias
 
 ## 7. Checklist de arranque (Fase 0, antes de construir páginas de contenido)
 
-1. Repo Next.js + Vercel conectado, deploy de "hola mundo" funcionando en ambos locales (`/` y `/en`).
-2. `next-intl` configurado con middleware de detección de idioma y selector persistente.
-3. CMS headless elegido y modelo de contenido definido con soporte multilenguaje para destinos/paquetes.
-4. Tokens de diseño (`tailwind.config.ts` + `styles/tokens.css`) definidos y aprobados (color, tipografía, espaciado, breakpoints).
-5. Componentes base construidos y documentados en `/design-system`.
-6. Layout base (NavBar, Footer, WhatsApp flotante, selector de idioma) funcionando en ambos idiomas.
-7. Página legal (`/legal`) y checkbox de consentimiento listos antes de publicar cualquier formulario.
+0. **Titularidad de cuentas resuelta antes de crear nada**: dominio, Vercel, repositorio, GA4, GTM, pixel y datasets a nombre del cliente, no de quien implementa. Es requisito contractual del roadmap comercial y es mucho más barato hacerlo bien que migrarlo después. (Hoy el repo vive en una cuenta personal — ver `mvp-features.md` §Riesgos.)
+1. Entorno fijado: `.nvmrc` con `24.14.1`, `packageManager: "pnpm@10.34.3"` en `package.json`, Corepack habilitado, y la versión de Node del proyecto en Vercel alineada con `.nvmrc`.
+2. Repo Next.js 16 + React 19 + Vercel conectado, deploy de "hola mundo" funcionando en ambos locales (`/` y `/en`).
+3. `next-intl` configurado con detección de idioma en `proxy.ts` y selector persistente. Confirmar compatibilidad de la versión de `next-intl` con Next.js 16 antes de fijarla.
+4. Frontera CMS / base de ofertas decidida (§8.4 y `mvp-features.md` §Riesgos): qué sistema es dueño de la tarifa y cómo la lee el sitio. Con esto resuelto, CMS headless elegido y modelo de contenido definido con soporte multilenguaje para destinos.
+5. Contrato de `/api/lead` acordado por escrito con quien monte GoHighLevel (§8.2): campos de contacto vs. campos de oportunidad, `offerId`, `event_id`, campos de consentimiento. **Antes** de construir el formulario — en GHL un campo creado para un tipo de objeto no se puede convertir al otro.
+6. Tokens de diseño definidos y aprobados en el `@theme` de `app/globals.css` (color, tipografía, espaciado, radios, breakpoints).
+7. Componentes base construidos y documentados en `/design-system`.
+8. Layout base (NavBar, Footer, WhatsApp flotante, selector de idioma) funcionando en ambos idiomas.
+9. Página legal (`/legal`) y checkbox de consentimiento listos antes de publicar cualquier formulario, con la versión de la política ya fijada (§8.3).
 
-A partir de este checklist, el desarrollo de Fase 1 (home, landings, fichas de paquete) descrito en `mvp-features.md` avanza sobre una base ya bilingüe y con sistema de diseño, sin retrabajo posterior.
+A partir de este checklist, el desarrollo de Fase 1 (home, landings, fichas de paquete) descrito en `mvp-features.md` avanza sobre una base ya bilingüe, con sistema de diseño y con el contrato de datos cerrado, sin retrabajo posterior.
+
+---
+
+## 8. Contrato de datos con el sistema comercial
+
+El sitio es un satélite de **GoHighLevel** ([`sistema-comercial.md`](../research/sistema-comercial.md)). Esta sección define la frontera: qué entrega el sitio, en qué forma, y qué no le corresponde.
+
+### 8.1 Reparto de responsabilidades
+
+| | Lo hace el sitio | Lo hace el CRM / el agente |
+|---|---|---|
+| Capturar el lead | ✅ | ✅ (otras fuentes) |
+| Registrar el consentimiento | ✅ (es el punto de autorización) | almacena la evidencia |
+| Precalificar | mínimo (4 campos) | conversación progresiva y scoring |
+| Cotizar | ❌ nunca | ✅ |
+| Comparar mayoristas | ❌ nunca | ✅ |
+| Pipeline y seguimiento | ❌ | ✅ |
+| Eventos de conversión | solo `ViewContent` y `Lead` | todo el embudo posterior |
+
+Regla práctica: si un dato cambia por una conversación, no es del sitio.
+
+### 8.2 Payload de `/api/lead`
+
+`/api/lead` es propio (no un iframe embebido del CRM): hace falta para validar en servidor, controlar el consentimiento y no degradar el LCP. Postea a GoHighLevel por webhook. Estructura mínima:
+
+```jsonc
+{
+  // Identidad — alimenta la deduplicación de contactos del CRM
+  "nombre": "…",
+  "telefono": "+573001234567",     // normalizado a E.164 en el servidor
+  "email": "…",                    // opcional en MVP
+
+  // Intención de viaje — son campos de OPORTUNIDAD en GHL, no de contacto
+  "offerId": "OF-2026-0142",       // null si el lead no vino de una ficha
+  "destino": "eje-cafetero",
+  "ciudadOrigen": "Medellín",
+  "fechaAproximada": "2026-03",
+  "flexibilidad": "±1 semana",
+  "viajeros": { "adultos": 2, "menores": 1 },
+
+  // Origen y atribución
+  "fuente": "web",
+  "utm": { "source": "…", "medium": "…", "campaign": "…", "content": "…" },
+  "paginaOrigen": "/paquetes/eje-cafetero-4-dias",
+  "locale": "es",
+
+  // Deduplicación de conversiones (§8.5)
+  "eventId": "…",
+  "externalId": "…",
+
+  // Consentimiento (§8.3)
+  "consentimiento": { }
+}
+```
+
+Notas que no son cosméticas:
+
+- **Contacto vs. oportunidad.** Nombre, teléfono, ciudad y consentimiento son del **contacto** (estables). Destino, fechas, viajeros y `offerId` son de la **oportunidad** (una persona puede cotizar Cartagena hoy y Cancún en seis meses, y lo segundo no debe pisar lo primero). En GHL esa distinción se fija al crear el campo y **no se puede cambiar después** — por eso el contrato se acuerda antes de codificar.
+- **Teléfono en E.164** siempre. Sin eso la deduplicación de contactos falla y el mismo lead entra dos veces.
+- **Presupuesto no se pide en el formulario.** Es alta fricción y el agente lo obtiene mejor en conversación. Tampoco se piden ingresos, estrato ni capacidad crediticia: no aportan y son sensibles.
+
+### 8.3 Registro del consentimiento
+
+El checkbox no pre-marcado es necesario pero no suficiente. Cada lead guarda la **evidencia**:
+
+```jsonc
+"consentimiento": {
+  "otorgado": true,
+  "textoAceptado": "Autorizo a … conforme a la Política de Tratamiento de Datos.",
+  "versionPolitica": "v1",
+  "fechaHora": "2026-03-14T15:22:31-05:00",
+  "formularioOrigen": "/paquetes/eje-cafetero-4-dias#form-cotizacion",
+  "identificadorTecnico": "…",        // IP o equivalente disponible
+  "canalesAutorizados": ["whatsapp", "llamada", "correo", "publicidad"],
+  "revocado": false
+}
+```
+
+- **La finalidad declarada debe cubrir el uso real.** Si los leads alimentan audiencias de Meta, el texto tiene que nombrar la publicidad personalizada — "contacto comercial para asesoría de viaje" no lo cubre. El texto base está en `sistema-comercial.md`; la versión definitiva la valida un abogado colombiano.
+- `otorgado: false` no es un lead a medias: es un lead que **no se puede contactar comercialmente**. El servidor rechaza el envío si el checkbox no está marcado; nunca se infiere el consentimiento del hecho de haber enviado el formulario.
+- La revocación se gestiona en el CRM, pero el sitio debe exponer el canal para ejercerla en `/legal`.
+
+### 8.4 Ciclo de vida de la oferta
+
+Una tarifa publicada no es un número en un campo de texto. El tipo que consume el sitio:
+
+```ts
+type Offer = {
+  offerId: string;
+  slug: string;
+  destino: string;
+  ciudadOrigen: string;        // "desde Bogotá" cambia el precio; nunca omitirlo
+  noches: number;
+  ocupacionBase: string;       // la ocupación con la que se calculó el "desde"
+  precioDesde: number;
+  moneda: "COP" | "USD";
+  incluye: string[];
+  noIncluye: string[];
+  vigenciaHasta: string;       // ISO
+  validadaEl: string;          // ISO — última verificación humana
+  estado: "vigente" | "vencida" | "borrador";
+};
+```
+
+Reglas:
+
+- **El sitio solo renderiza `estado: "vigente"`.** Una oferta en `borrador` (extraída por IA pero sin validar humanamente) nunca llega a producción — es el riesgo "agente que inventa tarifas" del roadmap comercial.
+- **Cuando `vigenciaHasta` pasa, la página no se cae ni miente.** No es un 404 ni un precio tachado: es un estado explícito — "Esta tarifa estuvo vigente hasta el [fecha]. Te preparamos una actualizada" — con CTA de recotización. Un visitante que llega a una oferta vencida sigue siendo un lead válido y con intención alta.
+- **Bloque de disclosure obligatorio junto al precio**: "desde $X por persona", ciudad de salida, noches, ocupación base, qué incluye, "Tarifa verificada el [`validadaEl`], sujeta a disponibilidad y reconfirmación" y el RNT. Va en el componente `PriceDisclosure`, con el mismo peso tipográfico que el precio — no en letra chica.
+- Esto **no** contradice la prohibición de marca sobre la urgencia falsa: la vigencia es un dato real y verificable, no un contador que se reinicia.
+
+### 8.5 Eventos y deduplicación
+
+| Evento | Lo emite | Cuándo |
+|---|---|---|
+| `ViewContent` | Sitio, client-side | vista de ficha de oferta |
+| `Lead` | Sitio, `/api/lead` server-side | formulario enviado o clic a WhatsApp |
+| `QualifiedLead`, `QuoteRequested`, `QuoteSent`, `BookingStarted`, `DepositPaid`, `Sale` | GoHighLevel | cambios de etapa del pipeline |
+
+- El `eventId` se genera en `/api/lead` y se envía **tanto** a Meta/TikTok como al CRM en el payload. El `externalId` es estable por contacto. Sin esos dos campos compartidos las conversiones se cuentan dos veces y la optimización de campaña se degrada.
+- El sitio **no** intenta emitir eventos de embudo que no puede conocer. Si hace falta un evento nuevo post-lead, se agrega en el CRM.
+- Los UTMs se persisten desde la landing (sessionStorage + cookie) y viajan en el payload; sin eso la atribución muere en el salto a WhatsApp.

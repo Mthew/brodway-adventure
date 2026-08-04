@@ -12,24 +12,38 @@ con WhatsApp como canal de conversión dominante.
 
 | Carpeta | Contenido |
 |---------|-----------|
-| [`research/`](research/) | Investigación de mercado: benchmark de competidores, canales, CTAs, cumplimiento legal colombiano. El **por qué** detrás de las decisiones. |
+| [`research/`](research/) | Dos documentos: la investigación de mercado (el **por qué** detrás de las decisiones) y el roadmap del sistema comercial del cliente (el **dónde encaja** este sitio). |
 | [`product/`](product/) | Alcance de producto: features del MVP y fases de entrega (roadmap). El **qué** y el **cuándo**. |
 | [`architecture/`](architecture/) | Especificación técnica: stack, i18n, sistema de diseño, estructura de carpetas. El **cómo** se construye. |
 | [`brand/`](brand/) | Manual de marca oficial (PDF) y logo fuente. La **identidad** — nombre, ADN, voz/tono, sistema visual. |
-| [`design/`](design/) | Brief de diseño frontend: prompts secuenciados para generar el MVP en v0. El **arranque** de la capa visual. |
+| [`design/`](design/) | Dos briefs para generar el MVP con un agente tipo v0: uno de **producto** (qué es el sitio, sin nada técnico) y uno **técnico** (prompts con stack y versiones). El **arranque** de la capa visual. |
 
 ## Orden de lectura
 
+0. **[`research/sistema-comercial.md`](research/sistema-comercial.md)** ★ — el roadmap del **cliente**: el sistema comercial completo (GoHighLevel como CRM y fuente de verdad, WhatsApp Business Platform multiagente, agente de IA propio, n8n, base de ofertas de mayoristas) del cual este sitio es **una** de seis fuentes de captación. Léelo primero: reencuadra todo lo demás. Define el CRM, el contrato de `offer_id`, quién dispara cada evento de conversión, el registro de consentimiento y la regla de no encender pauta antes de que el CRM funcione.
 1. **[`research/investigation.md`](research/investigation.md)** ★ — investigación de mercado (contexto completo: benchmarks, anatomía de ficha de paquete, CTAs, tracking, SEO, stack recomendado originalmente).
 2. **[`product/mvp-features.md`](product/mvp-features.md)** — traduce la investigación a un alcance de MVP concreto sobre Next.js/Vercel (stack real del proyecto, que reemplaza la recomendación de WordPress de `investigation.md`).
 3. **[`architecture/spec-tecnica.md`](architecture/spec-tecnica.md)** — cómo se construye técnicamente: i18n y sistema de diseño desde Fase 0, estructura de carpetas, requisitos no funcionales, checklist de arranque.
 4. **[`product/fases-entrega.md`](product/fases-entrega.md)** — fases de entrega (1: MVP/credibilidad, 2: escalamiento de conversión, 3: roadmap) con umbrales explícitos para pasar de una fase a otra.
 5. **[`brand/manual-de-marca.pdf`](brand/manual-de-marca.pdf)** — nombre oficial, ADN de marca, voz y tono, plataforma verbal "Next Stop", sistema de logotipos. Fuente de verdad para naming y look & feel; **no** define hex de color, tipografías ni fotografía (esas secciones no están en la v2.0 del manual) — al construir el design system (`spec-tecnica.md` §4), esos valores quedan por definir con quien mantiene la marca. Logo fuente: [`brand/logo-broway-adventures.png`](brand/logo-broway-adventures.png).
-6. **[`design/brief-v0.md`](design/brief-v0.md)** — prompts listos para generar el frontend del MVP en v0 (Next.js App Router). Traduce el spec, el alcance de Fase 1 y el manual de marca a instrucciones ejecutables: tokens con hex extraídos del logo y sus ratios de contraste verificados, componentes base, y un prompt por página. Léelo cuando arranque la construcción visual, después de los cuatro documentos anteriores.
+6. **[`design/brief-v0-producto.md`](design/brief-v0-producto.md)** — el mismo MVP explicado **sin una sola decisión técnica**: qué es el negocio, a quién le habla, qué tiene que lograr cada página, cómo suena la marca y qué está prohibido. Pensado para dárselo directamente a un agente generador de interfaces cuando lo que se busca es la primera versión visual, no el código definitivo. Empieza por aquí si vas a explorar dirección de producto o si quien genera no debe tomar decisiones de arquitectura.
+7. **[`design/brief-v0.md`](design/brief-v0.md)** — la versión técnica del mismo brief: prompts listos para generar el frontend del MVP en v0 (Next.js App Router). Traduce el spec, el alcance de Fase 1 y el manual de marca a instrucciones ejecutables: tokens con hex extraídos del logo y sus ratios de contraste verificados, componentes base, y un prompt por página. Léelo cuando arranque la construcción visual, después de los cuatro documentos anteriores.
 
 ## Regla de precedencia (qué gana ante un conflicto)
 
+La precedencia depende de **sobre qué** es el conflicto:
+
+**Arquitectura comercial** (qué CRM, quién dispara qué evento, ciclo de vida de una tarifa, qué se registra del consentimiento, cuándo se enciende la pauta):
+
+1. **`research/sistema-comercial.md`** — es el roadmap del cliente; manda.
+2. Todo lo demás se ajusta a él. Los docs que nombraban Kommo/Leadsales/HubSpot como CRM están **superados**: el CRM es GoHighLevel.
+
+**Construcción del sitio** (stack, rutas, i18n, design system, componentes, copy):
+
 1. **`CLAUDE.md`** (raíz) — reglas no negociables para quien implemente.
-2. **`architecture/spec-tecnica.md`** — cómo se construye (stack, rutas, i18n, design system).
+2. **`architecture/spec-tecnica.md`** — cómo se construye (stack, rutas, i18n, design system, contrato con el CRM).
 3. **`product/mvp-features.md`** y **`product/fases-entrega.md`** — qué y cuándo se construye.
-4. **`research/investigation.md`** — el porqué; su recomendación de stack (WordPress) está **superada** por el stack real definido en `mvp-features.md`/`spec-tecnica.md` (Next.js + Vercel).
+4. **`design/brief-v0.md`** — cómo se ve y cómo se redacta. `design/brief-v0-producto.md` describe el mismo sitio sin decisiones técnicas: si los dos difieren en marca o contenido, hay que corregir el que esté desactualizado; si difieren en algo técnico, el de producto simplemente no opina.
+5. **`research/investigation.md`** — el porqué; su recomendación de stack (WordPress) está **superada** por el stack real definido en `mvp-features.md`/`spec-tecnica.md` (Next.js 16 + React 19 + Tailwind v4 + shadcn/ui sobre Vercel, con Node 24.14.1 y pnpm 10.34.3).
+
+`sistema-comercial.md` **no** decide cómo se construye el sitio: asume "sitio actual conectado con HighLevel" y no contempla que aquí se construye uno nuevo desde cero (ver `mvp-features.md` §Riesgos).

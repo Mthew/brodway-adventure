@@ -15,6 +15,7 @@ Prompts listos para generar el frontend del MVP (Fase 1). Derivado de
 | | v0 | Lovable |
 |---|---|---|
 | Output nativo | Next.js **App Router** + Tailwind + shadcn/ui | Vite + React SPA (Next.js parcial/experimental) |
+| Alineación de versiones | mismo ecosistema Vercel que Next.js 16 | desfase mayor |
 | Coincide con `spec-tecnica.md` §2.1 | ✅ exacto | ❌ habría que reescribir routing, SSG/ISR y `next/image` |
 | `next/image`, Metadata API, SSG | nativo | no |
 | Deploy | Vercel (el hosting ya definido) | Netlify/propio |
@@ -48,8 +49,23 @@ WhatsApp o deje un formulario corto. No hay carrito, no hay checkout, no hay inv
 en tiempo real.
 
 STACK OBLIGATORIO
-- Next.js 14+ App Router, TypeScript, Tailwind CSS, shadcn/ui como base de componentes.
+- Next.js 16 (App Router) + React 19 + TypeScript + Tailwind CSS v4 + shadcn/ui.
 - Server Components por defecto; "use client" SOLO donde haya interacción real.
+
+REGLAS DE VERSIÓN — NO uses patrones viejos:
+- Tailwind v4 se configura EN CSS, no en JS. NO generes tailwind.config.ts ni
+  tailwind.config.js. NO uses @tailwind base/components/utilities. Usa:
+      @import "tailwindcss";
+      @theme { --color-brand-navy: #003062; ... }
+  Los tokens declarados en @theme ya quedan disponibles como clase utilitaria
+  (bg-brand-navy) y como var(--color-brand-navy). No los dupliques.
+- Next.js 16: `params` y `searchParams` son PROMESAS. Toda página/layout que los use es
+  async y hace await. El acceso síncrono ya no existe:
+      export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+        const { locale } = await params;
+  Lo mismo aplica a cookies() y headers().
+- Next.js 16: el archivo de middleware se llama `proxy.ts`, no `middleware.ts`.
+- React 19: `ref` es una prop normal. NO uses forwardRef.
 - Imágenes con next/image siempre (nunca <img>). Usa placeholders de picsum.photos o
   similares con dimensiones explícitas.
 - Sin librerías de animación pesadas (nada de framer-motion), sin librerías de carrusel,
@@ -151,12 +167,23 @@ TAREA: construir SOLO el sistema de diseño — tokens y componentes base. Todav
 construyas ninguna página de contenido.
 
 1) TOKENS
-Crea `styles/tokens.css` con CSS custom properties y mapéalos en `tailwind.config.ts`
-para que se usen como clases utilitarias (bg-brand-navy, text-brand-orange, etc.):
+Crea `app/globals.css` con la configuración CSS-first de Tailwind v4. NO generes
+tailwind.config.ts — en v4 no se usa. Estructura:
+
+    @import "tailwindcss";
+
+    @theme {
+      /* tokens aquí */
+    }
+
+Cada token declarado en @theme genera automáticamente su clase utilitaria y su CSS
+variable, así que no hay que repetirlos en ningún archivo de config.
 
 - Color: los 4 de marca + escala de neutros fría de 50 a 900 + estados (success, error,
   warning, info). Incluye las variantes accesibles de naranja (#C24A00) y turquesa
   (#007D91) para texto sobre fondo claro.
+  Nómbralos con el prefijo que Tailwind v4 espera: --color-brand-navy, --color-brand-orange,
+  --color-whatsapp, etc.
 - Tipografía: escala mobile-first. Define tamaños para móvil primero y su escalado a
   desktop con clamp(). Niveles: display, h1, h2, h3, body-lg, body, body-sm, caption.
   Pesos: 400 / 500 / 600 / 700.
@@ -164,6 +191,7 @@ para que se usen como clases utilitarias (bg-brand-navy, text-brand-orange, etc.
 - Radios: solo 3 valores (sm 6px, md 12px, lg 20px) + full para pills.
 - Sombras: solo 3 valores (sm, md, lg), suaves, con tinte azulado no negro puro.
 - Breakpoints mobile-first: sm 640 / md 768 / lg 1024 / xl 1280.
+  (En v4 los breakpoints también son tokens: --breakpoint-sm, --breakpoint-md, etc.)
 
 2) COMPONENTES BASE (en `components/ui/`)
 - Button: variantes `primary` (naranja, texto navy), `secondary` (navy, texto blanco),
@@ -188,8 +216,8 @@ color con su hex y su ratio de contraste indicado) y cada componente con todas s
 variantes y estados. Añade `export const metadata = { robots: { index: false } }` — esta
 página NO debe indexarse.
 
-Entrega el código completo de tokens.css, tailwind.config.ts, cada componente y la
-página /design-system.
+Entrega el código completo de app/globals.css (con el bloque @theme), cada componente y
+la página /design-system. NO entregues ningún archivo tailwind.config.
 ```
 
 ---
@@ -329,11 +357,39 @@ SEO: exporta `metadata` con title y description en español, y añade JSON-LD de
 TAREA: `app/[locale]/paquetes/[slug]/page.tsx` + los componentes de sección que necesite.
 Esta es la página de mayor impacto en conversión: sigue la anatomía al pie de la letra.
 
-Datos: define un tipo TypeScript `Package` y un mock en lib/mock/packages.ts (el CMS se
-conecta después). Campos: slug, titulo, destino, duracionDias, beneficioCorto,
+Datos: define un tipo TypeScript `Package` y un mock en lib/mock/packages.ts (la base de
+ofertas se conecta después). Campos: slug, titulo, destino, duracionDias, beneficioCorto,
 precioDesde, moneda, imagenes[], highlights[], itinerario[{dia,titulo,descripcion}],
 incluye[], noIncluye[], fechasSalida[{fecha,cuposDisponibles}], politicaCancelacion,
 faq[{pregunta,respuesta}].
+
+MÁS estos campos, que NO son opcionales — un paquete publicado es una OFERTA con
+trazabilidad y vigencia:
+  offerId: string          // identificador único de la oferta
+  ciudadOrigen: string     // "desde Bogotá" cambia el precio; nunca lo omitas
+  ocupacionBase: string    // la ocupación con la que se calculó el "desde" (ej. "doble")
+  vigenciaHasta: string    // ISO
+  validadaEl: string       // ISO — última verificación humana de la tarifa
+  estado: "vigente" | "vencida" | "borrador"
+
+BLOQUE DE DISCLOSURE DEL PRECIO (componente `PriceDisclosure`, obligatorio)
+Va pegado al precio, con peso tipográfico legible — NO en letra chica gris de 11px.
+Contiene: "desde $X por persona" + ciudad de salida + noches + ocupación base + qué
+incluye + "Tarifa verificada el [validadaEl], sujeta a disponibilidad y reconfirmación"
++ RNT XXXXXX. Es requisito de la normativa de publicidad para prestadores turísticos, y
+además es coherente con el valor de marca de honestidad: el "desde" nunca puede servir
+para esconder costos.
+
+ESTADO DE TARIFA VENCIDA
+Si `estado !== "vigente"` o `vigenciaHasta` ya pasó, la página NO muestra el precio como
+si fuera comprable y NO devuelve 404. Renderiza un estado explícito: "Esta tarifa estuvo
+vigente hasta el [fecha]. Te preparamos una actualizada", con el CTA de WhatsApp de
+recotización (mensaje pre-llenado que incluye el offerId). Quien llega a una oferta
+vencida sigue siendo un lead con intención alta — no lo pierdas.
+Ojo: esto NO es urgencia falsa. Es un dato real y verificable, no un contador que se
+reinicia. Los contadores siguen prohibidos.
+
+Un paquete con `estado: "borrador"` nunca se renderiza en producción.
 
 ESTRUCTURA:
 
@@ -382,18 +438,33 @@ por WhatsApp.
 FAQ en acordeón, con JSON-LD `FAQPage`.
 
 9) FORMULARIO CORTO (alternativa a WhatsApp)
-Máximo 4 campos: Nombre, WhatsApp/teléfono, Fecha aproximada de viaje, Número de
-viajeros. Más el checkbox de consentimiento (ver reglas abajo). Botón "Cuéntanos cómo
-quieres viajar".
+Máximo 4 campos visibles, y son ESTOS — alimentan el scoring del CRM, no se eligen por
+gusto: Nombre · WhatsApp/teléfono · Ciudad de salida · Fecha aproximada + nº de viajeros.
+El destino y el offerId van en campos ocultos, tomados del contexto de la página: el
+asesor no debe volver a preguntar qué oferta vio el visitante.
+NO pidas presupuesto en el formulario (alta fricción; lo pregunta el asesor en
+conversación). NO pidas nunca ingresos, estrato ni capacidad crediticia.
+Más el checkbox de consentimiento (ver reglas abajo). Botón "Cuéntanos cómo quieres
+viajar". Al enviar con éxito, redirige a /gracias.
 
 10) TRUST BADGES + PAQUETES RELACIONADOS
 
 CHECKBOX DE CONSENTIMIENTO — REQUISITO LEGAL (Ley 1581 de 2012), no es opcional:
 - NO puede venir pre-marcado. Nunca `defaultChecked`.
-- El envío del formulario está deshabilitado hasta que se marque.
+- El envío del formulario está deshabilitado hasta que se marque, y el servidor RECHAZA
+  el envío si llega sin él. Enviar el formulario no implica consentimiento por sí solo.
 - Texto: autorización expresa para el tratamiento de datos personales, con la finalidad
-  declarada (contacto comercial para asesoría de viaje) y un enlace a /legal.
-- Debe mencionar el derecho a consultar, actualizar y suprimir los datos.
+  declarada y un enlace a /legal. La finalidad debe cubrir explícitamente la GESTIÓN DE
+  LA SOLICITUD, la COTIZACIÓN, el SEGUIMIENTO, el envío de INFORMACIÓN COMERCIAL por
+  WhatsApp/llamada/correo y la PUBLICIDAD PERSONALIZADA. Decir solo "contacto comercial
+  para asesoría de viaje" NO alcanza si los leads van a alimentar audiencias de Meta.
+  Marca el texto con // TODO: validar redacción final con abogado colombiano.
+- Debe mencionar el derecho a consultar, actualizar y suprimir los datos, y a REVOCAR la
+  autorización, indicando el canal para hacerlo.
+- El formulario envía, además de los campos visibles, el registro de evidencia del
+  consentimiento: texto aceptado, versión de la política (constante `POLICY_VERSION` en
+  lib/consent/), fecha/hora, formulario de origen y canales autorizados. Ver
+  `spec-tecnica.md` §8.3 para el shape exacto del payload.
 
 SEO: metadata dinámica por paquete + JSON-LD `TouristTrip` y `Product`+`Offer` con el
 precio, y `BreadcrumbList`.
@@ -475,12 +546,12 @@ para posicionar (no una página vacía con solo cards).
 
 ---
 
-## 9. PROMPT 6 — Nosotros, Contacto, Cómo pagar y Legal
+## 9. PROMPT 6 — Nosotros, Contacto, Cómo pagar, Gracias, FAQ y Legal
 
 ```text
 [PEGAR REGLAS GLOBALES §2]
 
-TAREA: las cuatro páginas institucionales. Son las que dan credibilidad — el objetivo
+TAREA: las páginas institucionales. Son las que dan credibilidad — el objetivo
 declarado del MVP es "dar seriedad a la empresa".
 
 A) `app/[locale]/nosotros/page.tsx`
@@ -518,15 +589,43 @@ C) `app/[locale]/como-pagar/page.tsx`
 - PROHIBIDO decir "financiamos", "crédito" o "sin intereses garantizados" si no está
   confirmado. Marca con TODO cualquier condición comercial no verificada.
 
-D) `app/[locale]/legal/page.tsx`
+D) `app/[locale]/gracias/page.tsx` — confirmación post-lead
+Es una página corta pero importante: es donde se registra la conversión limpia y donde se
+evita que el lead se enfríe entre el envío y la primera respuesta del asesor.
+- Confirmación serena, sin euforia: "Listo, recibimos tu solicitud".
+- EXPECTATIVA CONCRETA de respuesta ("Te escribimos por WhatsApp en menos de X minutos en
+  horario de atención"). // TODO: confirmar el tiempo real con la operación — no prometas
+  un número que la agencia no pueda cumplir, y NO escribas "24/7".
+- Qué pasa ahora, en 2-3 pasos cortos.
+- CTA para adelantar la conversación por WhatsApp, con mensaje pre-llenado que conserve el
+  contexto (destino/offerId de la página de origen).
+- Enlaces suaves a /destinos y /faq para quien quiera seguir explorando.
+- `robots: { index: false }` — no debe indexarse.
+- Llama a `trackLead(context)` de lib/tracking/events.ts (stub, igual que el de WhatsApp).
+- NO pongas aquí un segundo formulario ni pidas más datos.
+
+E) `app/[locale]/faq/page.tsx` — preguntas frecuentes globales
+Resuelve las objeciones transversales (no las de un paquete concreto, que viven en su
+ficha): cómo se reserva, cómo se paga el 30%, qué pasa si hay que cambiar fechas, cómo
+verificar que la agencia es legal, documentación para viajar, y cómo tratamos los datos
+personales. Acordeón accesible + JSON-LD FAQPage. CTA a WhatsApp al final.
+
+F) `app/[locale]/legal/page.tsx`
 - Navegación por secciones (índice lateral en desktop, acordeón en móvil):
   1. Política de tratamiento de datos personales (Ley 1581 de 2012): finalidad,
      responsable, derechos del titular (consultar, actualizar, suprimir), canal para
-     ejercerlos, y aviso de transferencia internacional si el CRM está fuera de Colombia.
+     ejercerlos, derecho a REVOCAR la autorización, y aviso de transferencia
+     internacional — el CRM (GoHighLevel) está fuera de Colombia, así que esta cláusula
+     aplica y no es hipotética.
   2. Términos y condiciones.
   3. Política de cancelación y cambios.
   4. Aviso ESCNNA (Ley 679 de 2001).
   5. Registro Nacional de Turismo (RNT).
+  6. Registro de Números Excluidos (RNE): explica que la persona puede excluirse de
+     mensajería comercial y cómo hacerlo. Vigente desde abril de 2024.
+- Muestra la VERSIÓN y la fecha de la política de datos de forma visible (ej. "Versión 1 —
+  vigente desde [fecha]"): es lo que permite acreditar después qué texto aceptó cada
+  persona. Debe coincidir con la constante POLICY_VERSION que envía el formulario.
 - Nota visible: la versión en ESPAÑOL es la legalmente vinculante; la traducción al
   inglés es informativa y no la sustituye.
 - TODO EL CONTENIDO LEGAL VA COMO PLACEHOLDER ESTRUCTURADO con un aviso claro en el
@@ -557,13 +656,37 @@ borrar:
 
 ## 11. Checklist de revisión antes de aceptar el output
 
-Cuando v0 entregue, verifica esto antes de llevarlo al repo:
+Cuando v0 entregue, verifica esto antes de llevarlo al repo.
+
+**Versiones — lo primero que hay que revisar.** Los generadores arrastran patrones de
+Tailwind v3 y Next.js 14 porque son los que dominan sus datos de entrenamiento. Da por
+hecho que tendrás que corregir esto aunque el prompt lo prohíba:
+
+- [ ] No existe `tailwind.config.ts` ni `tailwind.config.js` en el output.
+- [ ] El CSS usa `@import "tailwindcss"`, no `@tailwind base/components/utilities`.
+- [ ] Los tokens están en un bloque `@theme`, no en un objeto JS.
+- [ ] Las páginas que usan `params` son `async` y hacen `await params`.
+- [ ] No hay `forwardRef` en ningún componente (React 19 no lo necesita).
+- [ ] Si generó un archivo de middleware, se llama `proxy.ts`.
+- [ ] `package.json` declara `packageManager: "pnpm@10.34.3"` y `engines.node`.
+
+**Diseño y marca:**
 
 - [ ] Ningún botón naranja con texto blanco (falla contraste AA).
 - [ ] Ningún botón de WhatsApp con texto blanco sobre verde.
 - [ ] `focus-visible` visible en todos los interactivos (navegación por teclado).
 - [ ] Ningún `<img>` — todo con `next/image` y `sizes` definido.
-- [ ] El checkbox de consentimiento NO viene pre-marcado en ningún formulario.
+- [ ] El checkbox de consentimiento NO viene pre-marcado en ningún formulario, y su texto
+      nombra explícitamente la publicidad personalizada.
+- [ ] Todo precio publicado va acompañado del bloque `PriceDisclosure` (ciudad de salida,
+      ocupación base, noches, fecha de validación, RNT) — ningún "desde $" suelto.
+- [ ] El tipo `Package` incluye `offerId`, `ciudadOrigen`, `ocupacionBase`,
+      `vigenciaHasta`, `validadaEl` y `estado`.
+- [ ] Existe el estado de tarifa vencida y NO es un 404 ni un precio tachado.
+- [ ] El formulario captura ciudad de salida, y destino/`offerId` van en campos ocultos
+      desde el contexto de página.
+- [ ] El formulario NO pide presupuesto, ingresos ni estrato.
+- [ ] El envío exitoso redirige a `/gracias`, y `/gracias` no está indexada.
 - [ ] Cero strings hardcodeados en el JSX (todos en el objeto `copy`).
 - [ ] Ningún número de RNT, NIT o teléfono inventado — todos placeholder con TODO.
 - [ ] "BroWay Adventures" bien escrito en todas partes.
