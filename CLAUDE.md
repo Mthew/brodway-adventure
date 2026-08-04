@@ -2,9 +2,32 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+@AGENTS.md
+
+> The line above imports `AGENTS.md`, which Next.js writes and **re-adds on every `next dev`**
+> (see `node_modules/next/dist/server/lib/generate-agent-files.js`). Do not inline its contents
+> here and do not delete it from a diff — it just comes back. Commit it alongside your work to
+> keep the tree clean. Its point is worth internalizing: this Next.js has breaking changes
+> against most training data, so read `node_modules/next/dist/docs/` before writing code rather
+> than trusting recall. §2.1.1 of the spec lists the changes that bite first.
+
 ## Repository state
 
-This repository currently contains **only planning/spec documents** — there is no application code or `package.json` yet. Before writing any code, read the docs below (in `docs/`, entry point `docs/README.md`) in order; they are the source of truth for what to build and why. Do not invent architecture that contradicts them, and do not scaffold the project without first checking whether the user wants to start from `spec-tecnica.md`'s checklist (§7).
+The project has been scaffolded: Next.js 16.3.0 + React 19.2.8 + Tailwind v4 + TypeScript, App
+Router, no `src/` directory. What exists is the generated starter — **no project code has been
+written yet**. The `docs/` folder (entry point `docs/README.md`) remains the source of truth for
+what to build and why; read it before writing anything, and do not invent architecture that
+contradicts it.
+
+Phase 0 is in progress, not done. `spec-tecnica.md` §7 is the checklist; scaffolding was step 2
+of 9. Still open, and some of it gates real work: account ownership (step 0), `next-intl` setup
+(3), the CMS/offer-database boundary (4), and the `/api/lead` contract (5) — that last one has
+to be agreed before the lead form is built, because GoHighLevel field types cannot be converted
+after creation.
+
+The generated `package.json` still needs to be reconciled with `spec-tecnica.md` §2.0: it says
+`name: "my-app"`, pins `packageManager: "pnpm@10.18.3"` instead of `10.34.3`, declares no
+`engines.node`, and carries `@types/node: ^20` while the target runtime is Node 24.14.1.
 
 Naming note: the official brand name is **BroWay Adventures** (confirmed by `docs/brand/manual-de-marca.pdf` §2 "Reglas del nombre" — B and W capitalized, "BroWay" always as one verbal unit, never "Bro Way"/"Broway"/"Bro-Way"/"BRO WAY"). Docs have been normalized to this spelling. Two things remain out of sync and are **not** renamed by this fix: the local folder (`brosway-adventure`) and the GitHub repo (`Mthew/brodway-adventure`) — renaming either is a repo-infra action, not a docs edit, so it wasn't done here. Use "BroWay Adventures" in all new code, copy, and legal pages regardless of what the folder/repo URL say.
 

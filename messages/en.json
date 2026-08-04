@@ -1,0 +1,98 @@
+{
+  "metadata": {
+    "siteName": "BroWay Adventures",
+    "defaultTitle": "BroWay Adventures — Travel with clarity and company",
+    "defaultDescription": "Travel agency based in Medellín, Colombia. We help you choose your next trip, at home or abroad, with clear options and transparent pricing."
+  },
+  "nav": {
+    "destinos": "Destinations",
+    "paquetes": "Packages",
+    "comoPagar": "How to pay",
+    "nosotros": "About us",
+    "contacto": "Contact",
+    "abrirMenu": "Open menu",
+    "cerrarMenu": "Close menu",
+    "irAlInicio": "Go to homepage"
+  },
+  "cta": {
+    "cotizaWhatsapp": "Get a quote on WhatsApp",
+    "cotizaProximaParada": "Plan your next stop",
+    "hablaConAsesor": "Talk to an advisor",
+    "planeemosViaje": "Let's plan your trip",
+    "descubreOpciones": "Explore the options",
+    "verItinerario": "See the day-by-day itinerary",
+    "consultaDisponibilidad": "Check availability",
+    "cuentanosComoViajar": "Tell us how you'd like to travel"
+  },
+  "microcopy": {
+    "respuestaEnMinutos": "We reply in minutes, no strings attached",
+    "asesoraExperto": "A travel expert helps you, not a bot",
+    "precioClaro": "Clear final price before you book"
+  },
+  "whatsapp": {
+    "mensajeGenerico": "Hi, I'd like some help planning a trip",
+    "aria": "Message us on WhatsApp"
+  },
+  "idioma": {
+    "label": "Language",
+    "es": "ES",
+    "en": "EN",
+    "cambiarA": "Switch to {idioma}"
+  },
+  "footer": {
+    "proposito": "Making travel feel clearer, closer and more possible.",
+    "tituloDestinos": "Destinations",
+    "tituloPaquetes": "Packages",
+    "tituloEmpresa": "Company",
+    "tituloLegal": "Legal and contact",
+    "blog": "Blog",
+    "blogProximamente": "Coming soon",
+    "legal": "Legal information",
+    "politicaDatos": "Data protection policy",
+    "terminos": "Terms and conditions",
+    "cancelacion": "Cancellation policy",
+    "faq": "Frequently asked questions",
+    "rnt": "RNT {numero}",
+    "escnna": "We reject the commercial sexual exploitation of children and adolescents. Law 679 of 2001.",
+    "antifraude": "Before paying, check any agency's RNT in Colombia's National Tourism Registry. We're happy to walk you through it.",
+    "derechos": "© {anio} BroWay Adventures. All rights reserved."
+  },
+  "precio": {
+    "desde": "from",
+    "porPersona": "per person",
+    "saliendoDesde": "Departing from {ciudad}",
+    "noches": "{noches, plural, one {# night} other {# nights}}",
+    "ocupacion": "{ocupacion} occupancy",
+    "verificadaEl": "Rate verified on {fecha}, subject to availability and reconfirmation.",
+    "consultaCondiciones": "See conditions, taxes and included services."
+  },
+  "oferta": {
+    "vencidaTitulo": "This rate is no longer valid",
+    "vencidaTexto": "It was valid until {fecha}. We'll put together an updated one, for the same dates or whichever you prefer.",
+    "vencidaCta": "Ask us for an updated rate"
+  },
+  "formulario": {
+    "nombre": "Name",
+    "telefono": "WhatsApp",
+    "telefonoAyuda": "Include your country code if you're outside Colombia",
+    "ciudadOrigen": "Departure city",
+    "fechaAproximada": "Approximate travel date",
+    "viajeros": "Number of travellers",
+    "enviar": "Tell us how you'd like to travel",
+    "enviando": "Sending…",
+    "exito": "Done, we've got your request.",
+    "error": "We couldn't send your request. Try again or message us on WhatsApp.",
+    "campoRequerido": "This field is required"
+  },
+  "consentimiento": {
+    "texto": "I authorise BroWay Adventures to process my personal data in order to handle my request, prepare travel quotes, follow up, and send me commercial information and personalised advertising via WhatsApp, phone and email, in accordance with the Data Protection Policy.",
+    "derechos": "I may access, update and delete my data, and withdraw this authorisation, through the channels stated in the policy.",
+    "enlace": "Read the Data Protection Policy",
+    "requerido": "We need your authorisation in order to contact you."
+  },
+  "error": {
+    "noEncontrado": "We couldn't find this page",
+    "noEncontradoTexto": "The link may have changed. Take a look at our destinations, or message us and we'll point you in the right direction.",
+    "volverInicio": "Back to homepage"
+  }
+}

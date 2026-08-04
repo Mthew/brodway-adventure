@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+/**
+ * Design tokens — BroWay Adventures
+ *
+ * Tailwind v4 se configura EN CSS: no existe `tailwind.config.ts` (spec-tecnica.md §4.1).
+ * Un token declarado aquí queda disponible como clase utilitaria Y como variable CSS
+ * automáticamente — no lo dupliques en ningún otro archivo.
+ *
+ * Los valores de marca salen de docs/design/brief-v0.md §2, extraídos del logo oficial
+ * y con sus ratios de contraste ya verificados. No los re-derives.
+ */
+@theme {
+  /* ---------------------------------------------------------------
+   * Color de marca
+   * ------------------------------------------------------------- */
+  --color-brand-navy: #003062;
+  --color-brand-turquoise: #00aac3;
+  --color-brand-orange: #ff6a03;
+  --color-whatsapp: #25d366;
+
+  /**
+   * Variantes accesibles para TEXTO sobre fondo claro.
+   * El naranja y el turquesa de marca rinden ~2.8:1 sobre blanco: no sirven como
+   * color de texto pequeño. Estas dos sí (>=4.5:1).
+   */
+  --color-brand-orange-text: #c24a00;
+  --color-brand-turquoise-text: #007d91;
+
+  /* ---------------------------------------------------------------
+   * Neutros fríos — matiz azulado en armonía con el navy, no grises puros
+   * ------------------------------------------------------------- */
+  --color-neutral-50: #f4f7fa;
+  --color-neutral-100: #e7edf3;
+  --color-neutral-200: #d0dae5;
+  --color-neutral-300: #aebccc;
+  --color-neutral-400: #8496ab;
+  --color-neutral-500: #62748b;
+  --color-neutral-600: #4a5b70;
+  --color-neutral-700: #3a4859;
+  --color-neutral-800: #2a3543;
+  --color-neutral-900: #1b2430;
+
+  /* Superficies */
+  --color-surface-base: #ffffff;
+  --color-surface-alt: #f4f7fa;
+
+  /* ---------------------------------------------------------------
+   * Estados — todos verificados >=4.5:1 sobre blanco
+   * ------------------------------------------------------------- */
+  --color-success: #0e8a5f;
+  --color-error: #c0362c;
+  --color-warning: #b26a00;
+  --color-info: #007d91;
+
+  /* ---------------------------------------------------------------
+   * Tipografía — mobile-first: el tamaño base es el de móvil y escala con clamp()
+   * ------------------------------------------------------------- */
+  --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+
+  --text-display: clamp(2.25rem, 1.6rem + 3.2vw, 4rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.02em;
+
+  --text-h1: clamp(1.875rem, 1.45rem + 2.1vw, 3rem);
+  --text-h1--line-height: 1.12;
+  --text-h1--letter-spacing: -0.015em;
+
+  --text-h2: clamp(1.5rem, 1.25rem + 1.25vw, 2.25rem);
+  --text-h2--line-height: 1.2;
+  --text-h2--letter-spacing: -0.01em;
+
+  --text-h3: clamp(1.25rem, 1.13rem + 0.6vw, 1.5rem);
+  --text-h3--line-height: 1.3;
+
+  --text-body-lg: clamp(1.0625rem, 1.02rem + 0.23vw, 1.1875rem);
+  --text-body-lg--line-height: 1.6;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.65;
+
+  --text-body-sm: 0.9375rem;
+  --text-body-sm--line-height: 1.55;
+
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.45;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ---------------------------------------------------------------
+   * Espaciado — base 4px
+   * ------------------------------------------------------------- */
+  --spacing: 0.25rem;
+
+  /* ---------------------------------------------------------------
+   * Radios — solo tres valores, no ad-hoc por componente
+   * ------------------------------------------------------------- */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.25rem;
+
+  /* ---------------------------------------------------------------
+   * Sombras — suaves y con tinte azulado, nunca negro puro
+   * ------------------------------------------------------------- */
+  --shadow-sm: 0 1px 2px 0 rgb(0 48 98 / 0.06), 0 1px 3px 0 rgb(0 48 98 / 0.08);
+  --shadow-md: 0 4px 6px -1px rgb(0 48 98 / 0.08), 0 2px 4px -2px rgb(0 48 98 / 0.06);
+  --shadow-lg: 0 12px 20px -4px rgb(0 48 98 / 0.1), 0 4px 8px -4px rgb(0 48 98 / 0.06);
+
+  /* ---------------------------------------------------------------
+   * Breakpoints — mobile-first. El 83% del tráfico es móvil.
+   * ------------------------------------------------------------- */
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+}
+
+/**
+ * El sitio no tiene modo oscuro: la identidad se construye sobre fondo claro con
+ * secciones navy. Por eso no hay bloque `prefers-color-scheme`.
+ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  /**
+   * Foco visible obligatorio en todo interactivo (requisito AA, spec §6).
+   * Si un componente necesita otro estilo de foco, que lo sobrescriba — pero
+   * nunca lo elimine.
+   */
+  :focus-visible {
+    outline: 2px solid var(--color-brand-turquoise-text);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: var(--font-weight-bold);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}

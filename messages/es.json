@@ -1,0 +1,98 @@
+{
+  "metadata": {
+    "siteName": "BroWay Adventures",
+    "defaultTitle": "BroWay Adventures — Viajes con claridad y compañía",
+    "defaultDescription": "Agencia de viajes en Medellín. Te acompañamos a elegir tu próximo viaje nacional o internacional, con opciones claras y precios transparentes."
+  },
+  "nav": {
+    "destinos": "Destinos",
+    "paquetes": "Paquetes",
+    "comoPagar": "Cómo pagar",
+    "nosotros": "Nosotros",
+    "contacto": "Contacto",
+    "abrirMenu": "Abrir menú",
+    "cerrarMenu": "Cerrar menú",
+    "irAlInicio": "Ir al inicio"
+  },
+  "cta": {
+    "cotizaWhatsapp": "Cotiza por WhatsApp",
+    "cotizaProximaParada": "Cotiza tu próxima parada",
+    "hablaConAsesor": "Habla con un asesor",
+    "planeemosViaje": "Planeemos tu viaje",
+    "descubreOpciones": "Descubre las opciones",
+    "verItinerario": "Ver itinerario día a día",
+    "consultaDisponibilidad": "Consulta disponibilidad",
+    "cuentanosComoViajar": "Cuéntanos cómo quieres viajar"
+  },
+  "microcopy": {
+    "respuestaEnMinutos": "Respuesta en minutos, sin compromiso",
+    "asesoraExperto": "Te asesora un experto en viajes, no un bot",
+    "precioClaro": "Precio final claro antes de reservar"
+  },
+  "whatsapp": {
+    "mensajeGenerico": "Hola, quiero información para planear un viaje",
+    "aria": "Escríbenos por WhatsApp"
+  },
+  "idioma": {
+    "label": "Idioma",
+    "es": "ES",
+    "en": "EN",
+    "cambiarA": "Cambiar a {idioma}"
+  },
+  "footer": {
+    "proposito": "Hacer que viajar se sienta más claro, cercano y posible.",
+    "tituloDestinos": "Destinos",
+    "tituloPaquetes": "Paquetes",
+    "tituloEmpresa": "Empresa",
+    "tituloLegal": "Legal y contacto",
+    "blog": "Blog",
+    "blogProximamente": "Próximamente",
+    "legal": "Información legal",
+    "politicaDatos": "Política de tratamiento de datos",
+    "terminos": "Términos y condiciones",
+    "cancelacion": "Política de cancelación",
+    "faq": "Preguntas frecuentes",
+    "rnt": "RNT {numero}",
+    "escnna": "Rechazamos la explotación sexual comercial de niñas, niños y adolescentes. Ley 679 de 2001.",
+    "antifraude": "Antes de pagar, verifica el RNT de cualquier agencia en el Registro Nacional de Turismo. Nosotros te ayudamos a hacerlo.",
+    "derechos": "© {anio} BroWay Adventures. Todos los derechos reservados."
+  },
+  "precio": {
+    "desde": "desde",
+    "porPersona": "por persona",
+    "saliendoDesde": "Saliendo desde {ciudad}",
+    "noches": "{noches, plural, one {# noche} other {# noches}}",
+    "ocupacion": "Ocupación {ocupacion}",
+    "verificadaEl": "Tarifa verificada el {fecha}, sujeta a disponibilidad y reconfirmación.",
+    "consultaCondiciones": "Consulta condiciones, impuestos y servicios incluidos."
+  },
+  "oferta": {
+    "vencidaTitulo": "Esta tarifa ya no está vigente",
+    "vencidaTexto": "Estuvo vigente hasta el {fecha}. Te preparamos una actualizada con las mismas fechas o las que prefieras.",
+    "vencidaCta": "Pídenos una tarifa actualizada"
+  },
+  "formulario": {
+    "nombre": "Nombre",
+    "telefono": "WhatsApp",
+    "telefonoAyuda": "Incluye el indicativo si estás fuera de Colombia",
+    "ciudadOrigen": "Ciudad de salida",
+    "fechaAproximada": "Fecha aproximada del viaje",
+    "viajeros": "Número de viajeros",
+    "enviar": "Cuéntanos cómo quieres viajar",
+    "enviando": "Enviando…",
+    "exito": "Listo, recibimos tu solicitud.",
+    "error": "No pudimos enviar tu solicitud. Intenta de nuevo o escríbenos por WhatsApp.",
+    "campoRequerido": "Este campo es obligatorio"
+  },
+  "consentimiento": {
+    "texto": "Autorizo a BroWay Adventures a tratar mis datos personales para gestionar mi solicitud, elaborar cotizaciones de servicios turísticos, hacer seguimiento y enviarme información comercial y publicidad personalizada mediante WhatsApp, llamada y correo electrónico, conforme a la Política de Tratamiento de Datos.",
+    "derechos": "Puedo consultar, actualizar y suprimir mis datos, y revocar esta autorización, por los canales informados en la política.",
+    "enlace": "Leer la Política de Tratamiento de Datos",
+    "requerido": "Necesitamos tu autorización para poder contactarte."
+  },
+  "error": {
+    "noEncontrado": "No encontramos esta página",
+    "noEncontradoTexto": "Puede que el enlace haya cambiado. Mira nuestros destinos o escríbenos y te orientamos.",
+    "volverInicio": "Volver al inicio"
+  }
+}
