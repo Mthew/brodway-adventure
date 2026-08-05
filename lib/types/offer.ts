@@ -37,6 +37,13 @@ export type Offer = {
   slug: string;
 
   destino: string;
+  /**
+   * Destino al que pertenece, por slug.
+   *
+   * Explícito y no emparejado por el nombre: `destino` es texto editable y
+   * cualquier cambio de tilde o mayúscula rompería la relación en silencio.
+   */
+  destinoSlug: string;
   /** Ciudad de salida. Cambia el precio: nunca omitirla en la publicación. */
   ciudadOrigen: string;
   noches: number;
