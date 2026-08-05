@@ -8,6 +8,29 @@
  */
 export type OfferEstado = "vigente" | "vencida" | "borrador";
 
+export type ItinerarioDia = {
+  dia: number;
+  titulo: string;
+  /** Máximo 2-3 experiencias por día. No llenar el día por llenarlo. */
+  descripcion: string;
+};
+
+export type FechaSalida = {
+  /** ISO. */
+  fecha: string;
+  /**
+   * Cupos reales. Se muestra como DATO ("Quedan 4 cupos"), nunca como cuenta
+   * regresiva ni con lenguaje de presión: la urgencia inventada está prohibida
+   * por marca (brief-v0-producto.md §7.1).
+   */
+  cuposDisponibles: number;
+};
+
+export type PreguntaFrecuente = {
+  pregunta: string;
+  respuesta: string;
+};
+
 export type Offer = {
   /** Identificador único. Viaja al CRM en el payload del lead para que el asesor tenga contexto. */
   offerId: string;
@@ -29,6 +52,27 @@ export type Offer = {
   highlights: string[];
   incluye: string[];
   noIncluye: string[];
+
+  /**
+   * Itinerario día a día.
+   *
+   * En Fase 1 se renderiza RESUMIDO: `fases-entrega.md` §Fase 1 pide "itinerario
+   * resumido" y coloca el día a día completo con mapa en Fase 2. El dato se modela
+   * entero desde ahora para no migrar después (plan-fase-1.md §3.1).
+   */
+  itinerario: ItinerarioDia[];
+
+  /**
+   * Fechas de salida con cupos.
+   *
+   * MODELADO PERO NO RENDERIZADO EN FASE 1 — no es un olvido: `fases-entrega.md`
+   * coloca "fechas de salida y cupos disponibles" en Fase 2. Al renderizarlo, se
+   * muestra como dato sereno, nunca como escasez con presión.
+   */
+  fechasSalida: FechaSalida[];
+
+  politicaCancelacion: string;
+  faq: PreguntaFrecuente[];
 
   /** Última fecha en que la tarifa es válida (ISO). */
   vigenciaHasta: string;
