@@ -5,9 +5,6 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Inter, Outfit } from "next/font/google";
 
 import { routing } from "@/lib/i18n/routing";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
-import { WhatsAppFloating } from "@/components/layout/whatsapp-floating";
 import { CookieBanner } from "@/components/layout/cookie-banner";
 import "../globals.css";
 
@@ -84,15 +81,29 @@ export default async function LocaleLayout({
       lang={locale}
       className={`${outfit.variable} ${inter.variable} h-full antialiased`}
     >
+      {/*
+        Este layout NO monta navbar ni footer, a propósito.
+
+        El sitio tiene DOS cromos distintos y los layouts anidados de Next.js se
+        componen en vez de reemplazarse, así que poner el navbar aquí lo haría
+        aparecer también en las landings de campaña, donde está prohibido: una
+        landing no lleva navegación porque cada enlace es una fuga del embudo
+        (brief-v0.md §7).
+
+        El cromo completo vive en `(sitio)/layout.tsx` y el mínimo en
+        `lp/[campana]/layout.tsx`. Los route groups no cambian las URLs.
+      */}
       <body className="bg-surface-base text-neutral-900 flex min-h-full flex-col font-body">
         <NextIntlClientProvider>
-          <Navbar />
-          <div className="flex flex-1 flex-col">{children}</div>
-          <Footer />
-          <WhatsAppFloating />
-          {/* Va en el layout RAÍZ, dentro del provider: el banner debe aparecer
-              en todas las páginas, también en las landings de campaña, que no
-              llevan el resto del cromo del sitio. */}
+          {children}
+          {/*
+            El banner SÍ va en el layout raíz, aunque el resto del cromo no.
+
+            Es la excepción deliberada a la nota de arriba: el consentimiento de
+            cookies aplica a todas las páginas, incluidas las landings de campaña,
+            que no llevan navbar ni pie. Montarlo en `(sitio)` lo dejaría fuera de
+            justo las páginas que reciben tráfico pago.
+          */}
           <CookieBanner />
         </NextIntlClientProvider>
       </body>

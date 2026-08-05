@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox, Input, Select } from "@/components/ui/field";
 import { Link, useRouter } from "@/lib/i18n/navigation";
+import { capturarUtm, leerUtm } from "@/lib/tracking/utm";
 
 /**
  * Formulario corto de captación.
@@ -54,6 +55,16 @@ export function LeadForm({
   const [estado, setEstado] = useState<EstadoEnvio>({ fase: "reposo" });
   const [consentimiento, setConsentimiento] = useState(false);
 
+  /**
+   * Captura los UTMs al montar, no sólo al enviar.
+   *
+   * Si la persona entra por un anuncio a una página con formulario y luego navega
+   * a otra para convertir, este montaje ya los dejó guardados.
+   */
+  useEffect(() => {
+    capturarUtm();
+  }, []);
+
   const enviando = estado.fase === "enviando";
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -67,12 +78,14 @@ export function LeadForm({
 
     const datos = new FormData(event.currentTarget);
 
-    // TODO (Paso 7): leer los UTMs persistidos en sessionStorage por lib/tracking/utm.ts.
-    // Hoy sólo se capturan si vienen en la URL de esta misma página.
-    const params = new URLSearchParams(window.location.search);
-    const utm = Object.fromEntries(
-      [...params.entries()].filter(([clave]) => clave.startsWith("utm_")),
-    );
+    /**
+     * Los UTMs salen de `sessionStorage`, no de la URL de esta página.
+     *
+     * El formulario casi nunca se envía desde la página de entrada: la persona
+     * llega por un anuncio, navega, y convierte dos páginas después. Leerlos de
+     * `window.location` perdía la atribución en todos esos casos.
+     */
+    const utm = leerUtm();
 
     try {
       const respuesta = await fetch("/api/lead", {
@@ -88,7 +101,7 @@ export function LeadForm({
           destino,
           paginaOrigen,
           locale,
-          utm: Object.keys(utm).length > 0 ? utm : undefined,
+          utm,
           consentimiento: {
             otorgado: true,
             // El texto EXACTO que se aceptó, no una referencia a él: es lo que

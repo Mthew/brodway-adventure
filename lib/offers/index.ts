@@ -32,6 +32,17 @@ export async function listOfferSlugs(): Promise<string[]> {
   );
 }
 
+/**
+ * Busca por `offerId` en vez de por slug.
+ *
+ * Lo necesitan las campañas, que referencian la oferta por su identificador y no
+ * por su URL: el slug puede cambiar al reescribir un título, el `offerId` no.
+ */
+export async function getOfferById(offerId: string): Promise<Offer | null> {
+  const offer = MOCK_OFFERS.find((candidate) => candidate.offerId === offerId);
+  return offer && offer.estado !== "borrador" ? offer : null;
+}
+
 export type OfferLookup =
   | { status: "found"; offer: Offer }
   | { status: "expired"; offer: Offer }
