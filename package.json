@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "pnpm check:tokens && next build",
+    "build": "pnpm check && next build",
     "start": "next start",
     "lint": "eslint",
-    "check:tokens": "node scripts/check-font-size-tokens.mjs"
+    "check": "pnpm check:tokens && pnpm check:current",
+    "check:tokens": "node scripts/check-font-size-tokens.mjs",
+    "check:current": "node scripts/check-current-length.mjs"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
