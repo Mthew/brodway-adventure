@@ -2,16 +2,16 @@
 
 > Máximo 50 líneas. Al rebasarlo, se archiva en `history/` (ver `CLAUDE.md` §Flujo de trabajo).
 
-**Actualizado:** 2026-08-04 · **Fase:** 1 (MVP) · **Plan:** [`docs/product/plan-fase-1.md`](docs/product/plan-fase-1.md)
+**Actualizado:** 2026-08-05 · **Fase:** 1 (MVP) · **Plan:** [`docs/product/plan-fase-1.md`](docs/product/plan-fase-1.md)
 
 ## En qué punto va
 
 | Paso | Estado | Rama / PR |
 |---|---|---|
-| 0 · Desbloqueo del entorno | ✅ Hecho | `fase-1` |
-| 1 · Modelo de oferta extendido | ✅ Hecho | `fase-1` |
-| 2 · `LeadForm` + `/gracias` | ⏭️ Siguiente | — |
-| 3 · `/paquetes` + `/paquetes/[slug]` | Pendiente | — |
+| 0 · Desbloqueo del entorno | ✅ Mergeado | PR #1 |
+| 1 · Modelo de oferta extendido | ✅ Mergeado | PR #1 |
+| 2 · `LeadForm` + `/gracias` | ✅ En revisión | `fase-1/paso-2-leadform` |
+| 3 · `/paquetes` + `/paquetes/[slug]` | ⏭️ Siguiente | — |
 | 4 · Home | Pendiente | — |
 | 5 · Institucionales (`/nosotros`, `/contacto`, `/como-pagar`, `/faq`) | Pendiente | — |
 | 6 · `/destinos` + `/destinos/[slug]` | Pendiente | — |
@@ -27,7 +27,11 @@
   `lucide-react` y `tw-animate-css`. Se probó y se revirtió el 2026-08-04. Detalle en
   `plan-fase-1.md` §4 Paso 0. Para primitivas accesibles: `radix-ui` directo, wrapper a mano.
 - **`pnpm check:tokens`** corre dentro del `build` y protege el fallo de contraste mudo.
-- Páginas construidas hasta ahora: solo `/legal` y `/design-system`. La home es un placeholder.
+- Páginas construidas: `/legal`, `/design-system` y `/gracias`. La home sigue siendo un
+  placeholder. `LeadForm` existe y se prueba desde `/design-system`; todavía no lo monta ninguna
+  página real (lo harán los Pasos 3 y 5).
+- **Deuda detectada, pendiente del Paso 9:** los enlaces del Footer miden 23px de alto en móvil,
+  bajo el mínimo táctil de 44px del Pre-Flight §11.C.
 
 ## Bloqueos externos (ninguno se resuelve con código)
 

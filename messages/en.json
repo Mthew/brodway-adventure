@@ -76,13 +76,27 @@
     "telefono": "WhatsApp",
     "telefonoAyuda": "Include your country code if you're outside Colombia",
     "ciudadOrigen": "Departure city",
+    "ciudadOrigenAyuda": "Where you travel from. The price changes with the city.",
     "fechaAproximada": "Approximate travel date",
+    "fechaAproximadaAyuda": "If you're not sure yet, leave it blank",
     "viajeros": "Number of travellers",
     "enviar": "Tell us how you'd like to travel",
     "enviando": "Sending…",
     "exito": "Done, we've got your request.",
     "error": "We couldn't send your request. Try again or message us on WhatsApp.",
-    "campoRequerido": "This field is required"
+    "campoRequerido": "This field is required",
+    "microcopyEnvio": "A travel expert helps you, not a bot."
+  },
+  "gracias": {
+    "titulo": "Done, we've got your request",
+    "expectativa": "We'll message you on WhatsApp during business hours. An advisor reviews your request and replies with clear options.",
+    "paso1": "An advisor reviews what you told us and puts together options for your trip.",
+    "paso2": "They message you on WhatsApp with prices and the full conditions.",
+    "paso3": "If something doesn't fit, you adjust it together before booking anything.",
+    "ctaWhatsapp": "Talk to an advisor",
+    "volver": "Back to home",
+    "mensajeWhatsapp": "Hi, I just left my details on the website and I'd like to move forward with a quote",
+    "mensajeWhatsappConDestino": "Hi, I just left my details on the website about the trip to {destino} and I'd like to move forward with a quote"
   },
   "consentimiento": {
     "texto": "I authorise BroWay Adventures to process my personal data in order to handle my request, prepare travel quotes, follow up, and send me commercial information and personalised advertising via WhatsApp, phone and email, in accordance with the Data Protection Policy.",
