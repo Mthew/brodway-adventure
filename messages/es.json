@@ -76,13 +76,27 @@
     "telefono": "WhatsApp",
     "telefonoAyuda": "Incluye el indicativo si estás fuera de Colombia",
     "ciudadOrigen": "Ciudad de salida",
+    "ciudadOrigenAyuda": "Desde dónde viajas. El precio cambia según la ciudad.",
     "fechaAproximada": "Fecha aproximada del viaje",
+    "fechaAproximadaAyuda": "Si aún no la tienes clara, déjala en blanco",
     "viajeros": "Número de viajeros",
     "enviar": "Cuéntanos cómo quieres viajar",
     "enviando": "Enviando…",
     "exito": "Listo, recibimos tu solicitud.",
     "error": "No pudimos enviar tu solicitud. Intenta de nuevo o escríbenos por WhatsApp.",
-    "campoRequerido": "Este campo es obligatorio"
+    "campoRequerido": "Este campo es obligatorio",
+    "microcopyEnvio": "Te asesora un experto en viajes, no un bot."
+  },
+  "gracias": {
+    "titulo": "Listo, recibimos tu solicitud",
+    "expectativa": "Te escribimos por WhatsApp dentro del horario de atención. Un asesor revisa tu solicitud y te responde con opciones claras.",
+    "paso1": "Un asesor revisa lo que nos contaste y arma opciones para tu viaje.",
+    "paso2": "Te escribe por WhatsApp con los precios y las condiciones completas.",
+    "paso3": "Si algo no encaja, lo ajustan juntos antes de separar nada.",
+    "ctaWhatsapp": "Habla con un asesor",
+    "volver": "Volver al inicio",
+    "mensajeWhatsapp": "Hola, acabo de dejar mis datos en la página y quiero avanzar con la cotización",
+    "mensajeWhatsappConDestino": "Hola, acabo de dejar mis datos en la página por el viaje a {destino} y quiero avanzar con la cotización"
   },
   "consentimiento": {
     "texto": "Autorizo a BroWay Adventures a tratar mis datos personales para gestionar mi solicitud, elaborar cotizaciones de servicios turísticos, hacer seguimiento y enviarme información comercial y publicidad personalizada mediante WhatsApp, llamada y correo electrónico, conforme a la Política de Tratamiento de Datos.",

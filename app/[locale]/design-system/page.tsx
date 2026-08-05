@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, PackageCard } from "@/components/ui/card";
 import { Checkbox, Input, Select, Textarea } from "@/components/ui/field";
+import { LeadForm } from "@/components/forms/lead-form";
 import { Hero } from "@/components/ui/hero";
 import { PriceDisclosure } from "@/components/ui/price-disclosure";
 import { Section } from "@/components/ui/section";
@@ -332,6 +333,15 @@ export default async function DesignSystemPage({
               el tipo la excluye para que el compilador impida pre-marcar una
               autorización.
             </p>
+          </div>
+        </Block>
+
+        <Block
+          title="Formulario de captación"
+          description="Los cuatro campos no son negociables: son los que el asesor necesita para cotizar sin volver a preguntar. El botón está deshabilitado hasta marcar la autorización, y el servidor la vuelve a exigir."
+        >
+          <div className="max-w-lg">
+            <LeadForm paginaOrigen="/design-system" destino="Eje Cafetero" />
           </div>
         </Block>
 
