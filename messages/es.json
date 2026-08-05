@@ -286,6 +286,13 @@
     "noEncontradoTexto": "Puede que el enlace haya cambiado. Mira nuestros destinos o escríbenos y te orientamos.",
     "volverInicio": "Volver al inicio"
   },
+  "cookies": {
+    "titulo": "Cookies y medición",
+    "texto": "Usamos cookies para entender cómo se usa el sitio y para medir nuestras campañas. Puedes rechazarlas y seguir navegando igual.",
+    "enlace": "Más detalle en la política",
+    "aceptar": "Aceptar",
+    "rechazar": "Rechazar"
+  },
   "campana": {
     "mensajeWhatsapp": "Hola, vengo del anuncio de {titular} y quiero cotizar",
     "incluye": "Qué incluye",

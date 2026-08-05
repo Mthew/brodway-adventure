@@ -286,6 +286,13 @@
     "noEncontradoTexto": "The link may have changed. Take a look at our destinations, or message us and we'll point you in the right direction.",
     "volverInicio": "Back to homepage"
   },
+  "cookies": {
+    "titulo": "Cookies and measurement",
+    "texto": "We use cookies to understand how the site is used and to measure our campaigns. You can decline and keep browsing all the same.",
+    "enlace": "More detail in the policy",
+    "aceptar": "Accept",
+    "rechazar": "Decline"
+  },
   "campana": {
     "mensajeWhatsapp": "Hi, I'm coming from the {titular} ad and I'd like a quote",
     "incluye": "What's included",

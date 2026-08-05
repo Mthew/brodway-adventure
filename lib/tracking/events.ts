@@ -1,3 +1,5 @@
+import { emitirEvento, HAY_MEDICION_CONFIGURADA } from "@/lib/tracking/analytics";
+
 /**
  * Eventos de conversión.
  *
@@ -11,6 +13,9 @@
  *
  * El `eventId` se comparte con el CRM para deduplicar: sin eso, la misma conversión
  * se cuenta dos veces y la optimización de campaña se degrada.
+ *
+ * NADA SE EMITE SIN CONSENTIMIENTO. `emitirEvento` no hace nada si no hay medición
+ * configurada, y las etiquetas sólo se cargan tras aceptar el banner de cookies.
  */
 
 export type LeadContext = {
@@ -38,17 +43,31 @@ export async function createExternalId(phoneE164: string): Promise<string> {
     .join("");
 }
 
-// TODO: conectar con GA4 (`generate_lead`), Meta Pixel y TikTok Pixel.
+/**
+ * En desarrollo, y mientras no haya cuentas de medición, los eventos se registran
+ * en consola. Es la única forma de verificar que se disparan cuando toca sin
+ * cuentas reales, y desaparece solo en cuanto se configuren.
+ */
+function registrar(nombre: string, datos: Record<string, unknown>): void {
+  if (!HAY_MEDICION_CONFIGURADA) {
+    console.info(`[tracking] ${nombre}`, datos);
+  }
+}
+
+/** Clic en cualquier CTA de WhatsApp. Es la conversión dominante del sitio. */
 export function trackWhatsAppClick(context: LeadContext): void {
-  console.info("[tracking] whatsapp_click", context);
+  registrar("whatsapp_click", context);
+  emitirEvento("whatsapp_click", { ...context });
 }
 
-// TODO: conectar con GA4 (`generate_lead`), Meta Pixel y TikTok Pixel.
+/** Lead enviado por formulario. Equivale a `generate_lead` en GA4. */
 export function trackLead(context: LeadContext & { eventId: string }): void {
-  console.info("[tracking] lead", context);
+  registrar("lead", context);
+  emitirEvento("generate_lead", { ...context });
 }
 
-// TODO: conectar con Meta Pixel (`ViewContent`).
+/** Vista de una oferta concreta. */
 export function trackViewContent(context: LeadContext): void {
-  console.info("[tracking] view_content", context);
+  registrar("view_content", context);
+  emitirEvento("ViewContent", { ...context });
 }

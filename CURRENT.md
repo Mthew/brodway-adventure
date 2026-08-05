@@ -14,9 +14,9 @@
 | 6 · `/destinos` + `/destinos/[slug]` | ✅ Mergeado | PR #4 |
 | 5 · Institucionales (`/nosotros`, `/contacto`, `/como-pagar`, `/faq`) | ✅ Mergeado | PR #5 |
 | 4 · Home | ✅ Mergeado | PR #6 |
-| 7 · `/lp/[campana]` | ✅ En revisión | `fase-1/paso-7-landing-campana` |
-| 8 · Tracking + cookies | ⏭️ Siguiente (parcialmente bloqueado) | — |
-| 9 · Pre-Flight + sitemap | Pendiente | — |
+| 7 · `/lp/[campana]` | ✅ Mergeado | PR #7 |
+| 8 · Tracking + cookies | ✅ En revisión | PR #8 |
+| 9 · Pre-Flight + sitemap | ⏭️ Siguiente | — |
 
 ## Lo que hay que saber para no romper nada
 
@@ -25,9 +25,10 @@
 - **No correr `shadcn init`.** Probado y revertido: destruye `lib/utils.ts` e instala paquetes
   prohibidos. Detalle en [`history/001-shadcn-cli-descartado.md`](history/001-shadcn-cli-descartado.md).
 - **`pnpm check`** corre dentro del `build`: protege el fallo de contraste mudo y este techo.
-- **Dos cromos, dos route groups.** `(sitio)` lleva navbar y pie; `lp/[campana]` no lleva ninguno
-  de los dos. Todo layout nuevo DEBE llamar a `setRequestLocale` o el sitio entero deja de ser
-  estático sin dar ningún error.
+- **Sin IDs de medición no se carga ninguna etiqueta ni se emite ningún evento** (`.env.example`).
+- **Dos cromos, dos route groups.** `(sitio)` lleva navbar y pie; `lp/[campana]` ninguno de los
+  dos. Todo layout nuevo DEBE llamar a `setRequestLocale` o el sitio deja de ser estático sin dar
+  ningún error.
 - **Verde = WhatsApp, naranja = enviar formulario.** Un solo color por intención en todo el sitio.
 - **Contraste: verifica contra la superficie real.** `Badge variant="destino"` sobre un hero navy
   rinde 1.82:1; para fondos oscuros existe `destinoOscuro` (8.46:1).

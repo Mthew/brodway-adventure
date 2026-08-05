@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Inter, Outfit } from "next/font/google";
 
 import { routing } from "@/lib/i18n/routing";
+import { CookieBanner } from "@/components/layout/cookie-banner";
 import "../globals.css";
 
 /**
@@ -93,7 +94,18 @@ export default async function LocaleLayout({
         `lp/[campana]/layout.tsx`. Los route groups no cambian las URLs.
       */}
       <body className="bg-surface-base text-neutral-900 flex min-h-full flex-col font-body">
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          {children}
+          {/*
+            El banner SÍ va en el layout raíz, aunque el resto del cromo no.
+
+            Es la excepción deliberada a la nota de arriba: el consentimiento de
+            cookies aplica a todas las páginas, incluidas las landings de campaña,
+            que no llevan navbar ni pie. Montarlo en `(sitio)` lo dejaría fuera de
+            justo las páginas que reciben tráfico pago.
+          */}
+          <CookieBanner />
+        </NextIntlClientProvider>
       </body>
     </html>
   );
