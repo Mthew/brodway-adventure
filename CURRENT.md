@@ -12,9 +12,9 @@
 | 2 · `LeadForm` + `/gracias` | ✅ Mergeado | PR #2 |
 | 3 · `/paquetes` + `/paquetes/[slug]` | ✅ Mergeado | PR #3 |
 | 6 · `/destinos` + `/destinos/[slug]` | ✅ Mergeado | PR #4 |
-| 5 · Institucionales (`/nosotros`, `/contacto`, `/como-pagar`, `/faq`) | ✅ En revisión | `fase-1/paso-5-institucionales` |
-| 4 · Home | ⏭️ Siguiente (ya sin bloqueos) | — |
-| 7 · `/lp/[campana]` | Pendiente | — |
+| 5 · Institucionales (`/nosotros`, `/contacto`, `/como-pagar`, `/faq`) | ✅ Mergeado | PR #5 |
+| 4 · Home | ✅ En revisión | `fase-1/paso-4-home` |
+| 7 · `/lp/[campana]` | ⏭️ Siguiente | — |
 | 8 · Tracking + consentimiento de cookies | Pendiente (parcialmente bloqueado) | — |
 | 9 · Pre-Flight + sitemap | Pendiente | — |
 
@@ -27,8 +27,8 @@
 - **`pnpm check`** corre dentro del `build`: protege el fallo de contraste mudo y este techo.
 - La home se movió al final del orden. Motivo en
   [`history/002`](history/002-alcance-ficha-y-orden-de-pasos.md).
-- Construidas: todas menos la home, que sigue siendo el placeholder de Fase 0.
-- **El mapa de `/contacto` no se embebe** hasta que haya dirección real, y es decisión, no olvido.
+- Construidas TODAS las páginas del sitio menos `/lp/[campana]`.
+- **Verde = WhatsApp, naranja = enviar formulario.** Un solo color por intención en todo el sitio.
 - **Contraste: verifica contra la superficie real.** `Badge variant="destino"` sobre un hero navy
   rinde 1.82:1; para fondos oscuros existe `destinoOscuro` (8.46:1).
 - `StickyCta` marca `data-sticky-cta` en el `<body>` y `globals.css` oculta el flotante con eso.
