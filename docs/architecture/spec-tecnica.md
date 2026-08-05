@@ -188,6 +188,13 @@ Tokens a definir:
 - Espaciado: escala consistente (4/8px base).
 - Radios y sombras: set reducido (2-3 valores), no ad-hoc por componente.
 - Breakpoints: mobile-first, con el breakpoint principal pensado para el 83% de tráfico móvil.
+- Iconografía: **una sola familia en todo el proyecto**, con el peso de trazo fijado
+  globalmente. Default técnico: `@phosphor-icons/react` con `weight="regular"`. Es una
+  decisión de Fase 0 y no de detalle: shadcn/ui trae `lucide-react` por defecto, así que
+  instalarlo sin haber decidido antes deja la familia elegida de facto y obliga a reescribir
+  imports después. La familia oficial de marca sigue pendiente
+  ([`../design/brief-v0.md`](../design/brief-v0.md) §12.4); nunca se dibujan `path` de SVG
+  a mano ni se mezclan dos familias.
 
 **Componentes base** (los mínimos para construir el MVP sin improvisar). Se parte de shadcn/ui
 y se ajusta a los tokens de marca; con React 19 no hace falta `forwardRef` para exponer la ref,
@@ -201,6 +208,13 @@ y se ajusta a los tokens de marca; con React 19 no hace falta `forwardRef` para 
 - Sección Hero (para home y landings).
 
 **Documentación:** una página interna `/design-system` (no pública, protegida o simplemente no enlazada) que renderiza cada token y componente con sus variantes — sirve de referencia viva sin invertir en Storybook todavía.
+
+**Dirección visual y control de calidad.** Los tokens y componentes definen el *vocabulario*; no
+definen cómo se compone una página con él. Eso vive en [`../design/brief-v0.md`](../design/brief-v0.md):
+§2.bis fija la dirección de diseño (los tres diales, y los overrides frente al skill
+`design-taste-frontend`) y §11 es el Pre-Flight que se corre antes de aceptar cualquier página
+en el repo. Las decisiones de §2.bis que afectan a este documento son tres: sin librerías de
+animación, modo claro únicamente y una sola familia de iconos.
 
 ### 4.2 Fase 2 — Expansión
 

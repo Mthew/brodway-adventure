@@ -13,21 +13,43 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository state
 
-The project has been scaffolded: Next.js 16.3.0 + React 19.2.8 + Tailwind v4 + TypeScript, App
-Router, no `src/` directory. What exists is the generated starter — **no project code has been
-written yet**. The `docs/` folder (entry point `docs/README.md`) remains the source of truth for
-what to build and why; read it before writing anything, and do not invent architecture that
-contradicts it.
+Next.js 16.3.0 + React 19.2.8 + Tailwind v4 + TypeScript, App Router, no `src/` directory.
+Phase 0 foundations are built: `next-intl` wired (`lib/i18n/`, `proxy.ts`, `messages/`), design
+tokens in `app/globals.css`, base components in `components/ui/` and `components/layout/`, and
+the living guide at `/design-system`. The `docs/` folder (entry point `docs/README.md`) remains
+the source of truth for what to build and why; read it before writing anything, and do not
+invent architecture that contradicts it.
 
-Phase 0 is in progress, not done. `spec-tecnica.md` §7 is the checklist; scaffolding was step 2
-of 9. Still open, and some of it gates real work: account ownership (step 0), `next-intl` setup
-(3), the CMS/offer-database boundary (4), and the `/api/lead` contract (5) — that last one has
-to be agreed before the lead form is built, because GoHighLevel field types cannot be converted
-after creation.
+Phase 0 is still not done. `spec-tecnica.md` §7 is the checklist. Open, and some of it gates
+real work: account ownership (step 0), the CMS/offer-database boundary (4), and the `/api/lead`
+contract (5) — that last one has to be agreed before the lead form is built, because
+GoHighLevel field types cannot be converted after creation. `package.json` has already been
+reconciled with `spec-tecnica.md` §2.0 (name, `pnpm@10.34.3`, `engines.node`, `@types/node`).
 
-The generated `package.json` still needs to be reconciled with `spec-tecnica.md` §2.0: it says
-`name: "my-app"`, pins `packageManager: "pnpm@10.18.3"` instead of `10.34.3`, declares no
-`engines.node`, and carries `@types/node: ^20` while the target runtime is Node 24.14.1.
+**Two design-system rules that are load-bearing, not style preferences.** Both caused silent,
+invisible failures once already:
+
+- **`cn()` is configured, and that configuration has to be maintained.** Every `--text-*` token
+  in the `@theme` block must also be listed in `FONT_SIZE_TOKENS` in `lib/utils.ts`. Otherwise
+  tailwind-merge reads `text-body-sm` as a *color*, decides it conflicts with `text-white`, and
+  drops one of them with no error. That is how the navy button shipped at 1.19:1 contrast while
+  its source said `text-white`. **Verify button and label colors in the browser, not by reading
+  the JSX.**
+- **Contrast is verified against the surface the component actually paints on**, not against
+  white. Badges paint text over a 10% tint of their own color, which is *lighter* than white;
+  two tokens that passed on white failed inside their badge. `app/globals.css` records three
+  measured ratios per token: white / `surface-alt` / own 10% tint.
+
+**The visual direction is declared, not improvised per page.** `docs/design/brief-v0.md` §2.bis
+holds the design read, the three dials (`DESIGN_VARIANCE 6` / `MOTION_INTENSITY 3` /
+`VISUAL_DENSITY 4`) and the pasteable anti-slop block; §11 is the Pre-Flight that gates any page
+entering the repo. Three decisions there constrain code directly: **no animation library**
+(CSS only, LCP < 1s on mobile), **light mode only** (the measured contrast matrix in
+`app/globals.css` covers light surfaces only), and **one icon family**, `@phosphor-icons/react`
+at `weight="regular"` — decided before installing shadcn/ui precisely because shadcn pulls in
+`lucide-react` and settles the question by default. Both files derive from the
+`design-taste-frontend` skill in `.claude/skills/`; where the skill's defaults collide with
+these, §2.bis records which one wins and why. Do not re-litigate those overrides per page.
 
 Naming note: the official brand name is **BroWay Adventures** (confirmed by `docs/brand/manual-de-marca.pdf` §2 "Reglas del nombre" — B and W capitalized, "BroWay" always as one verbal unit, never "Bro Way"/"Broway"/"Bro-Way"/"BRO WAY"). Docs have been normalized to this spelling. Two things remain out of sync and are **not** renamed by this fix: the local folder (`brosway-adventure`) and the GitHub repo (`Mthew/brodway-adventure`) — renaming either is a repo-infra action, not a docs edit, so it wasn't done here. Use "BroWay Adventures" in all new code, copy, and legal pages regardless of what the folder/repo URL say.
 

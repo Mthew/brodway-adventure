@@ -16,13 +16,16 @@ import "../globals.css";
  * son sustitutas: Outfit para títulos, Inter para cuerpo.
  */
 const outfit = Outfit({
-  variable: "--font-display",
+  // Deliberadamente NO se llama `--font-display`: ese es el token de globals.css
+  // y se declara como `var(--font-outfit), …`. Usar el mismo nombre en los dos
+  // lados crea una autorreferencia que mata la cadena de respaldo.
+  variable: "--font-outfit",
   subsets: ["latin"],
   display: "swap",
 });
 
 const inter = Inter({
-  variable: "--font-body",
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });

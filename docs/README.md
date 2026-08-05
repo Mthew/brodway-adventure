@@ -4,16 +4,19 @@ Documentación de investigación y definición para el sitio web de **BroWay Adv
 viajes, Medellín, Colombia): captación de leads calificados vía pauta paga (Google/Meta/TikTok),
 con WhatsApp como canal de conversión dominante.
 
-> **Estado del proyecto.** Repositorio en fase de definición: aún no hay código de aplicación. Estos
-> documentos son la única fuente de verdad sobre qué construir y por qué. El `CLAUDE.md` de la raíz
-> resume las reglas no negociables para quien empiece a implementar.
+> **Estado del proyecto.** Las fundaciones de la Fase 0 están construidas (i18n, tokens de diseño,
+> componentes base, layout, `/legal`, `/api/lead`), pero todavía no hay ninguna página de contenido:
+> la home es un placeholder. El estado detallado, con qué falta de la Fase 0 y por qué, está en
+> [`product/plan-fase-1.md`](product/plan-fase-1.md) §1. Estos documentos siguen siendo la fuente de
+> verdad sobre qué construir y por qué. El `CLAUDE.md` de la raíz resume las reglas no negociables
+> para quien implemente.
 
 ## Estructura de `docs/`
 
 | Carpeta | Contenido |
 |---------|-----------|
 | [`research/`](research/) | Dos documentos: la investigación de mercado (el **por qué** detrás de las decisiones) y el roadmap del sistema comercial del cliente (el **dónde encaja** este sitio). |
-| [`product/`](product/) | Alcance de producto: features del MVP y fases de entrega (roadmap). El **qué** y el **cuándo**. |
+| [`product/`](product/) | Alcance de producto: features del MVP, fases de entrega (roadmap) y el plan de ejecución de la Fase 1. El **qué**, el **cuándo** y el **en qué orden**. |
 | [`architecture/`](architecture/) | Especificación técnica: stack, i18n, sistema de diseño, estructura de carpetas. El **cómo** se construye. |
 | [`brand/`](brand/) | Manual de marca oficial (PDF) y logo fuente. La **identidad** — nombre, ADN, voz/tono, sistema visual. |
 | [`design/`](design/) | Dos briefs para generar el MVP con un agente tipo v0: uno de **producto** (qué es el sitio, sin nada técnico) y uno **técnico** (prompts con stack y versiones). El **arranque** de la capa visual. |
@@ -25,9 +28,11 @@ con WhatsApp como canal de conversión dominante.
 2. **[`product/mvp-features.md`](product/mvp-features.md)** — traduce la investigación a un alcance de MVP concreto sobre Next.js/Vercel (stack real del proyecto, que reemplaza la recomendación de WordPress de `investigation.md`).
 3. **[`architecture/spec-tecnica.md`](architecture/spec-tecnica.md)** — cómo se construye técnicamente: i18n y sistema de diseño desde Fase 0, estructura de carpetas, requisitos no funcionales, checklist de arranque.
 4. **[`product/fases-entrega.md`](product/fases-entrega.md)** — fases de entrega (1: MVP/credibilidad, 2: escalamiento de conversión, 3: roadmap) con umbrales explícitos para pasar de una fase a otra.
+4.bis **[`product/plan-fase-1.md`](product/plan-fase-1.md)** — el plan de ejecución de la Fase 1: en qué orden se construyen las páginas y por qué ese orden, qué está realmente hecho de la Fase 0 (más de lo que dice `CLAUDE.md`), qué cuatro instrucciones de `design/brief-v0.md` quedaron obsoletas al existir el repo, los dos conflictos entre documentos que siguen sin resolver, y el inventario de bloqueos externos con su impacto. Léelo antes de escribir la primera página de contenido; no redefine alcance, lo secuencia.
+
 5. **[`brand/manual-de-marca.pdf`](brand/manual-de-marca.pdf)** — nombre oficial, ADN de marca, voz y tono, plataforma verbal "Next Stop", sistema de logotipos. Fuente de verdad para naming y look & feel; **no** define hex de color, tipografías ni fotografía (esas secciones no están en la v2.0 del manual) — al construir el design system (`spec-tecnica.md` §4), esos valores quedan por definir con quien mantiene la marca. Logo fuente: [`brand/logo-broway-adventures.png`](brand/logo-broway-adventures.png).
 6. **[`design/brief-v0-producto.md`](design/brief-v0-producto.md)** — el mismo MVP explicado **sin una sola decisión técnica**: qué es el negocio, a quién le habla, qué tiene que lograr cada página, cómo suena la marca y qué está prohibido. Pensado para dárselo directamente a un agente generador de interfaces cuando lo que se busca es la primera versión visual, no el código definitivo. Empieza por aquí si vas a explorar dirección de producto o si quien genera no debe tomar decisiones de arquitectura.
-7. **[`design/brief-v0.md`](design/brief-v0.md)** — la versión técnica del mismo brief: prompts listos para generar el frontend del MVP en v0 (Next.js App Router). Traduce el spec, el alcance de Fase 1 y el manual de marca a instrucciones ejecutables: tokens con hex extraídos del logo y sus ratios de contraste verificados, componentes base, y un prompt por página. Léelo cuando arranque la construcción visual, después de los cuatro documentos anteriores.
+7. **[`design/brief-v0.md`](design/brief-v0.md)** — la versión técnica del mismo brief: prompts listos para generar el frontend del MVP en v0 (Next.js App Router). Traduce el spec, el alcance de Fase 1 y el manual de marca a instrucciones ejecutables: tokens con hex extraídos del logo y sus ratios de contraste verificados, componentes base, y un prompt por página. Sus dos secciones transversales son **§2.bis** (la dirección de diseño: los tres diales, los overrides frente al skill `design-taste-frontend` de `.claude/skills/`, y el bloque anti-plantilla que se pega en cada prompt) y **§11** (el Pre-Flight de aceptación: versiones, anti-slop, contraste y contrato de negocio). Léelo cuando arranque la construcción visual, después de los cuatro documentos anteriores.
 
 ## Regla de precedencia (qué gana ante un conflicto)
 
