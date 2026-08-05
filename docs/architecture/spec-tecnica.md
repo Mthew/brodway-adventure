@@ -1,6 +1,6 @@
 # BroWay Adventures — Especificación Técnica del Sitio Web
 
-**Stack:** Next.js 16 (App Router) + React 19 + Tailwind CSS v4 + shadcn/ui, sobre Vercel
+**Stack:** Next.js 16 (App Router) + React 19 + Tailwind CSS v4 + componentes propios, sobre Vercel
 **Runtime:** Node.js 24.14.1 · **Gestor de paquetes:** pnpm 10.34.3
 **Requisitos transversales desde Fase 0:** sitio multilenguaje (Español/Inglés) y sistema de diseño propio, escalable según la fase del proyecto.
 
@@ -53,7 +53,7 @@ la configuración del proyecto para que coincida con `.nvmrc`.
 | Hosting | Vercel (Edge Network, Image Optimization) | 0 |
 | i18n | `next-intl` | 0 |
 | Estilos / tokens | Tailwind CSS v4 (configuración CSS-first con `@theme`) | 0 |
-| Componentes UI | shadcn/ui como base + componentes propios | 0 |
+| Componentes UI | Componentes propios sobre `cva` + `cn()` (convenciones de shadcn, sin su CLI — ver §4.1) | 0 |
 | CMS headless | Sanity, Contentful o Strapi (con soporte multilenguaje nativo) — solo contenido editorial | 0 (setup) / 1 (contenido real) |
 | Base de ofertas | BD estructurada externa (fuera de este repo) — fuente de verdad de tarifas | 1 |
 | CRM | **GoHighLevel** (Starter + add-on de WhatsApp) — fuera de este repo, lo monta el proveedor del sistema comercial | 1 (en paralelo) |
@@ -196,9 +196,20 @@ Tokens a definir:
   ([`../design/brief-v0.md`](../design/brief-v0.md) §12.4); nunca se dibujan `path` de SVG
   a mano ni se mezclan dos familias.
 
-**Componentes base** (los mínimos para construir el MVP sin improvisar). Se parte de shadcn/ui
-y se ajusta a los tokens de marca; con React 19 no hace falta `forwardRef` para exponer la ref,
-`ref` se pasa como una prop más:
+**Componentes base** (los mínimos para construir el MVP sin improvisar). Se escriben a mano
+contra los tokens de marca, siguiendo las convenciones de shadcn (`cva` para variantes, `cn()`
+con `tailwind-merge`) **pero sin su CLI**; con React 19 no hace falta `forwardRef` para exponer
+la ref, `ref` se pasa como una prop más:
+
+> **No correr `shadcn init` en este repo.** Se probó el 4 de agosto de 2026: sobrescribe
+> `lib/utils.ts` (borrando `FONT_SIZE_TOKENS` y con ello la protección contra el fallo de
+> contraste mudo), sobrescribe `components/ui/button.tsx` con sus reglas de contraste
+> verificadas, duplica el sistema de tokens en `globals.css`, e instala `lucide-react` y
+> `tw-animate-css` — las dos cosas que §4.1 y `brief-v0.md` §2.bis prohíben. Sus presets
+> empaquetan familia de íconos y tipografía, así que no hay configuración que lo evite.
+> Cuando haga falta una primitiva accesible (Dialog, Select), se instala `radix-ui` directo
+> y se escribe el wrapper a mano. Detalle en
+> [`../product/plan-fase-1.md`](../product/plan-fase-1.md) §4, Paso 0.
 - Botón (primario, secundario, WhatsApp — variante con ícono).
 - Input / Textarea / Checkbox (para el formulario corto y el checkbox de autorización de datos).
 - Card (destino, paquete).

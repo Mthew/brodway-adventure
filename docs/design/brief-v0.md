@@ -51,7 +51,9 @@ WhatsApp o deje un formulario corto. No hay carrito, no hay checkout, no hay inv
 en tiempo real.
 
 STACK OBLIGATORIO
-- Next.js 16 (App Router) + React 19 + TypeScript + Tailwind CSS v4 + shadcn/ui.
+- Next.js 16 (App Router) + React 19 + TypeScript + Tailwind CSS v4.
+- Componentes propios con `cva` + `cn()`. NO uses el CLI de shadcn/ui: arrastra
+  `lucide-react` y `tw-animate-css`, y sobrescribe los tokens ya medidos.
 - Server Components por defecto; "use client" SOLO donde haya interacción real.
 
 REGLAS DE VERSIÓN — NO uses patrones viejos:
@@ -179,7 +181,7 @@ que el output la cumplió está en §11.
 
 > Sitio de **captación de leads + credibilidad institucional** para una agencia de viajes
 > colombiana, audiencia 83% móvil, con lenguaje **calmado y claro** (arquetipo Cuidador),
-> sobre tokens propios de Tailwind v4 + shadcn/ui, con **motion mínimo**.
+> sobre tokens propios de Tailwind v4 y componentes propios, con **motion mínimo**.
 
 ### Los tres diales
 

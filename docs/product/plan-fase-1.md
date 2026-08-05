@@ -133,22 +133,37 @@ ya resueltas en lugar de como una tanda de decisiones nuevas.
 Pequeño y primero, porque todo lo demás lo asume.
 
 - Instalar `@phosphor-icons/react`. Uso fijo `weight="regular"` en todo el sitio (§2.bis).
-- **Inicializar shadcn/ui.** Sigue siendo la base declarada del stack (`spec-tecnica.md` §4, y
-  `brief-v0.md` §12.4 habla de decidir los íconos *"antes de instalar shadcn/ui"*). Que hoy no
-  exista `components.json` no es una decisión: es que los 9 componentes de Fase 0 son simples y se
-  escribieron a mano. El repo ya usa sus convenciones exactas (`cva` + `clsx` + `tailwind-merge`,
-  `cn()`, `buttonVariants`), así que no hay nada que reconciliar. Dos cuidados al hacerlo:
-  - **`shadcn init` quiere escribir su propio bloque de tokens** (`--background`, `--foreground`,
-    su escala de radios). El `@theme` de `app/globals.css` tiene una matriz de contraste medida
-    sobre tres superficies: no dejar que la sobrescriba. Revisar el diff de `globals.css` antes de
-    aceptarlo, o inicializar y luego restaurar el bloque `@theme`.
-  - **Cada `shadcn add` genera imports de `lucide-react`.** Se cambian a `@phosphor-icons/react`
-    en el momento de integrar el componente, no después (`brief-v0.md` §10 ya lo dice). Ese swap
-    es la razón por la que el orden importa: primero Phosphor, luego shadcn.
-- Los componentes que valen el CLI en Fase 1 son los que tienen accesibilidad cara de escribir a
-  mano: `Dialog` (el menú móvil, que `navbar.tsx` hoy resuelve a pulso con foco y Escape) y
-  `Select`. Los que ya están resueltos no se reemplazan por reemplazar: `Accordion` sobre
-  `<details>`/`<summary>` nativo es más liviano que Radix y cumple el dial de motion 3.
+- **NO correr `shadcn init`.** Se intentó el 4 de agosto de 2026 y hay que dejar constancia,
+  porque el stack declarado en `spec-tecnica.md` §4 dice "shadcn/ui" y cualquiera lo va a
+  reintentar. Esto fue lo que hizo el CLI (v4.16.1, preset Nova, base Radix) sobre este repo:
+
+  | Efecto | Consecuencia |
+  |---|---|
+  | Sobrescribió `lib/utils.ts` entero (47 → 6 líneas) | Borró `FONT_SIZE_TOKENS` y `extendTailwindMerge`. Es **exactamente** el fallo mudo que mandó el botón navy a producción con 1.19:1 |
+  | Sobrescribió `components/ui/button.tsx` | Se llevó las 5 reglas de contraste verificadas y las variantes de marca (`primary` naranja/navy, `whatsapp`) |
+  | Añadió 127 líneas a `app/globals.css` | Un segundo sistema de tokens (`--background`, `--foreground`) en paralelo al `@theme` medido |
+  | Instaló `lucide-react` | La familia de íconos que §2.bis prohíbe explícitamente |
+  | Instaló `tw-animate-css` | Una librería de animación, contra `MOTION_INTENSITY 3` y el objetivo de LCP < 1s |
+
+  Todo se revirtió. El problema no es de configuración: los presets del CLI empaquetan familia de
+  íconos y tipografía (Nova = Lucide + Geist), o sea que **imponen justo las dos decisiones que
+  este proyecto ya tomó y que `brief-v0.md` §12 marca como las más caras de revertir.**
+
+- **Cómo obtener lo que shadcn aportaría, sin el CLI.** shadcn no es una dependencia de runtime:
+  es un generador que copia código. Lo valioso de verdad son las primitivas de Radix con
+  accesibilidad resuelta. Cuando haga falta una, se instala `radix-ui` directo y se escribe el
+  wrapper a mano contra los tokens del proyecto. En Fase 1 probablemente no haga falta ninguna:
+  el menú móvil (foco y Escape) ya está resuelto en `navbar.tsx`, el `Select` en `field.tsx`, y
+  el `Accordion` sobre `<details>`/`<summary>` nativo es más liviano que Radix y encaja mejor con
+  el dial de motion 3.
+
+- **Corregir `spec-tecnica.md` §4 y `brief-v0.md`**, que hoy declaran shadcn/ui como base. Mientras
+  lo digan, alguien va a volver a correr `init` y a repetir el destrozo de arriba.
+
+- **Guardia de tokens** (`scripts/check-font-size-tokens.mjs`, `pnpm check:tokens`, encadenada al
+  `build`): falla si un `--text-*` del `@theme` no está en `FONT_SIZE_TOKENS`, si sobra un nombre,
+  o si `lib/utils.ts` perdió del todo su `extendTailwindMerge`. Este último caso no era hipotético
+  cuando se escribió: es literalmente lo que acababa de pasar.
 - Añadir una verificación que falle si un token `--text-*` de `app/globals.css` no está en
   `FONT_SIZE_TOKENS` de `lib/utils.ts`. Hoy la regla es manual y su síntoma es mudo: ya mandó a
   producción un botón navy con texto a 1.19:1.
