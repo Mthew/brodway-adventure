@@ -295,9 +295,22 @@ export default async function DesignSystemPage({
             <Badge variant="neutral">Grupo pequeño</Badge>
             <Badge variant="dato">Quedan 4 cupos</Badge>
           </div>
+
+          <div className="bg-brand-navy flex flex-wrap gap-3 rounded-lg p-5">
+            <Badge variant="destinoOscuro">Nacional</Badge>
+            <Badge variant="destinoOscuro">Internacional</Badge>
+          </div>
+
           <p className="text-caption text-neutral-500">
             La etiqueta de dato muestra escasez real y editable. Nunca acompañada
             de un contador: la urgencia inventada está vetada por marca.
+          </p>
+          <p className="text-caption text-neutral-500">
+            <strong>destinoOscuro existe por una razón medible.</strong> Sobre el
+            navy de un hero, la variante clara rinde 1.82:1 e ilegible, porque su
+            texto está medido sobre superficies claras y no sobre esta. La variante
+            oscura rinde 8.46:1. Verifica siempre contra la superficie que el
+            componente pinta de verdad, no contra blanco.
           </p>
         </Block>
 

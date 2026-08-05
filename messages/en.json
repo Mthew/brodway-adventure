@@ -66,6 +66,27 @@
     "verificadaEl": "Rate verified on {fecha}, subject to availability and reconfirmation.",
     "consultaCondiciones": "See conditions, taxes and included services."
   },
+  "destinos": {
+    "tituloListado": "Where we can take you",
+    "introListado": "Six destinations we know well. If yours isn't here, message us: we also build trips to order.",
+    "nacional": "Domestic",
+    "internacional": "International",
+    "verOpciones": "See options",
+    "filtroTodos": "All",
+    "filtroNacionales": "Domestic",
+    "filtroInternacionales": "International",
+    "filtroEtiqueta": "Filter destinations by type",
+    "sinResultados": "No destinations of that type right now.",
+    "migaInicio": "Home",
+    "migaDestinos": "Destinations",
+    "mejorEpoca": "When to go",
+    "queHacer": "What to do there",
+    "planes": "Trips to {destino}",
+    "sinPlanes": "We don't have a published trip for this destination right now. Message us and we'll build one around your dates.",
+    "faq": "Frequently asked questions",
+    "ctaTitulo": "Does this destination sound right?",
+    "mensajeWhatsapp": "Hi, I'd like information about travelling to {destino}"
+  },
   "paquetes": {
     "tituloListado": "Trips already put together and ready to go",
     "introListado": "Every trip comes with its price explained, what's included and what isn't. If you want other dates or another departure city, we adjust it.",

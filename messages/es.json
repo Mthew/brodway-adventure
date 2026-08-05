@@ -72,6 +72,27 @@
     "vencidaCta": "Pídenos una tarifa actualizada",
     "vencidaMensajeWhatsapp": "Hola, vi el plan de {titulo} en la página y la tarifa ya venció. ¿Me pueden preparar una actualizada?"
   },
+  "destinos": {
+    "tituloListado": "A dónde te podemos llevar",
+    "introListado": "Seis destinos que conocemos bien. Si el tuyo no está aquí, escríbenos: también armamos viajes a medida.",
+    "nacional": "Nacional",
+    "internacional": "Internacional",
+    "verOpciones": "Ver opciones",
+    "filtroTodos": "Todos",
+    "filtroNacionales": "Nacionales",
+    "filtroInternacionales": "Internacionales",
+    "filtroEtiqueta": "Filtrar destinos por tipo",
+    "sinResultados": "No hay destinos de ese tipo por ahora.",
+    "migaInicio": "Inicio",
+    "migaDestinos": "Destinos",
+    "mejorEpoca": "Cuándo conviene ir",
+    "queHacer": "Qué hacer allí",
+    "planes": "Planes a {destino}",
+    "sinPlanes": "Ahora mismo no tenemos un plan publicado para este destino. Escríbenos y te armamos uno con tus fechas.",
+    "faq": "Preguntas frecuentes",
+    "ctaTitulo": "¿Te suena este destino?",
+    "mensajeWhatsapp": "Hola, quiero información para viajar a {destino}"
+  },
   "paquetes": {
     "tituloListado": "Planes armados y listos para salir",
     "introListado": "Cada plan trae su precio explicado, lo que incluye y lo que no. Si quieres otra fecha o salir desde otra ciudad, lo ajustamos.",

@@ -3,6 +3,7 @@ import { getFormatter, getTranslations } from "next-intl/server";
 
 import { Link } from "@/lib/i18n/navigation";
 import { cn } from "@/lib/utils";
+import type { Destination } from "@/lib/types/destination";
 import type { Offer } from "@/lib/types/offer";
 
 import { Badge } from "./badge";
@@ -22,32 +23,32 @@ export function Card({ className, ...props }: React.ComponentProps<"div">) {
 /**
  * Tarjeta de destino.
  *
- * `precioDesde` es opcional: si no hay una oferta vigente para ese destino, la
- * tarjeta se muestra sin precio antes que con uno desactualizado.
+ * Recibe un `Destination` completo y no campos sueltos, igual que `PackageCard`
+ * recibe una `Offer`: así el contenido editorial y su precio no se pueden separar
+ * por accidente al componer una página.
+ *
+ * `precioDesde` es opcional porque lo calcula `lib/destinations` de las ofertas
+ * VIGENTES del destino. Si no hay ninguna, la tarjeta se muestra sin precio: un
+ * precio desactualizado es peor que ningún precio.
  */
 export async function DestinationCard({
-  nombre,
-  slug,
-  imagen,
-  tipo,
+  destino,
   precioDesde,
   moneda = "COP",
 }: {
-  nombre: string;
-  slug: string;
-  imagen: string;
-  tipo: "nacional" | "internacional";
+  destino: Destination;
   precioDesde?: number;
   moneda?: "COP" | "USD";
 }) {
   const t = await getTranslations("precio");
+  const td = await getTranslations("destinos");
   const format = await getFormatter();
 
   return (
     <Card className="group flex flex-col">
       <div className="relative aspect-[4/3] w-full bg-neutral-100">
         <Image
-          src={imagen}
+          src={destino.imagen}
           alt=""
           fill
           sizes="(max-width: 768px) 85vw, (max-width: 1024px) 45vw, 30vw"
@@ -56,9 +57,10 @@ export async function DestinationCard({
       </div>
       <div className="flex flex-1 flex-col gap-3 p-5">
         <Badge variant="destino" className="self-start">
-          {tipo === "nacional" ? "Nacional" : "Internacional"}
+          {td(destino.tipo)}
         </Badge>
-        <h3 className="text-h3 text-brand-navy">{nombre}</h3>
+        <h3 className="text-h3 text-brand-navy">{destino.nombre}</h3>
+        <p className="text-body-sm text-neutral-600">{destino.resumen}</p>
         {precioDesde ? (
           <p className="text-body-sm text-neutral-700">
             {t("desde")}{" "}
@@ -73,11 +75,11 @@ export async function DestinationCard({
           </p>
         ) : null}
         <Link
-          href={`/destinos/${slug}`}
+          href={`/destinos/${destino.slug}`}
           /* `min-h-11` = 44px: mínimo táctil, que aplica también a enlaces de texto. */
           className="text-body text-brand-turquoise-text mt-auto inline-flex min-h-11 items-center font-semibold underline-offset-4 group-hover:underline"
         >
-          Ver opciones
+          {td("verOpciones")}
         </Link>
       </div>
     </Card>
