@@ -285,5 +285,16 @@
     "noEncontrado": "No encontramos esta página",
     "noEncontradoTexto": "Puede que el enlace haya cambiado. Mira nuestros destinos o escríbenos y te orientamos.",
     "volverInicio": "Volver al inicio"
+  },
+  "campana": {
+    "mensajeWhatsapp": "Hola, vengo del anuncio de {titular} y quiero cotizar",
+    "incluye": "Qué incluye",
+    "ctaIntermedio": "¿Te sirve este plan? Escríbenos y lo ajustamos a tus fechas",
+    "itinerario": "Cómo se vive",
+    "formulario": "¿Prefieres que te escribamos?",
+    "formularioTexto": "Déjanos tus datos y un asesor te responde con el precio completo y las condiciones.",
+    "faq": "Preguntas frecuentes",
+    "ctaFinal": "Cuéntanos y te armamos el plan",
+    "tarifaVencida": "La tarifa de este anuncio ya no está vigente. Escríbenos y te preparamos una actualizada con las mismas fechas o las que prefieras."
   }
 }

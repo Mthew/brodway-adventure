@@ -5,9 +5,6 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Inter, Outfit } from "next/font/google";
 
 import { routing } from "@/lib/i18n/routing";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
-import { WhatsAppFloating } from "@/components/layout/whatsapp-floating";
 import "../globals.css";
 
 /**
@@ -83,13 +80,20 @@ export default async function LocaleLayout({
       lang={locale}
       className={`${outfit.variable} ${inter.variable} h-full antialiased`}
     >
+      {/*
+        Este layout NO monta navbar ni footer, a propósito.
+
+        El sitio tiene DOS cromos distintos y los layouts anidados de Next.js se
+        componen en vez de reemplazarse, así que poner el navbar aquí lo haría
+        aparecer también en las landings de campaña, donde está prohibido: una
+        landing no lleva navegación porque cada enlace es una fuga del embudo
+        (brief-v0.md §7).
+
+        El cromo completo vive en `(sitio)/layout.tsx` y el mínimo en
+        `lp/[campana]/layout.tsx`. Los route groups no cambian las URLs.
+      */}
       <body className="bg-surface-base text-neutral-900 flex min-h-full flex-col font-body">
-        <NextIntlClientProvider>
-          <Navbar />
-          <div className="flex flex-1 flex-col">{children}</div>
-          <Footer />
-          <WhatsAppFloating />
-        </NextIntlClientProvider>
+        <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>
   );

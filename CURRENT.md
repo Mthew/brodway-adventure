@@ -13,9 +13,9 @@
 | 3 · `/paquetes` + `/paquetes/[slug]` | ✅ Mergeado | PR #3 |
 | 6 · `/destinos` + `/destinos/[slug]` | ✅ Mergeado | PR #4 |
 | 5 · Institucionales (`/nosotros`, `/contacto`, `/como-pagar`, `/faq`) | ✅ Mergeado | PR #5 |
-| 4 · Home | ✅ En revisión | `fase-1/paso-4-home` |
-| 7 · `/lp/[campana]` | ⏭️ Siguiente | — |
-| 8 · Tracking + consentimiento de cookies | Pendiente (parcialmente bloqueado) | — |
+| 4 · Home | ✅ Mergeado | PR #6 |
+| 7 · `/lp/[campana]` | ✅ En revisión | `fase-1/paso-7-landing-campana` |
+| 8 · Tracking + cookies | ⏭️ Siguiente (parcialmente bloqueado) | — |
 | 9 · Pre-Flight + sitemap | Pendiente | — |
 
 ## Lo que hay que saber para no romper nada
@@ -25,13 +25,12 @@
 - **No correr `shadcn init`.** Probado y revertido: destruye `lib/utils.ts` e instala paquetes
   prohibidos. Detalle en [`history/001-shadcn-cli-descartado.md`](history/001-shadcn-cli-descartado.md).
 - **`pnpm check`** corre dentro del `build`: protege el fallo de contraste mudo y este techo.
-- La home se movió al final del orden. Motivo en
-  [`history/002`](history/002-alcance-ficha-y-orden-de-pasos.md).
-- Construidas TODAS las páginas del sitio menos `/lp/[campana]`.
+- **Dos cromos, dos route groups.** `(sitio)` lleva navbar y pie; `lp/[campana]` no lleva ninguno
+  de los dos. Todo layout nuevo DEBE llamar a `setRequestLocale` o el sitio entero deja de ser
+  estático sin dar ningún error.
 - **Verde = WhatsApp, naranja = enviar formulario.** Un solo color por intención en todo el sitio.
 - **Contraste: verifica contra la superficie real.** `Badge variant="destino"` sobre un hero navy
   rinde 1.82:1; para fondos oscuros existe `destinoOscuro` (8.46:1).
-- `StickyCta` marca `data-sticky-cta` en el `<body>` y `globals.css` oculta el flotante con eso.
 - **Deuda pendiente del Paso 9:** los enlaces del Footer miden 23px de alto en móvil, bajo el
   mínimo táctil de 44px del Pre-Flight §11.C.
 
