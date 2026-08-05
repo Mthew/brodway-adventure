@@ -92,24 +92,34 @@ export default async function GraciasPage({
             </ButtonLink>
 
             {/*
-              TODO (Pasos 5-6): cuando existan /destinos y /faq, los enlaces suaves
-              van ahí. Hoy no se enlazan para no publicar un 404.
-            */}
-            {/*
+              Enlaces suaves para quien prefiera seguir explorando antes que
+              escribir ya. Estaban pendientes de que existieran /destinos y /faq.
+
               `self-start` no es cosmético: dentro de un flex column un <a> se
               estira a todo el ancho, y su mitad derecha queda DEBAJO del botón
               flotante de WhatsApp. Se medía 24→351 con el flotante en 299→355:
               tocar ahí abría WhatsApp en vez de seguir el enlace. La caja tiene
               que medir lo que mide el texto.
+
+              `min-h-11` = 44px: el mínimo táctil vale también para los enlaces de
+              texto, no sólo para los botones.
             */}
-            <Link
-              href="/"
-              /* `min-h-11` = 44px: el mínimo táctil en móvil vale también para los
-                 enlaces de texto, no sólo para los botones. */
-              className="text-body text-brand-turquoise-text inline-flex min-h-11 items-center self-start font-semibold underline-offset-4 hover:underline"
-            >
-              {t("volver")}
-            </Link>
+            <div className="flex flex-wrap items-center gap-x-6">
+              {(
+                [
+                  ["/destinos", "verDestinos"],
+                  ["/faq", "verFaq"],
+                ] as const
+              ).map(([href, clave]) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="text-body text-brand-turquoise-text inline-flex min-h-11 items-center self-start font-semibold underline-offset-4 hover:underline"
+                >
+                  {t(clave)}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </Section>

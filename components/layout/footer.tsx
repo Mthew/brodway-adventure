@@ -44,8 +44,10 @@ export async function Footer() {
             <Link href="/contacto" className="text-body-sm text-white/70 hover:text-white">
               {tNav("contacto")}
             </Link>
-            <span className="text-body-sm text-white/40">
-              {t("blog")} — {t("blogProximamente")}
+            {/* Paréntesis y no guion largo: el Pre-Flight §11.B prohíbe el `—` en
+                todo texto visible, y este es un texto visible aunque esté atenuado. */}
+            <span className="text-body-sm text-white/60">
+              {t("blog")} ({t("blogProximamente")})
             </span>
           </nav>
 
