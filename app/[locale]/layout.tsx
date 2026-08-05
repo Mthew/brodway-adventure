@@ -8,6 +8,7 @@ import { routing } from "@/lib/i18n/routing";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { WhatsAppFloating } from "@/components/layout/whatsapp-floating";
+import { CookieBanner } from "@/components/layout/cookie-banner";
 import "../globals.css";
 
 /**
@@ -89,6 +90,10 @@ export default async function LocaleLayout({
           <div className="flex flex-1 flex-col">{children}</div>
           <Footer />
           <WhatsAppFloating />
+          {/* Va en el layout RAÍZ, dentro del provider: el banner debe aparecer
+              en todas las páginas, también en las landings de campaña, que no
+              llevan el resto del cromo del sitio. */}
+          <CookieBanner />
         </NextIntlClientProvider>
       </body>
     </html>

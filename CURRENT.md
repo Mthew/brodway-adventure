@@ -16,7 +16,7 @@
 | 4 · Home | ✅ En revisión | `fase-1/paso-4-home` |
 | 7 · `/lp/[campana]` | ⏭️ Siguiente | — |
 | 8 · Tracking + consentimiento de cookies | Pendiente (parcialmente bloqueado) | — |
-| 9 · Pre-Flight + sitemap | Pendiente | — |
+| 9 · Pre-Flight + sitemap | ⏭️ Siguiente | — |
 
 ## Lo que hay que saber para no romper nada
 
@@ -25,9 +25,9 @@
 - **No correr `shadcn init`.** Probado y revertido: destruye `lib/utils.ts` e instala paquetes
   prohibidos. Detalle en [`history/001-shadcn-cli-descartado.md`](history/001-shadcn-cli-descartado.md).
 - **`pnpm check`** corre dentro del `build`: protege el fallo de contraste mudo y este techo.
-- La home se movió al final del orden. Motivo en
-  [`history/002`](history/002-alcance-ficha-y-orden-de-pasos.md).
-- Construidas TODAS las páginas del sitio menos `/lp/[campana]`.
+- **Sin IDs de medición no se carga ninguna etiqueta ni se emite ningún evento.** Es deliberado:
+  las cuentas van a nombre del cliente y los datos de una cuenta ajena no se migran. Ver `.env.example`.
+- Construidas todas las páginas; `/lp/[campana]` llega en el PR #7, con su propio cromo mínimo.
 - **Verde = WhatsApp, naranja = enviar formulario.** Un solo color por intención en todo el sitio.
 - **Contraste: verifica contra la superficie real.** `Badge variant="destino"` sobre un hero navy
   rinde 1.82:1; para fondos oscuros existe `destinoOscuro` (8.46:1).

@@ -20,6 +20,14 @@ const buttonVariants = cva(
     "transition-colors select-none",
     // Área táctil mínima de 44x44 en móvil — el 83% del tráfico es táctil.
     "min-h-11",
+    /*
+      Borde transparente en TODAS las variantes.
+      `outline` lleva `border-2` y las demás no llevaban ninguno, así que un botón
+      outline medía 4px más de alto que el que tuviera al lado. Se ve en cuanto
+      dos variantes conviven en una fila, que es lo normal: hero y banner de
+      cookies. Declarar el borde aquí iguala las alturas sin tocar el padding.
+    */
+    "border-2 border-transparent",
     "disabled:pointer-events-none disabled:opacity-50",
   ),
   {
@@ -28,7 +36,7 @@ const buttonVariants = cva(
         primary: "bg-brand-orange text-brand-navy hover:bg-brand-orange/90",
         secondary: "bg-brand-navy text-white hover:bg-brand-navy/90",
         outline:
-          "border-2 border-brand-navy text-brand-navy hover:bg-brand-navy hover:text-white bg-transparent",
+          "border-brand-navy text-brand-navy hover:bg-brand-navy hover:text-white bg-transparent",
         ghost: "text-brand-navy hover:bg-neutral-100 bg-transparent",
         whatsapp: "bg-whatsapp text-brand-navy hover:bg-whatsapp/90",
       },
