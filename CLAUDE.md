@@ -11,23 +11,81 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 > against most training data, so read `node_modules/next/dist/docs/` before writing code rather
 > than trusting recall. §2.1.1 of the spec lists the changes that bite first.
 
+## Flujo de trabajo — leer esto ANTES que nada
+
+**Empieza toda sesión leyendo [`CURRENT.md`](CURRENT.md).** Es el estado del proyecto: en qué
+paso va, qué rompe si lo tocas, qué está bloqueado y qué decisiones siguen abiertas. Este
+archivo (`CLAUDE.md`) describe reglas permanentes; `CURRENT.md` describe el momento. Cuando se
+contradigan sobre el **estado**, gana `CURRENT.md`; sobre las **reglas**, gana este.
+
+**Una rama y un PR por paso del plan.**
+
+- Cada paso de [`docs/product/plan-fase-1.md`](docs/product/plan-fase-1.md) §4 sale de `main`,
+  no de la rama del paso anterior: `git checkout main && git pull && git checkout -b <rama>`.
+- Nombre de rama: `fase-1/paso-N-<slug>` (ej. `fase-1/paso-2-leadform`).
+- Al terminar el paso se abre PR a `main` con `gh pr create --base main`. No se acumulan dos
+  pasos en la misma rama.
+- Si un paso depende de otro que aún no está mergeado, dilo en el PR y ramifica desde `main`
+  igualmente: es preferible un conflicto visible a una rama larga que nadie puede revisar.
+
+**`CURRENT.md` se actualiza en el mismo PR del paso**, nunca después. Un PR que cambia el estado
+del proyecto y no toca `CURRENT.md` está incompleto.
+
+**Techo de 50 líneas en `CURRENT.md`**, verificado por `pnpm check:current` dentro del `build`.
+El techo no se sube. Al rebasarlo, lo que ya no describe el presente se archiva en
+`history/NNN-<tema>.md` (numeración correlativa: `001-`, `002-`…) y en `CURRENT.md` queda solo
+el estado actual. Lo que casi siempre sobra: pasos ya cerrados con su detalle, bloqueos
+resueltos y decisiones que dejaron de estar abiertas.
+
 ## Repository state
 
-The project has been scaffolded: Next.js 16.3.0 + React 19.2.8 + Tailwind v4 + TypeScript, App
-Router, no `src/` directory. What exists is the generated starter — **no project code has been
-written yet**. The `docs/` folder (entry point `docs/README.md`) remains the source of truth for
-what to build and why; read it before writing anything, and do not invent architecture that
-contradicts it.
+Estado puntual (qué está construido hoy, qué sigue): **[`CURRENT.md`](CURRENT.md)**. Lo de abajo
+son las invariantes del repo, que no cambian de un paso a otro.
 
-Phase 0 is in progress, not done. `spec-tecnica.md` §7 is the checklist; scaffolding was step 2
-of 9. Still open, and some of it gates real work: account ownership (step 0), `next-intl` setup
-(3), the CMS/offer-database boundary (4), and the `/api/lead` contract (5) — that last one has
-to be agreed before the lead form is built, because GoHighLevel field types cannot be converted
-after creation.
+Next.js 16.3.0 + React 19.2.8 + Tailwind v4 + TypeScript, App Router, no `src/` directory.
+Phase 0 foundations are built: `next-intl` wired (`lib/i18n/`, `proxy.ts`, `messages/`), design
+tokens in `app/globals.css`, base components in `components/ui/` and `components/layout/`, and
+the living guide at `/design-system`. The `docs/` folder (entry point `docs/README.md`) remains
+the source of truth for what to build and why; read it before writing anything, and do not
+invent architecture that contradicts it.
 
-The generated `package.json` still needs to be reconciled with `spec-tecnica.md` §2.0: it says
-`name: "my-app"`, pins `packageManager: "pnpm@10.18.3"` instead of `10.34.3`, declares no
-`engines.node`, and carries `@types/node: ^20` while the target runtime is Node 24.14.1.
+De la Fase 0 queda abierto lo que no es código y depende de terceros: titularidad de cuentas
+(paso 0 del checklist `spec-tecnica.md` §7), la frontera CMS / base de ofertas (4) y el contrato
+de `/api/lead` (5). Ese último tiene que acordarse **antes** de conectar el formulario al CRM,
+porque los tipos de campo de GoHighLevel no se pueden convertir después de creados. La lista
+completa con su impacto está en `plan-fase-1.md` §5, y el estado del día en `CURRENT.md`.
+
+**No corras `shadcn init` en este repo.** Se probó el 2026-08-04: sobrescribe `lib/utils.ts`
+(borrando `FONT_SIZE_TOKENS`), sobrescribe `button.tsx` con sus reglas de contraste, duplica los
+tokens en `globals.css` e instala `lucide-react` y `tw-animate-css`. Sus presets empaquetan
+familia de íconos y tipografía, así que ninguna combinación de flags lo evita. Los componentes
+se escriben a mano con `cva` + `cn()`; para una primitiva accesible se instala `radix-ui` directo
+y se escribe el wrapper.
+
+**Two design-system rules that are load-bearing, not style preferences.** Both caused silent,
+invisible failures once already:
+
+- **`cn()` is configured, and that configuration has to be maintained.** Every `--text-*` token
+  in the `@theme` block must also be listed in `FONT_SIZE_TOKENS` in `lib/utils.ts`. Otherwise
+  tailwind-merge reads `text-body-sm` as a *color*, decides it conflicts with `text-white`, and
+  drops one of them with no error. That is how the navy button shipped at 1.19:1 contrast while
+  its source said `text-white`. **Verify button and label colors in the browser, not by reading
+  the JSX.**
+- **Contrast is verified against the surface the component actually paints on**, not against
+  white. Badges paint text over a 10% tint of their own color, which is *lighter* than white;
+  two tokens that passed on white failed inside their badge. `app/globals.css` records three
+  measured ratios per token: white / `surface-alt` / own 10% tint.
+
+**The visual direction is declared, not improvised per page.** `docs/design/brief-v0.md` §2.bis
+holds the design read, the three dials (`DESIGN_VARIANCE 6` / `MOTION_INTENSITY 3` /
+`VISUAL_DENSITY 4`) and the pasteable anti-slop block; §11 is the Pre-Flight that gates any page
+entering the repo. Three decisions there constrain code directly: **no animation library**
+(CSS only, LCP < 1s on mobile), **light mode only** (the measured contrast matrix in
+`app/globals.css` covers light surfaces only), and **one icon family**, `@phosphor-icons/react`
+at `weight="regular"` — decided before installing shadcn/ui precisely because shadcn pulls in
+`lucide-react` and settles the question by default. Both files derive from the
+`design-taste-frontend` skill in `.claude/skills/`; where the skill's defaults collide with
+these, §2.bis records which one wins and why. Do not re-litigate those overrides per page.
 
 Naming note: the official brand name is **BroWay Adventures** (confirmed by `docs/brand/manual-de-marca.pdf` §2 "Reglas del nombre" — B and W capitalized, "BroWay" always as one verbal unit, never "Bro Way"/"Broway"/"Bro-Way"/"BRO WAY"). Docs have been normalized to this spelling. Two things remain out of sync and are **not** renamed by this fix: the local folder (`brosway-adventure`) and the GitHub repo (`Mthew/brodway-adventure`) — renaming either is a repo-infra action, not a docs edit, so it wasn't done here. Use "BroWay Adventures" in all new code, copy, and legal pages regardless of what the folder/repo URL say.
 

@@ -22,10 +22,19 @@
   /**
    * Variantes accesibles para TEXTO sobre fondo claro.
    * El naranja y el turquesa de marca rinden ~2.8:1 sobre blanco: no sirven como
-   * color de texto pequeño. Estas dos sí (>=4.5:1).
+   * color de texto pequeño. Estas dos sí.
+   *
+   * Medidos sobre blanco / sobre surface-alt / sobre su propio tinte al 10%:
+   *   orange-text     #C24A00 → 5.98 / 5.56 / 5.32
+   *   turquoise-text  #006B7D → 6.18 / 5.75 / 5.55
+   *
+   * El turquesa de texto era #007D91: pasaba sobre blanco (4.84) pero fallaba
+   * dentro del badge `destino`, que lo pinta sobre un tinte del propio turquesa
+   * (4.35 < 4.5). Un tinte ACLARA el fondo, así que verificar sólo contra blanco
+   * no alcanza — hay que verificar contra la superficie real del componente.
    */
   --color-brand-orange-text: #c24a00;
-  --color-brand-turquoise-text: #007d91;
+  --color-brand-turquoise-text: #006b7d;
 
   /* ---------------------------------------------------------------
    * Neutros fríos — matiz azulado en armonía con el navy, no grises puros
@@ -35,7 +44,9 @@
   --color-neutral-200: #d0dae5;
   --color-neutral-300: #aebccc;
   --color-neutral-400: #8496ab;
-  --color-neutral-500: #62748b;
+  /* neutral-500 es el gris de captions. Era #62748b: 4.78 sobre blanco pero 4.45
+     sobre surface-alt, donde también se usa. Este pasa en las dos (5.21 / 4.85). */
+  --color-neutral-500: #5d6e84;
   --color-neutral-600: #4a5b70;
   --color-neutral-700: #3a4859;
   --color-neutral-800: #2a3543;
@@ -46,18 +57,39 @@
   --color-surface-alt: #f4f7fa;
 
   /* ---------------------------------------------------------------
-   * Estados — todos verificados >=4.5:1 sobre blanco
+   * Estados
+   *
+   * Verificados >=4.5:1 en las TRES superficies claras del sistema: blanco,
+   * surface-alt y su propio tinte al 10% (que es como los pintan los badges).
+   * Formato: blanco / surface-alt / tinte propio al 10%.
+   *
+   * success y warning NO cumplían: eran #0E8A5F (4.36 sobre blanco) y #B26A00
+   * (4.24 sobre blanco, 3.74 dentro del badge `dato`), a pesar del comentario
+   * que afirmaba lo contrario. Medidos, no estimados.
    * ------------------------------------------------------------- */
-  --color-success: #0e8a5f;
-  --color-error: #c0362c;
-  --color-warning: #b26a00;
-  --color-info: #007d91;
+  --color-success: #0a7550; /* 5.72 / 5.32 / 5.03 */
+  --color-error: #c0362c; /* 5.52 / 5.14 / 4.86 */
+  --color-warning: #95590a; /* 5.66 / 5.26 / 5.00 */
+  --color-info: #006b7d; /* 6.18 / 5.75 / 5.55 */
 
   /* ---------------------------------------------------------------
    * Tipografía — mobile-first: el tamaño base es el de móvil y escala con clamp()
+   *
+   * ⚠ AL AGREGAR UN TOKEN `--text-*` AQUÍ, AGRÉGALO TAMBIÉN A `FONT_SIZE_TOKENS`
+   * EN `lib/utils.ts`. tailwind-merge no lee este archivo: si no lo declaras ahí,
+   * clasifica `text-<lo-que-sea>` como color y `cn()` empieza a borrar en
+   * silencio los colores de texto de los componentes que también fijan tamaño.
+   * Así se perdió el `text-white` del botón navy y quedó en 1.19:1.
    * ------------------------------------------------------------- */
-  --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-  --font-body: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  /**
+   * Las variables `--font-outfit` / `--font-inter` las inyecta next/font en
+   * `app/[locale]/layout.tsx`. Tienen que llamarse distinto del token: si
+   * next/font escribiera `--font-display` estaríamos declarando
+   * `--font-display: var(--font-display), …`, una autorreferencia sobre el mismo
+   * elemento (`<html>` ES `:root`) que anula la cadena de respaldo.
+   */
+  --font-display: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
   --text-display: clamp(2.25rem, 1.6rem + 3.2vw, 4rem);
   --text-display--line-height: 1.05;
@@ -138,11 +170,27 @@
    * Foco visible obligatorio en todo interactivo (requisito AA, spec §6).
    * Si un componente necesita otro estilo de foco, que lo sobrescriba — pero
    * nunca lo elimine.
+   *
+   * ANILLO DOBLE, y la razón importa: un anillo de un solo color no puede cumplir
+   * el 3:1 de WCAG 2.2 (SC 1.4.11) en un sitio que alterna fondo blanco, navy y
+   * turquesa. El turquesa que había antes rendía 4.84 sobre blanco pero 2.72
+   * sobre navy y 1.74 sobre la franja turquesa: en las secciones oscuras el foco
+   * era prácticamente invisible.
+   *
+   * Con blanco por dentro y navy por fuera siempre hay UN anillo con contraste
+   * suficiente contra el fondo, y los dos contrastan entre sí 13.13:1:
+   *   sobre blanco  → gana el navy       13.13:1
+   *   sobre alt     → gana el navy       12.21:1
+   *   sobre navy    → gana el blanco     13.13:1
+   *   sobre turquesa→ gana el navy        4.71:1
+   *
+   * Sin `border-radius`: el outline ya sigue el radio del elemento. Forzarlo aquí
+   * cuadraba el botón flotante de WhatsApp, que es un círculo, justo al enfocarlo.
    */
   :focus-visible {
-    outline: 2px solid var(--color-brand-turquoise-text);
-    outline-offset: 2px;
-    border-radius: var(--radius-sm);
+    outline: 2px solid var(--color-surface-base);
+    outline-offset: 1px;
+    box-shadow: 0 0 0 5px var(--color-brand-navy);
   }
 
   h1,

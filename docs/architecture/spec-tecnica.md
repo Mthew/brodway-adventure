@@ -1,6 +1,6 @@
 # BroWay Adventures — Especificación Técnica del Sitio Web
 
-**Stack:** Next.js 16 (App Router) + React 19 + Tailwind CSS v4 + shadcn/ui, sobre Vercel
+**Stack:** Next.js 16 (App Router) + React 19 + Tailwind CSS v4 + componentes propios, sobre Vercel
 **Runtime:** Node.js 24.14.1 · **Gestor de paquetes:** pnpm 10.34.3
 **Requisitos transversales desde Fase 0:** sitio multilenguaje (Español/Inglés) y sistema de diseño propio, escalable según la fase del proyecto.
 
@@ -53,7 +53,7 @@ la configuración del proyecto para que coincida con `.nvmrc`.
 | Hosting | Vercel (Edge Network, Image Optimization) | 0 |
 | i18n | `next-intl` | 0 |
 | Estilos / tokens | Tailwind CSS v4 (configuración CSS-first con `@theme`) | 0 |
-| Componentes UI | shadcn/ui como base + componentes propios | 0 |
+| Componentes UI | Componentes propios sobre `cva` + `cn()` (convenciones de shadcn, sin su CLI — ver §4.1) | 0 |
 | CMS headless | Sanity, Contentful o Strapi (con soporte multilenguaje nativo) — solo contenido editorial | 0 (setup) / 1 (contenido real) |
 | Base de ofertas | BD estructurada externa (fuera de este repo) — fuente de verdad de tarifas | 1 |
 | CRM | **GoHighLevel** (Starter + add-on de WhatsApp) — fuera de este repo, lo monta el proveedor del sistema comercial | 1 (en paralelo) |
@@ -188,10 +188,28 @@ Tokens a definir:
 - Espaciado: escala consistente (4/8px base).
 - Radios y sombras: set reducido (2-3 valores), no ad-hoc por componente.
 - Breakpoints: mobile-first, con el breakpoint principal pensado para el 83% de tráfico móvil.
+- Iconografía: **una sola familia en todo el proyecto**, con el peso de trazo fijado
+  globalmente. Default técnico: `@phosphor-icons/react` con `weight="regular"`. Es una
+  decisión de Fase 0 y no de detalle: shadcn/ui trae `lucide-react` por defecto, así que
+  instalarlo sin haber decidido antes deja la familia elegida de facto y obliga a reescribir
+  imports después. La familia oficial de marca sigue pendiente
+  ([`../design/brief-v0.md`](../design/brief-v0.md) §12.4); nunca se dibujan `path` de SVG
+  a mano ni se mezclan dos familias.
 
-**Componentes base** (los mínimos para construir el MVP sin improvisar). Se parte de shadcn/ui
-y se ajusta a los tokens de marca; con React 19 no hace falta `forwardRef` para exponer la ref,
-`ref` se pasa como una prop más:
+**Componentes base** (los mínimos para construir el MVP sin improvisar). Se escriben a mano
+contra los tokens de marca, siguiendo las convenciones de shadcn (`cva` para variantes, `cn()`
+con `tailwind-merge`) **pero sin su CLI**; con React 19 no hace falta `forwardRef` para exponer
+la ref, `ref` se pasa como una prop más:
+
+> **No correr `shadcn init` en este repo.** Se probó el 4 de agosto de 2026: sobrescribe
+> `lib/utils.ts` (borrando `FONT_SIZE_TOKENS` y con ello la protección contra el fallo de
+> contraste mudo), sobrescribe `components/ui/button.tsx` con sus reglas de contraste
+> verificadas, duplica el sistema de tokens en `globals.css`, e instala `lucide-react` y
+> `tw-animate-css` — las dos cosas que §4.1 y `brief-v0.md` §2.bis prohíben. Sus presets
+> empaquetan familia de íconos y tipografía, así que no hay configuración que lo evite.
+> Cuando haga falta una primitiva accesible (Dialog, Select), se instala `radix-ui` directo
+> y se escribe el wrapper a mano. Detalle en
+> [`../product/plan-fase-1.md`](../product/plan-fase-1.md) §4, Paso 0.
 - Botón (primario, secundario, WhatsApp — variante con ícono).
 - Input / Textarea / Checkbox (para el formulario corto y el checkbox de autorización de datos).
 - Card (destino, paquete).
@@ -201,6 +219,13 @@ y se ajusta a los tokens de marca; con React 19 no hace falta `forwardRef` para 
 - Sección Hero (para home y landings).
 
 **Documentación:** una página interna `/design-system` (no pública, protegida o simplemente no enlazada) que renderiza cada token y componente con sus variantes — sirve de referencia viva sin invertir en Storybook todavía.
+
+**Dirección visual y control de calidad.** Los tokens y componentes definen el *vocabulario*; no
+definen cómo se compone una página con él. Eso vive en [`../design/brief-v0.md`](../design/brief-v0.md):
+§2.bis fija la dirección de diseño (los tres diales, y los overrides frente al skill
+`design-taste-frontend`) y §11 es el Pre-Flight que se corre antes de aceptar cualquier página
+en el repo. Las decisiones de §2.bis que afectan a este documento son tres: sin librerías de
+animación, modo claro únicamente y una sola familia de iconos.
 
 ### 4.2 Fase 2 — Expansión
 

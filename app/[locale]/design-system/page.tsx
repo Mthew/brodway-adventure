@@ -6,9 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, PackageCard } from "@/components/ui/card";
 import { Checkbox, Input, Select, Textarea } from "@/components/ui/field";
+import { Hero } from "@/components/ui/hero";
 import { PriceDisclosure } from "@/components/ui/price-disclosure";
 import { Section } from "@/components/ui/section";
 import { listActiveOffers } from "@/lib/offers";
+import { cn } from "@/lib/utils";
 
 /**
  * Guía viva del sistema de diseño.
@@ -30,17 +32,47 @@ const COLORS = [
   {
     name: "brand-orange-text",
     hex: "#C24A00",
-    contrast: "para texto sobre fondo claro",
+    contrast: "texto sobre claro — 5.98 blanco / 5.56 alt / 5.32 tinte",
   },
   {
     name: "brand-turquoise-text",
-    hex: "#007D91",
-    contrast: "para texto sobre fondo claro",
+    hex: "#006B7D",
+    contrast: "texto sobre claro — 6.18 blanco / 5.75 alt / 5.55 tinte",
   },
 ] as const;
 
+/**
+ * Los estados se documentan con sus tres ratios porque el error que se coló la
+ * primera vez fue verificarlos sólo contra blanco: un badge los pinta sobre un
+ * tinte del propio color, que es MÁS claro que el blanco de al lado.
+ */
+const STATES = [
+  { name: "success", hex: "#0A7550", swatch: "bg-success" },
+  { name: "error", hex: "#C0362C", swatch: "bg-error" },
+  { name: "warning", hex: "#95590A", swatch: "bg-warning" },
+  { name: "info", hex: "#006B7D", swatch: "bg-info" },
+] as const;
+
+/**
+ * Las clases van COMPLETAS y literales a propósito.
+ *
+ * Tailwind v4 escanea el código fuente como texto plano: no evalúa JavaScript.
+ * Escribir `bg-neutral-${step}` no genera ninguna clase, y esta página — que es
+ * justamente la referencia de la paleta — mostraba 9 de sus 10 muestras
+ * transparentes. Sobrevivía sólo `bg-neutral-100`, porque esa cadena sí aparece
+ * literal en otros componentes.
+ */
 const NEUTRALS = [
-  "50", "100", "200", "300", "400", "500", "600", "700", "800", "900",
+  { step: "50", className: "bg-neutral-50" },
+  { step: "100", className: "bg-neutral-100" },
+  { step: "200", className: "bg-neutral-200" },
+  { step: "300", className: "bg-neutral-300" },
+  { step: "400", className: "bg-neutral-400" },
+  { step: "500", className: "bg-neutral-500" },
+  { step: "600", className: "bg-neutral-600" },
+  { step: "700", className: "bg-neutral-700" },
+  { step: "800", className: "bg-neutral-800" },
+  { step: "900", className: "bg-neutral-900" },
 ] as const;
 
 const TYPE_SCALE = [
@@ -141,13 +173,65 @@ export default async function DesignSystemPage({
           description="Matiz azulado en armonía con el navy — nunca grises puros."
         >
           <div className="flex flex-wrap gap-2">
-            {NEUTRALS.map((step) => (
-              <div key={step} className="flex flex-col items-center gap-1">
+            {NEUTRALS.map((neutral) => (
+              <div
+                key={neutral.step}
+                className="flex flex-col items-center gap-1"
+              >
                 <div
-                  className={`size-16 rounded-md border border-neutral-200 bg-neutral-${step}`}
+                  className={cn(
+                    "size-16 rounded-md border border-neutral-200",
+                    neutral.className,
+                  )}
                 />
-                <span className="text-caption text-neutral-600">{step}</span>
+                <span className="text-caption text-neutral-600">
+                  {neutral.step}
+                </span>
               </div>
+            ))}
+          </div>
+        </Block>
+
+        <Block
+          title="Estados"
+          description="Verificados sobre las tres superficies claras del sistema: blanco, surface-alt y su propio tinte al 10% — que es como los pinta un badge. Verificar sólo contra blanco no alcanza."
+        >
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {STATES.map((state) => (
+              <div key={state.name} className="flex flex-col gap-2">
+                <div className={cn("h-12 w-full rounded-md", state.swatch)} />
+                <p className="text-body-sm text-brand-navy font-semibold">
+                  {state.name}
+                </p>
+                <p className="text-caption font-mono text-neutral-600">
+                  {state.hex}
+                </p>
+              </div>
+            ))}
+          </div>
+        </Block>
+
+        <Block
+          title="Foco visible"
+          description="Anillo doble: blanco por dentro, navy por fuera. Un anillo de un solo color no puede cumplir el 3:1 de WCAG 2.2 sobre blanco, navy y turquesa a la vez. Recórrelo con Tab sobre cada fondo."
+        >
+          <div className="flex flex-col gap-3">
+            {(["base", "navy", "turquoise"] as const).map((background) => (
+              <Section
+                key={background}
+                background={background}
+                spacing="compact"
+                className="rounded-md"
+              >
+                <div className="flex flex-wrap items-center gap-4">
+                  <Button variant="primary" size="sm">
+                    Enfócame con Tab
+                  </Button>
+                  <Button variant="whatsapp" size="sm">
+                    Y a mí
+                  </Button>
+                </div>
+              </Section>
             ))}
           </div>
         </Block>
@@ -284,6 +368,40 @@ export default async function DesignSystemPage({
               de que pagues.
             </AccordionItem>
           </Accordion>
+        </Block>
+
+        <Block
+          title="Hero"
+          description="El overlay tiene dos niveles y los dos están medidos contra el peor caso (foto blanca pura debajo), para que cambiar la foto no obligue a re-verificar el contraste."
+        >
+          <div className="overflow-hidden rounded-lg">
+            <Hero
+              imagen="https://picsum.photos/seed/broway-eje-cafetero/1600/900"
+              imagenAlt=""
+              overlay="normal"
+              titulo="Elige tu próximo viaje con claridad y compañía"
+              subtitulo="Te ayudamos a comparar opciones reales y a decidir sin apuro."
+              microcopy="Respuesta en minutos, sin compromiso"
+              acciones={
+                <>
+                  <Button variant="primary">Cotiza por WhatsApp</Button>
+                  <Button variant="outline" className="bg-white">
+                    Descubre las opciones
+                  </Button>
+                </>
+              }
+              pruebaSocial={
+                <>
+                  <Badge variant="trust">RNT XXXXXX</Badge>
+                  <Badge variant="trust">ANATO</Badge>
+                </>
+              }
+            />
+          </div>
+          <p className="text-caption text-neutral-600">
+            La variante <code className="font-mono">fuerte</code> (navy/85) es
+            para fotos claras. Ante la duda, esa.
+          </p>
         </Block>
 
         <Block title="Fondos de sección">

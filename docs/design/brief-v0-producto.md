@@ -145,6 +145,42 @@ La marca respira. **Mucho aire, jerarquía clara, pocos elementos compitiendo.**
 declarado de BroWay es la saturación: nada de páginas llenas de sellos, banderines, ventanas
 emergentes y avisos parpadeantes. Si una sección se siente apretada, quítale cosas.
 
+Casi no hay movimiento. Nada aparece flotando, nada se desplaza solo, nada parpadea. La razón
+no es estética: la mitad de los visitantes abre el sitio con datos móviles y una página que se
+mueve es una página que carga lento. Lo único que se mueve es la reacción a un toque o a un
+clic.
+
+### Lo que hace que una página se vea genérica
+
+Esto es lo que separa un sitio que parece hecho a la medida de uno que parece plantilla. No son
+detalles: son las señales por las que un visitante decide, en dos segundos, si esta agencia es
+seria.
+
+- **La primera pantalla cabe en la pantalla.** Titular corto (dos líneas como mucho), una frase
+  de apoyo de veinte palabras como máximo, y el botón visible sin bajar. Nada más. Los sellos de
+  confianza van justo debajo, no encima del mensaje principal.
+- **Ninguna sección se parece a otra.** Si tres secciones seguidas son "foto a un lado, texto al
+  otro", la página se siente hecha en molde. Alterna: una a ancho completo, una en cuadrícula,
+  una vertical.
+- **Casi ninguna sección lleva su etiquetita en mayúsculas encima del título.** Ese renglón
+  pequeño tipo `NUESTROS DESTINOS` sobre el título de cada sección es la marca de fábrica de las
+  páginas hechas por plantilla. Como mucho una cada tres secciones; en general el título solo
+  basta y la etiqueta sobra.
+- **Un solo color de acción.** El naranja es el botón principal en toda la página, de arriba a
+  abajo. No aparece un botón turquesa a media página ni una etiqueta de otro color en el pie.
+- **Fotos de verdad, siempre.** Vendemos viajes: una página de texto sobre un degradado no
+  vende. La primera pantalla lleva una foto real. Si todavía no hay fotos propias, se usa una
+  provisional evidente, nunca un dibujo hecho a mano ni una figura de relleno.
+- **Nada de decoración que finge información**: numeritos de sección (`01 / DESTINOS`), puntos
+  de colores antes de cada renglón, la palabra "Desliza" con una flecha, franjas con la hora y
+  el clima de Medellín, etiquetas pegadas encima de las fotos, pies de foto inventados. Todo eso
+  se ve *diseñado* y no comunica nada.
+- **Las listas largas no son listas.** "Qué incluye" con diez renglones y una rayita bajo cada
+  uno es la solución perezosa. Se agrupan en dos o tres bloques con sentido, o se convierten en
+  tarjetas.
+- **Ningún dato inventado que suene preciso.** Ni "el 92% de nuestros viajeros", ni "+10.000
+  clientes", ni reseñas con nombre y apellido. Si el dato no existe, no se escribe.
+
 ### El logo
 
 Se usa en horizontal en el encabezado, con espacio libre alrededor (más o menos la mitad de
@@ -560,6 +596,22 @@ condiciones.
       como pendientes.
 - [ ] Ninguna cifra inventada de viajeros ni reseña con nombre real.
 - [ ] Las páginas respiran: no hay ninguna saturada de sellos, avisos y banderines.
+
+**Que no se vea plantilla** (§5, "Lo que hace que una página se vea genérica")
+
+- [ ] La primera pantalla cabe completa: titular de máximo dos líneas, frase de apoyo de
+      máximo veinte palabras, botón visible sin bajar, y los sellos de confianza debajo.
+- [ ] No hay tres secciones seguidas con la misma estructura de foto y texto.
+- [ ] Se contaron las etiquetitas en mayúsculas sobre los títulos: hay como mucho una cada
+      tres secciones.
+- [ ] El botón principal es naranja en toda la página, sin excepciones a media página.
+- [ ] Toda sección con imagen tiene una foto real o una provisional evidente. Ningún dibujo
+      hecho a mano, ninguna captura de pantalla fingida.
+- [ ] Sin numeritos de sección, puntos de colores decorativos, "Desliza para ver", franjas de
+      hora y clima, etiquetas encima de las fotos ni pies de foto inventados.
+- [ ] Ninguna lista de más de cinco renglones con una rayita bajo cada uno.
+- [ ] Nada se mueve solo: sin carruseles automáticos, sin textos que se desplazan, sin
+      elementos que aparecen flotando al bajar.
 
 **Precio y ofertas**
 

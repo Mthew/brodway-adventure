@@ -33,8 +33,10 @@ duplicados y pierde los tokens. La secuencia correcta:
 2. **Prompt 1** (layout: navbar, footer, WhatsApp flotante) → sobre los tokens ya aprobados.
 3. **Prompts 2-6** (páginas) → uno por chat/iteración, reusando lo anterior.
 
-En cada prompt nuevo, **pega antes el bloque "Reglas globales" (§2)**. v0 no recuerda contexto
-entre chats distintos.
+En cada prompt nuevo, **pega antes el bloque "Reglas globales" (§2) y el bloque "Dirección de
+diseño" (§2.bis)**. v0 no recuerda contexto entre chats distintos: §2 evita que escriba lo que
+la marca prohíbe, §2.bis evita que entregue una plantilla genérica. Los dos son igual de
+necesarios y §11 verifica ambos.
 
 ---
 
@@ -49,7 +51,9 @@ WhatsApp o deje un formulario corto. No hay carrito, no hay checkout, no hay inv
 en tiempo real.
 
 STACK OBLIGATORIO
-- Next.js 16 (App Router) + React 19 + TypeScript + Tailwind CSS v4 + shadcn/ui.
+- Next.js 16 (App Router) + React 19 + TypeScript + Tailwind CSS v4.
+- Componentes propios con `cva` + `cn()`. NO uses el CLI de shadcn/ui: arrastra
+  `lucide-react` y `tw-animate-css`, y sobrescribe los tokens ya medidos.
 - Server Components por defecto; "use client" SOLO donde haya interacción real.
 
 REGLAS DE VERSIÓN — NO uses patrones viejos:
@@ -90,7 +94,16 @@ REGLAS DE CONTRASTE — verificadas, no negociables (requisito AA del spec):
   ✅ Navy #003062 con texto blanco = 13.13:1 → botón secundario / secciones oscuras.
   ✅ Turquesa #00AAC3 con texto navy = 4.71:1.
   ⚠️ Turquesa y naranja NO sirven como color de texto pequeño sobre blanco (2.8:1).
-     Para texto naranja sobre blanco usa #C24A00; para turquesa usa #007D91.
+     Para texto naranja sobre blanco usa #C24A00; para turquesa usa #006B7D.
+
+VERIFICA CONTRA LA SUPERFICIE REAL, NO SÓLO CONTRA BLANCO.
+Este brief decía antes #007D91 para el turquesa de texto, y es correcto sobre
+blanco (4.84:1). Pero el badge "Nacional" lo pinta sobre un tinte del propio
+turquesa al 10%, que es MÁS CLARO que el blanco de al lado: ahí rendía 4.35:1 y
+fallaba. Lo mismo pasaba con #B26A00 sobre su tinte (3.74:1).
+Antes de dar por buena una combinación, mídela sobre las tres superficies claras
+del sistema: blanco, #F4F7FA y el tinte al 10% del propio color.
+Valores ya corregidos y medidos en `app/globals.css`.
 
 Neutros: define una escala de grises fría (matiz azulado) coherente con el navy, no
 grises puros. Fondo base blanco #FFFFFF, superficie alterna muy clara (#F4F7FA aprox).
@@ -152,6 +165,136 @@ están confirmados. Usa literalmente el placeholder `RNT XXXXXX` y agrega
 // TODO: VERIFICAR dato legal real antes de publicar
 No copies números de RNT de ninguna otra agencia. No inventes cifras de "+10.000 viajeros
 felices" ni reseñas ficticias con nombres reales: usa placeholders evidentes.
+```
+
+---
+
+## 2.bis Dirección de diseño — declarar una vez, pegar en cada prompt
+
+El bloque §2 dice qué **no** escribir. Este dice **cómo debe verse**. Sale de aplicar
+[`.claude/skills/design-taste-frontend/SKILL.md`](../../.claude/skills/design-taste-frontend/SKILL.md)
+(skill anti-slop de frontend) a este proyecto: en lugar de re-derivar la dirección visual en cada
+prompt, se declara una sola vez aquí y el resto se deduce. El checklist mecánico que verifica
+que el output la cumplió está en §11.
+
+### Design Read
+
+> Sitio de **captación de leads + credibilidad institucional** para una agencia de viajes
+> colombiana, audiencia 83% móvil, con lenguaje **calmado y claro** (arquetipo Cuidador),
+> sobre tokens propios de Tailwind v4 y componentes propios, con **motion mínimo**.
+
+### Los tres diales
+
+`DESIGN_VARIANCE: 6` · `MOTION_INTENSITY: 3` · `VISUAL_DENSITY: 4`
+
+Estos números no son gusto, son consecuencia de restricciones ya cerradas:
+
+- **VARIANCE 6, no 8.** El skill pondría 3-4 por "trust-first / regulado" (RNT, Ley 1581,
+  ESCNNA) y 7-9 por "landing page"; el punto medio es lo correcto aquí. El enemigo de marca
+  declarado es *la saturación visual* y la regla es *el diseño debe respirar*. 6 significa
+  asimetría controlada (heroes partidos, columnas de ancho desigual, alineación a la
+  izquierda) **sin** masonry, sin zonas vacías de 20vw, sin composiciones "de agencia".
+- **MOTION 3.** Forzado por el objetivo de LCP < 1s en móvil y por la prohibición de
+  librerías de animación (§2). El propio skill contempla esta salida: si no se puede
+  entregar motion funcional, se baja el dial a 3 y se entrega una página estática limpia,
+  en vez de dejar animaciones a medias. Efecto colateral deseable: el dial 3 desactiva de
+  raíz el scroll-hijack, los marquees, las secciones pinned y la física magnética.
+- **DENSITY 4.** La ficha de paquete tiene información que el usuario necesita para decidir
+  (qué incluye / qué no, itinerario, vigencia, disclosure de precio). No es galería de arte.
+  Pero 4 y no 7: espaciado de sección `py-16`/`py-24`, no interfaz de cabina.
+
+### Overrides del skill (donde este proyecto gana)
+
+El skill trae defaults fuertes que contradicen decisiones ya tomadas. Se resuelven así, y no
+se vuelven a discutir prompt por prompt:
+
+| Tema | Default del skill | Decisión de este proyecto | Por qué |
+|---|---|---|---|
+| Animación | Motion (`motion/react`) por defecto, GSAP para scroll | **Ninguna librería.** CSS puro + `scroll-snap` | LCP < 1s móvil; §2 lo prohíbe explícitamente |
+| Iconos | Phosphor / HugeIcons / Radix / Tabler; Lucide desaconsejado | **`@phosphor-icons/react`**, `weight="regular"` fijo en todo el sitio | Ver §12.4: no hay familia oficial de marca todavía. Es la decisión más cara de revertir, por eso se toma antes de instalar shadcn |
+| Modo oscuro | Obligatorio en sitios de consumo | **Solo modo claro**, declarado | Los ratios de contraste de `app/globals.css` están medidos sobre blanco, `#F4F7FA` y el tinte 10% de cada color. Un modo oscuro duplica esa matriz y hoy no aporta al objetivo de conversión |
+| Tipografía | Inter desaconsejado como default | Outfit / Plus Jakarta (títulos) + Inter (cuerpo), provisional | Convergen: Outfit ya está en el pool que el skill aprueba. Sigue pendiente §12.1 |
+| Em-dash | Cero `—` en todo texto visible | Se aplica a **`messages/*.json`**, no a estos `.md` | La regla apunta al copy renderizado. Los documentos internos mantienen su estilo |
+| Serif | Muy desaconsejado salvo justificación editorial | No aplica: la marca es sans geométrica | — |
+
+### Bloque para pegar (va junto a las reglas globales de §2)
+
+```text
+DIRECCIÓN DE DISEÑO
+
+Diales: DESIGN_VARIANCE 6 / MOTION_INTENSITY 3 / VISUAL_DENSITY 4.
+Asimetría controlada, movimiento mínimo, densidad media. El diseño debe respirar.
+
+LAYOUT. Reglas duras: incumplir cualquiera es entregar trabajo roto.
+- El HERO cabe en el viewport inicial: titular máx 2 líneas, subtítulo máx 20 palabras
+  y máx 4 líneas, CTA visible sin hacer scroll. Padding superior máx pt-24 en desktop.
+- El hero tiene máx 4 elementos de texto: (eyebrow O nada) + titular + subtítulo + CTAs.
+  Los sellos de confianza (RNT, ANATO, IATA) van en una sección DEBAJO del hero, nunca
+  dentro de él. Tampoco metas una micro-línea de texto bajo los CTAs.
+- Usa min-h-[100dvh], NUNCA h-screen (la barra de Safari en iOS rompe el layout).
+- La navegación cabe en UNA línea en desktop y mide máx 80px de alto.
+- Usa CSS Grid para las columnas, no cálculos de flex con porcentajes.
+- Máximo 2 secciones seguidas con el patrón imagen-a-un-lado / texto-al-otro. La tercera
+  seguida está prohibida: rompe con una sección a ancho completo, una vertical o un grid.
+- Ninguna familia de layout se repite en la página. Una home de 7-8 secciones usa al menos
+  4 estructuras distintas. Prohibida la fila de 3 tarjetas idénticas como recurso genérico.
+- EYEBROWS (la etiqueta pequeña en mayúsculas sobre un titular): máximo 1 cada 3 secciones,
+  contando el hero. Si una sección lleva eyebrow, las 2 siguientes no. En la mayoría de los
+  casos el titular solo basta: bórralo.
+- Prohibido el encabezado de sección "titular grande a la izquierda + párrafo pequeño
+  flotando a la derecha". Si hacen falta ambos, apílalos (titular arriba, cuerpo debajo,
+  máx 65ch de ancho).
+- Cada layout multicolumna declara explícitamente su colapso a una columna bajo 768px.
+
+CONSISTENCIA. Bloquear y no variar:
+- UN solo tema en toda la página (claro). Ninguna sección invierte a modo oscuro. Las
+  secciones con fondo navy son un fondo de sección dentro del mismo tema, no otro tema.
+- UN solo color de acento: el naranja es el CTA primario en TODAS las secciones. No
+  aparece un CTA turquesa en la sección 5 ni un badge de otro color en el footer.
+- UNA sola escala de radios (sm 6 / md 12 / lg 20 + full para pills). Sin radios ad-hoc.
+
+IMÁGENES. Este es un producto visual, no un documento:
+- Toda sección que pida imagen lleva foto real o placeholder
+  https://picsum.photos/seed/{seed-descriptivo}/{w}/{h}, con un seed que describa la
+  sección (ej. eje-cafetero-finca-cafe). El hero SIEMPRE lleva una imagen real: texto sobre
+  un degradado no es un hero, es un placeholder.
+- Prohibido dibujar SVG decorativos a mano (ilustraciones, marcas, mockups).
+- Prohibido simular capturas de pantalla o interfaces con <div> apilados.
+- Iconos SOLO de @phosphor-icons/react con weight="regular". Nunca escribas paths de SVG
+  a mano ni mezcles familias de iconos.
+
+MOVIMIENTO (dial 3):
+- Sin framer-motion, sin motion, sin GSAP, sin librerías de carrusel.
+- Sin window.addEventListener('scroll'). Si necesitas detectar visibilidad, IntersectionObserver.
+- Sin marquees, sin scroll-hijack, sin secciones pinned, sin parallax, sin loops infinitos.
+- Solo transiciones CSS en :hover / :focus-visible / :active, y feedback táctil en :active
+  (translate-y-[1px] o scale-[0.98]) porque el tráfico es móvil.
+- Todo lo que se mueva respeta prefers-reduced-motion.
+
+DENSIDAD Y COPY:
+- Subpárrafo por sección: máx 25 palabras. Titular de sección: máx 8 palabras.
+- Una lista de más de 5 ítems (ej. "qué incluye") NO se resuelve con <ul> y una línea
+  divisoria bajo cada fila. Agrupa en 2-3 bloques temáticos, o pasa a grid de tarjetas.
+- Testimonios: máx 3 líneas de cita, atribución con nombre + rol (nunca solo nombre).
+- Estados completos, no solo el estado exitoso: carga (skeleton con la forma final del
+  contenido, no un spinner), vacío y error inline en formularios.
+
+SEÑALES DE "HECHO POR IA". Prohibidas todas:
+- Eyebrows numerados: "01 / DESTINOS", "002 · Paquetes", "06 · cómo funciona".
+- Puntitos de color decorativos antes de items de nav, de lista o de badges.
+- Indicadores de scroll: "Scroll", "↓ scroll", "Desliza para explorar", el mouse animado.
+- Etiquetas o pills superpuestas sobre las fotos, y pies de foto decorativos tipo
+  "Frame XII · 35mm" o "Registro no. 12". Si hace falta pie, que sea funcional y vaya
+  debajo de la imagen.
+- Franjas decorativas bajo el hero tipo "VIAJA. DESCUBRE. VUELVE.".
+- Etiquetas de versión o build ("v1.4.2", "BETA") en un sitio de marketing.
+- Contadores de stock falsos ("Reserva 412 de 800") y cualquier temporizador.
+- Barras de progreso con fondo relleno como comparador visual.
+- Franjas atmosféricas de ciudad/hora/clima ("Medellín 14:23 · 24°C"). La dirección real
+  de la agencia en el footer sí; la decoración ambiental no.
+- Nombres y datos genéricos: "Juan Pérez", "+57 300 123 4567", "99.9%", "+10.000 viajeros".
+- Verbos de relleno: "potencia", "eleva", "transforma", "sin fricción", "revoluciona".
+- El guion largo (—) en cualquier texto visible. Usa punto, coma, dos puntos o paréntesis.
 ```
 
 ---
@@ -651,16 +794,27 @@ borrar:
 | Storybook | Sobre-ingeniería explícita en el spec §4.4 | **Fase 2-3** |
 | Textos legales definitivos | Riesgo legal real | Abogado |
 | Countdown / escasez dinámica | Prohibido por marca y por el research | Nunca (o dato real editable) |
+| Iconos de `lucide-react` | shadcn/ui los trae por defecto; la familia del proyecto es Phosphor | Cambiar los imports al integrar, §2.bis |
 
 ---
 
-## 11. Checklist de revisión antes de aceptar el output
+## 11. Pre-Flight — checklist de aceptación antes de llevar el output al repo
 
-Cuando v0 entregue, verifica esto antes de llevarlo al repo.
+Cuatro bloques. **A** y **C** son los que se rompen solos; **B** es lo que separa un sitio
+profesional de una plantilla; **D** es lo que tiene consecuencia legal o comercial. Si una
+casilla no se puede marcar honestamente, el output no está listo.
 
-**Versiones — lo primero que hay que revisar.** Los generadores arrastran patrones de
-Tailwind v3 y Next.js 14 porque son los que dominan sus datos de entrenamiento. Da por
-hecho que tendrás que corregir esto aunque el prompt lo prohíba:
+Los bloques A, C y D son de este proyecto. El bloque B viene del Pre-Flight del skill
+[`design-taste-frontend`](../../.claude/skills/design-taste-frontend/SKILL.md) §14, podado a
+lo que aplica con los diales de §2.bis (6 / 3 / 4): se omitieron las casillas de modo oscuro,
+serif, paletas premium-consumer, GSAP y marquees porque las decisiones de §2.bis las dejan sin
+objeto. La mayoría de este bloque es **contable**, no opinable: se verifica con un `grep` o
+contando elementos en la página.
+
+### A. Versiones — lo primero que hay que revisar
+
+Los generadores arrastran patrones de Tailwind v3 y Next.js 14 porque son los que dominan sus
+datos de entrenamiento. Da por hecho que tendrás que corregir esto aunque el prompt lo prohíba:
 
 - [ ] No existe `tailwind.config.ts` ni `tailwind.config.js` en el output.
 - [ ] El CSS usa `@import "tailwindcss"`, no `@tailwind base/components/utilities`.
@@ -670,12 +824,107 @@ hecho que tendrás que corregir esto aunque el prompt lo prohíba:
 - [ ] Si generó un archivo de middleware, se llama `proxy.ts`.
 - [ ] `package.json` declara `packageManager: "pnpm@10.34.3"` y `engines.node`.
 
-**Diseño y marca:**
+### B. Anti-slop — layout, consistencia, imágenes y movimiento
+
+**Hero y navegación**
+
+- [ ] El hero entra completo en el viewport inicial: titular ≤ 2 líneas, subtítulo ≤ 20
+      palabras y ≤ 4 líneas, CTA visible sin scroll. Verificado a 375px **y** a 1440px.
+- [ ] Padding superior del hero ≤ `pt-24` en desktop. El contenido no flota a media pantalla.
+- [ ] El hero tiene como máximo 4 elementos de texto. Los sellos RNT/ANATO/IATA y cualquier
+      prueba social están en una sección **debajo** del hero, no dentro.
+- [ ] `min-h-[100dvh]`, nunca `h-screen`.
+- [ ] La navegación cabe en una sola línea en desktop y mide ≤ 80px de alto.
+- [ ] Ningún `w-[calc(33%-1rem)]`: las columnas son CSS Grid.
+
+**Repetición de estructura** (lo que hace que un sitio "se sienta" plantilla)
+
+- [ ] Ninguna familia de layout se repite. Una home de 7-8 secciones usa ≥ 4 estructuras
+      distintas.
+- [ ] No hay 3 secciones seguidas con el patrón imagen-a-un-lado / texto-al-otro.
+- [ ] No hay una fila de 3 tarjetas idénticas como recurso genérico.
+- [ ] **Contar eyebrows** (etiquetas pequeñas en mayúsculas sobre un titular; firma CSS
+      típica `uppercase tracking-[...]`). El total en la página es ≤ techo(nº de secciones / 3),
+      contando el hero como uno.
+- [ ] Ninguna sección usa el encabezado "titular grande a la izquierda + párrafo pequeño
+      flotando a la derecha".
+- [ ] Cada layout multicolumna declara su colapso a una columna bajo 768px en el mismo componente.
+
+**Consistencia bloqueada**
+
+- [ ] Un solo tema en toda la página. Ninguna sección invierte a modo oscuro.
+- [ ] Un solo color de acento: el naranja es el CTA primario en todas las secciones.
+- [ ] Una sola escala de radios (6 / 12 / 20 + full). Sin valores ad-hoc por componente.
+- [ ] Ningún CTA repite intención con otro texto: "Cotiza por WhatsApp" y "Habla con un
+      asesor" no conviven como el mismo botón en nav, hero y footer. Un texto por intención.
+- [ ] Ningún texto de botón se parte en dos líneas en desktop.
+
+**Imágenes e iconos**
+
+- [ ] El hero tiene una imagen real. Texto sobre degradado no cuenta.
+- [ ] Cada imagen usa foto real o `picsum.photos/seed/{seed-descriptivo}/...` con un seed que
+      describe la sección. Ningún seed genérico tipo `1`, `abc`, `image`.
+- [ ] Ningún SVG decorativo dibujado a mano (ilustraciones, marcas, mockups).
+- [ ] Ninguna captura de pantalla o interfaz simulada con `<div>` apilados.
+- [ ] Iconos únicamente de `@phosphor-icons/react` con `weight="regular"`. Ninguna familia
+      mezclada, ningún `path` de SVG escrito a mano.
+
+**Movimiento (dial 3)**
+
+- [ ] `package.json` no incluye `framer-motion`, `motion`, `gsap` ni librerías de carrusel.
+- [ ] No aparece `window.addEventListener('scroll')` en ningún archivo.
+- [ ] No hay marquees, scroll-hijack, secciones pinned, parallax ni animaciones en bucle.
+- [ ] Todo interactivo tiene feedback táctil en `:active` (`-translate-y-[1px]` o `scale-[0.98]`).
+- [ ] Cualquier transición respeta `prefers-reduced-motion`.
+- [ ] Los `useEffect` con listeners o timers tienen función de limpieza.
+
+**Densidad y estados**
+
+- [ ] Ningún subpárrafo de sección supera 25 palabras; ningún titular de sección supera 8.
+- [ ] Ninguna lista de más de 5 ítems se renderiza como `<ul>` con una línea divisoria bajo
+      cada fila. "Qué incluye / qué no incluye" está agrupado o en grid de tarjetas.
+- [ ] Los testimonios ocupan ≤ 3 líneas y su atribución lleva nombre **y** rol.
+- [ ] Existen los estados de carga (skeleton con la forma del contenido final, no spinner),
+      vacío y error inline en formularios.
+
+**Señales de "hecho por IA"** (grep-ables)
+
+- [ ] Cero `—` y cero `–` en `messages/*.json` y en cualquier string visible.
+- [ ] Sin eyebrows numerados (`01 / DESTINOS`, `002 · Paquetes`).
+- [ ] Sin puntos de color decorativos en nav, listas o badges.
+- [ ] Sin indicadores de scroll ("Scroll", "↓", "Desliza para explorar", mouse animado).
+- [ ] Sin pills superpuestos sobre las fotos ni pies de foto decorativos ("Frame XII · 35mm").
+- [ ] Sin franja decorativa bajo el hero ("VIAJA. DESCUBRE. VUELVE.").
+- [ ] Sin etiquetas de versión o build en un sitio de marketing.
+- [ ] Sin barras de progreso con fondo relleno como comparador.
+- [ ] Sin franjas de ciudad/hora/clima. La dirección real en el footer sí; la decoración
+      ambiental no.
+- [ ] **Relectura de todo string visible**: ninguna frase gramaticalmente rota, ninguna
+      metáfora forzada, ningún dato inventado con falsa precisión.
+
+### C. Contraste y accesibilidad — se rompe en silencio, verificar en el navegador
 
 - [ ] Ningún botón naranja con texto blanco (falla contraste AA).
 - [ ] Ningún botón de WhatsApp con texto blanco sobre verde.
-- [ ] `focus-visible` visible en todos los interactivos (navegación por teclado).
+- [ ] El color de texto de cada botón se verifica **en el navegador**, no leyendo el
+      código. `cn()` puede borrar una clase sin avisar si tailwind-merge no conoce
+      los tokens `--text-*` (ver `lib/utils.ts`): el botón navy llegó a producción
+      con texto neutral-900 sobre navy, 1.19:1, y el código decía `text-white`.
+- [ ] Cada token `--text-*` nuevo declarado en `@theme` está también en `FONT_SIZE_TOKENS`
+      de `lib/utils.ts`. Sin eso, el fallo anterior se repite.
+- [ ] Cada combinación de color se midió sobre **las tres superficies claras** del sistema
+      (blanco, `#F4F7FA` y el tinte 10% del propio color), no solo sobre blanco.
+- [ ] `focus-visible` visible en todos los interactivos (navegación por teclado),
+      **comprobado también sobre las secciones navy y turquesa**, no sólo sobre
+      blanco. Un anillo de un solo color no cumple el 3:1 en los tres fondos.
+- [ ] Los campos de formulario, sus placeholders, textos de ayuda y mensajes de error pasan
+      AA contra el fondo de **su** sección, no contra blanco.
+- [ ] Área táctil mínima de 44x44px en móvil para todo interactivo.
 - [ ] Ningún `<img>` — todo con `next/image` y `sizes` definido.
+- [ ] La vista de 375px se ve bien sin scroll horizontal.
+
+### D. Contrato de negocio, legal y marca
+
 - [ ] El checkbox de consentimiento NO viene pre-marcado en ningún formulario, y su texto
       nombra explícitamente la publicidad personalizada.
 - [ ] Todo precio publicado va acompañado del bloque `PriceDisclosure` (ciudad de salida,
@@ -693,8 +942,6 @@ hecho que tendrás que corregir esto aunque el prompt lo prohíba:
 - [ ] "Next Stop" aparece máximo una vez por página.
 - [ ] Ninguna palabra de la lista prohibida (§2) en el copy.
 - [ ] Ningún countdown ni temporizador.
-- [ ] La vista de 375px se ve bien sin scroll horizontal.
-- [ ] Sin framer-motion ni librerías de carrusel en `package.json`.
 
 ---
 
@@ -707,8 +954,15 @@ system:
 1. **Tipografías oficiales** — se está usando una sustituta de Google Fonts.
 2. **Códigos de color exactos** — los hex de este brief se extrajeron del PNG del logo, no
    de una guía oficial. Falta confirmar si hay valores Pantone/CMYK definidos.
-3. **Lineamientos de fotografía** — estilo, tratamiento, qué se puede y qué no.
-4. **Iconografía** — familia de íconos oficial.
+3. **Lineamientos de fotografía** — estilo, tratamiento, qué se puede y qué no. Mientras
+   tanto rige la regla de §2.bis: fotografía real o placeholder de `picsum.photos` con seed
+   descriptivo, nunca ilustración SVG dibujada a mano.
+4. **Iconografía** — familia de íconos oficial. **Decisión técnica provisional tomada:**
+   `@phosphor-icons/react` con `weight="regular"` en todo el sitio (§2.bis). Se decidió antes
+   de instalar shadcn/ui a propósito, porque shadcn arrastra `lucide-react` y cambiar de
+   familia con componentes ya escritos obliga a tocar cada import. Si la marca define otra
+   familia, se cambia el paquete y el prop de peso en un solo lugar; si define íconos
+   propios, se reemplazan solo los de marca y Phosphor queda para los de interfaz.
 5. **Archivos vectoriales del logo** (SVG) en sus 4 versiones: horizontal, vertical,
    isotipo y favicon. Hoy solo hay un PNG; el favicon debe ser el símbolo solo, nunca el
    logo completo reducido.
