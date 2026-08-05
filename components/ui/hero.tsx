@@ -44,7 +44,6 @@ export function Hero({
   overlay = "normal",
   acciones,
   microcopy,
-  pruebaSocial,
   className,
   ...props
 }: Omit<React.ComponentProps<"section">, "title"> & {
@@ -62,10 +61,18 @@ export function Hero({
   overlay?: keyof typeof OVERLAY;
   /** CTA primario + a lo sumo un secundario. */
   acciones?: React.ReactNode;
-  /** "Respuesta en minutos, sin compromiso" — debajo de los botones. */
+  /** "Respuesta en minutos, sin compromiso", debajo de los botones. */
   microcopy?: React.ReactNode;
-  /** Franja de sellos (RNT/ANATO). Va DEBAJO del bloque, nunca dentro del titular. */
-  pruebaSocial?: React.ReactNode;
+
+  /**
+   * NO existe una prop para los sellos de confianza, y es deliberado.
+   *
+   * El Pre-Flight (brief-v0.md §11.B) exige que RNT/ANATO/IATA y cualquier prueba
+   * social vivan en una sección DEBAJO del hero, nunca dentro, y que el hero tenga
+   * como máximo 4 elementos de texto. Una prop `pruebaSocial` invitaba justo a lo
+   * contrario: existía y la usaba la guía de diseño. Se quitó para que la casilla
+   * no dependa de que alguien recuerde la regla.
+   */
 }) {
   return (
     <section className={cn("relative isolate", className)} {...props}>
@@ -104,11 +111,6 @@ export function Hero({
           ) : null}
         </div>
 
-        {pruebaSocial ? (
-          <div className="mt-10 flex flex-wrap items-center gap-3">
-            {pruebaSocial}
-          </div>
-        ) : null}
       </div>
     </section>
   );

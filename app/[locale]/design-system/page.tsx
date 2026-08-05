@@ -413,17 +413,18 @@ export default async function DesignSystemPage({
                   </Button>
                 </>
               }
-              pruebaSocial={
-                <>
-                  <Badge variant="trust">RNT XXXXXX</Badge>
-                  <Badge variant="trust">ANATO</Badge>
-                </>
-              }
             />
           </div>
           <p className="text-caption text-neutral-600">
             La variante <code className="font-mono">fuerte</code> (navy/85) es
             para fotos claras. Ante la duda, esa.
+          </p>
+          <p className="text-caption text-neutral-600">
+            El Hero <strong>no acepta sellos de confianza</strong>. El Pre-Flight
+            §11.B los quiere en una sección debajo, nunca dentro, y limita el hero
+            a cuatro elementos de texto. La prop existía e invitaba a incumplirlo,
+            así que se quitó: la casilla ya no depende de que alguien recuerde la
+            regla.
           </p>
         </Block>
 

@@ -65,8 +65,14 @@ export function Navbar() {
 
   const whatsappHref = buildWhatsAppUrl({ message: tWa("mensajeGenerico") });
 
+  /*
+   * El separador inferior va como sombra interior y NO como `border-b`.
+   * El contenido de la barra mide exactamente 80px, que es el techo del
+   * Pre-Flight §11.B; un borde de 1px lo dejaba en 81 e incumplía la casilla por
+   * un píxel. Una sombra interior se dibuja dentro de la caja y no suma altura.
+   */
   return (
-    <header className="bg-surface-base sticky top-0 z-50 border-b border-neutral-200 shadow-sm">
+    <header className="bg-surface-base sticky top-0 z-50 shadow-[inset_0_-1px_0_var(--color-neutral-200),0_1px_2px_rgba(0,48,98,0.06)]">
       {/* La zona de seguridad del logo (py-3 + gap) respeta el mínimo del manual de marca. */}
       <nav className="mx-auto flex max-w-6xl items-center gap-6 px-6 py-3 md:px-8">
         <Link href="/" aria-label={t("irAlInicio")} className="shrink-0">
