@@ -166,9 +166,11 @@ export function LeadForm({
           <>
             {tc("texto")}{" "}
             <span className="block pt-2 text-neutral-600">{tc("derechos")}</span>
+            {/* `min-h-11` = 44px: el mínimo táctil aplica también a los enlaces de
+                texto, y este va dentro de un label donde es fácil fallar el toque. */}
             <Link
               href="/legal"
-              className="text-brand-turquoise-text mt-2 inline-block font-semibold underline underline-offset-4"
+              className="text-brand-turquoise-text mt-1 inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
             >
               {tc("enlace")}
             </Link>

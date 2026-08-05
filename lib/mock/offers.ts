@@ -21,7 +21,11 @@ export const MOCK_OFFERS: Offer[] = [
     moneda: "COP",
     titulo: "Eje Cafetero 4 días: café y naturaleza con guía local",
     beneficioCorto: "Fincas cafeteras, Valle de Cocora y Salento, sin improvisar",
-    imagenes: ["/placeholder/eje-cafetero.jpg"],
+    imagenes: [
+      "https://picsum.photos/seed/eje-cafetero-finca-cafe/1200/800",
+      "https://picsum.photos/seed/eje-cafetero-valle-cocora/600/600",
+      "https://picsum.photos/seed/eje-cafetero-salento-calle/600/600",
+    ],
     highlights: [
       "Recorrido guiado por una finca cafetera tradicional",
       "Día completo en el Valle de Cocora",
@@ -99,7 +103,11 @@ export const MOCK_OFFERS: Offer[] = [
     moneda: "COP",
     titulo: "Cartagena 5 días: ciudad amurallada y playa",
     beneficioCorto: "Centro histórico y un día en las islas, con traslados resueltos",
-    imagenes: ["/placeholder/cartagena.jpg"],
+    imagenes: [
+      "https://picsum.photos/seed/cartagena-ciudad-amurallada/1200/800",
+      "https://picsum.photos/seed/cartagena-islas-rosario/600/600",
+      "https://picsum.photos/seed/cartagena-getsemani-murales/600/600",
+    ],
     highlights: [
       "Hotel a poca distancia de la ciudad amurallada",
       "Día de playa en las islas del Rosario",
@@ -181,7 +189,10 @@ export const MOCK_OFFERS: Offer[] = [
     moneda: "COP",
     titulo: "Cancún 6 días todo incluido",
     beneficioCorto: "Hotel todo incluido frente al mar, con vuelos y traslados",
-    imagenes: ["/placeholder/cancun.jpg"],
+    imagenes: [
+      "https://picsum.photos/seed/cancun-playa-caribe/1200/800",
+      "https://picsum.photos/seed/cancun-zona-hotelera/600/600",
+    ],
     highlights: [
       "Hotel todo incluido en la zona hotelera",
       "Vuelos directos desde Bogotá",

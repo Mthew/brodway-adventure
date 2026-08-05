@@ -16,6 +16,22 @@ export async function listActiveOffers(): Promise<Offer[]> {
   return MOCK_OFFERS.filter((offer) => isPublishable(offer));
 }
 
+/**
+ * Slugs que deben tener página, para `generateStaticParams`.
+ *
+ * Incluye las VENCIDAS a propósito: una tarifa vencida sigue teniendo página, con
+ * su estado explícito y su CTA de recotización (spec-tecnica.md §8.4). Quien llega
+ * a una oferta vencida sigue siendo un lead con intención alta; devolverle un 404
+ * es perderlo.
+ *
+ * Excluye los borradores, que nunca deben ser visibles.
+ */
+export async function listOfferSlugs(): Promise<string[]> {
+  return MOCK_OFFERS.filter((offer) => offer.estado !== "borrador").map(
+    (offer) => offer.slug,
+  );
+}
+
 export type OfferLookup =
   | { status: "found"; offer: Offer }
   | { status: "expired"; offer: Offer }
