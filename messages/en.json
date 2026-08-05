@@ -285,5 +285,16 @@
     "noEncontrado": "We couldn't find this page",
     "noEncontradoTexto": "The link may have changed. Take a look at our destinations, or message us and we'll point you in the right direction.",
     "volverInicio": "Back to homepage"
+  },
+  "campana": {
+    "mensajeWhatsapp": "Hi, I'm coming from the {titular} ad and I'd like a quote",
+    "incluye": "What's included",
+    "ctaIntermedio": "Does this trip work for you? Message us and we'll fit it to your dates",
+    "itinerario": "What it's like",
+    "formulario": "Would you rather we write to you?",
+    "formularioTexto": "Leave your details and an advisor replies with the full price and conditions.",
+    "faq": "Frequently asked questions",
+    "ctaFinal": "Tell us and we'll build the trip",
+    "tarifaVencida": "The rate in this ad is no longer valid. Message us and we'll put together an updated one, for the same dates or whichever you prefer."
   }
 }
