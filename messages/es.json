@@ -69,7 +69,32 @@
   "oferta": {
     "vencidaTitulo": "Esta tarifa ya no está vigente",
     "vencidaTexto": "Estuvo vigente hasta el {fecha}. Te preparamos una actualizada con las mismas fechas o las que prefieras.",
-    "vencidaCta": "Pídenos una tarifa actualizada"
+    "vencidaCta": "Pídenos una tarifa actualizada",
+    "vencidaMensajeWhatsapp": "Hola, vi el plan de {titulo} en la página y la tarifa ya venció. ¿Me pueden preparar una actualizada?"
+  },
+  "paquetes": {
+    "tituloListado": "Planes armados y listos para salir",
+    "introListado": "Cada plan trae su precio explicado, lo que incluye y lo que no. Si quieres otra fecha o salir desde otra ciudad, lo ajustamos.",
+    "vacio": "Por ahora no hay planes publicados. Escríbenos y armamos uno contigo.",
+    "migaInicio": "Inicio",
+    "migaPaquetes": "Paquetes",
+    "duracion": "{noches, plural, one {# noche} other {# noches}}",
+    "verPlan": "Ver el plan completo",
+    "loMejor": "Lo mejor de este viaje",
+    "itinerario": "Cómo se vive día a día",
+    "itinerarioNota": "Un resumen del recorrido. El detalle completo te lo pasa el asesor con la cotización.",
+    "dia": "Día {dia}",
+    "incluye": "Qué incluye",
+    "noIncluye": "Qué no incluye",
+    "formasPago": "Cómo se paga",
+    "formasPagoTexto": "Sepáralo con el 30% y paga el saldo en cuotas. El pago se coordina con un asesor por WhatsApp, que te confirma el valor final antes de cobrar nada.",
+    "cancelacion": "Si necesitas cancelar",
+    "faq": "Preguntas frecuentes",
+    "formulario": "¿Prefieres que te escribamos?",
+    "formularioTexto": "Déjanos tus datos y un asesor te responde con las opciones para este plan.",
+    "relacionados": "Otros planes que te pueden servir",
+    "mensajeWhatsapp": "Hola, quiero cotizar el plan de {titulo}",
+    "barraCta": "Cotizar"
   },
   "formulario": {
     "nombre": "Nombre",

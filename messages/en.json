@@ -66,10 +66,35 @@
     "verificadaEl": "Rate verified on {fecha}, subject to availability and reconfirmation.",
     "consultaCondiciones": "See conditions, taxes and included services."
   },
+  "paquetes": {
+    "tituloListado": "Trips already put together and ready to go",
+    "introListado": "Every trip comes with its price explained, what's included and what isn't. If you want other dates or another departure city, we adjust it.",
+    "vacio": "No trips published right now. Message us and we'll put one together with you.",
+    "migaInicio": "Home",
+    "migaPaquetes": "Trips",
+    "duracion": "{noches, plural, one {# night} other {# nights}}",
+    "verPlan": "See the full trip",
+    "loMejor": "The best of this trip",
+    "itinerario": "What each day looks like",
+    "itinerarioNota": "A summary of the route. Your advisor sends the full detail with the quote.",
+    "dia": "Day {dia}",
+    "incluye": "What's included",
+    "noIncluye": "What's not included",
+    "formasPago": "How you pay",
+    "formasPagoTexto": "Hold it with 30% and pay the rest in instalments. Payment is arranged with an advisor on WhatsApp, who confirms the final amount before charging anything.",
+    "cancelacion": "If you need to cancel",
+    "faq": "Frequently asked questions",
+    "formulario": "Would you rather we write to you?",
+    "formularioTexto": "Leave us your details and an advisor replies with the options for this trip.",
+    "relacionados": "Other trips that might suit you",
+    "mensajeWhatsapp": "Hi, I'd like a quote for the {titulo} trip",
+    "barraCta": "Get a quote"
+  },
   "oferta": {
     "vencidaTitulo": "This rate is no longer valid",
     "vencidaTexto": "It was valid until {fecha}. We'll put together an updated one, for the same dates or whichever you prefer.",
-    "vencidaCta": "Ask us for an updated rate"
+    "vencidaCta": "Ask us for an updated rate",
+    "vencidaMensajeWhatsapp": "Hi, I saw the {titulo} trip on the website and the rate has expired. Could you put together an updated one?"
   },
   "formulario": {
     "nombre": "Name",

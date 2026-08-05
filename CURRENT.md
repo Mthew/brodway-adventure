@@ -8,11 +8,10 @@
 
 | Paso | Estado | Rama / PR |
 |---|---|---|
-| 0 · Desbloqueo del entorno | ✅ Mergeado | PR #1 |
-| 1 · Modelo de oferta extendido | ✅ Mergeado | PR #1 |
-| 2 · `LeadForm` + `/gracias` | ✅ En revisión | `fase-1/paso-2-leadform` |
-| 3 · `/paquetes` + `/paquetes/[slug]` | ⏭️ Siguiente | — |
-| 4 · Home | Pendiente | — |
+| 0-1 · Entorno + modelo de oferta | ✅ Mergeado | PR #1 |
+| 2 · `LeadForm` + `/gracias` | ✅ Mergeado | PR #2 |
+| 3 · `/paquetes` + `/paquetes/[slug]` | ✅ En revisión | `fase-1/paso-3-paquetes` |
+| 4 · Home | ⏭️ Siguiente | — |
 | 5 · Institucionales (`/nosotros`, `/contacto`, `/como-pagar`, `/faq`) | Pendiente | — |
 | 6 · `/destinos` + `/destinos/[slug]` | Pendiente | — |
 | 7 · `/lp/[campana]` | Pendiente | — |
@@ -23,15 +22,17 @@
 
 - **Node 24.14.1 obligatorio.** Si tu shell tiene otra, usa
   `export PATH="$HOME/.nvm/versions/node/v24.14.1/bin:$PATH"`.
-- **No correr `shadcn init`.** Sobrescribe `lib/utils.ts` y `button.tsx`, e instala
-  `lucide-react` y `tw-animate-css`. Se probó y se revirtió el 2026-08-04. Detalle en
-  `plan-fase-1.md` §4 Paso 0. Para primitivas accesibles: `radix-ui` directo, wrapper a mano.
+- **No correr `shadcn init`.** Probado y revertido: destruye `lib/utils.ts` e instala paquetes
+  prohibidos. Detalle en [`history/001-shadcn-cli-descartado.md`](history/001-shadcn-cli-descartado.md).
 - **`pnpm check:tokens`** corre dentro del `build` y protege el fallo de contraste mudo.
-- Páginas construidas: `/legal`, `/design-system` y `/gracias`. La home sigue siendo un
-  placeholder. `LeadForm` existe y se prueba desde `/design-system`; todavía no lo monta ninguna
-  página real (lo harán los Pasos 3 y 5).
-- **Deuda detectada, pendiente del Paso 9:** los enlaces del Footer miden 23px de alto en móvil,
-  bajo el mínimo táctil de 44px del Pre-Flight §11.C.
+- Páginas construidas: `/legal`, `/design-system`, `/gracias`, `/paquetes` y
+  `/paquetes/[slug]`. La home sigue siendo un placeholder.
+- La ficha de paquete lleva itinerario **resumido**: el día a día completo, el mapa y las fechas
+  de salida son Fase 2 (`plan-fase-1.md` §3.1). El dato ya está modelado entero.
+- `StickyCta` marca `data-sticky-cta` en el `<body>` y `globals.css` oculta el flotante con eso.
+  Si añades otra barra fija, respeta ese contrato o quedarán dos CTAs apilados.
+- **Deuda pendiente del Paso 9:** los enlaces del Footer miden 23px de alto en móvil, bajo el
+  mínimo táctil de 44px del Pre-Flight §11.C.
 
 ## Bloqueos externos (ninguno se resuelve con código)
 

@@ -53,6 +53,9 @@ export function WhatsAppFloating({
       target="_blank"
       rel="noopener noreferrer"
       aria-label={t("aria")}
+      /* Lo usa `globals.css` para ocultarlo mientras la barra fija de la ficha de
+         paquete está visible. Ver `components/paquete/sticky-cta.tsx`. */
+      data-whatsapp-floating=""
       onClick={() =>
         trackWhatsAppClick({ offerId, campaign, page: pathname, locale })
       }

@@ -74,7 +74,8 @@ export async function DestinationCard({
         ) : null}
         <Link
           href={`/destinos/${slug}`}
-          className="text-body text-brand-turquoise-text mt-auto font-semibold underline-offset-4 group-hover:underline"
+          /* `min-h-11` = 44px: mínimo táctil, que aplica también a enlaces de texto. */
+          className="text-body text-brand-turquoise-text mt-auto inline-flex min-h-11 items-center font-semibold underline-offset-4 group-hover:underline"
         >
           Ver opciones
         </Link>
@@ -128,7 +129,8 @@ export async function PackageCard({ offer }: { offer: Offer }) {
         </div>
         <Link
           href={`/paquetes/${offer.slug}`}
-          className="text-body text-brand-turquoise-text font-semibold underline-offset-4 group-hover:underline"
+          /* `min-h-11` = 44px: mínimo táctil, que aplica también a enlaces de texto. */
+          className="text-body text-brand-turquoise-text inline-flex min-h-11 items-center font-semibold underline-offset-4 group-hover:underline"
         >
           Ver el plan completo
         </Link>

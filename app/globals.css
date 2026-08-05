@@ -205,3 +205,18 @@
     text-wrap: pretty;
   }
 }
+
+/**
+ * Coordinación entre la barra fija de la ficha de paquete y el botón flotante.
+ *
+ * `StickyCta` marca `data-sticky-cta` en el <body> cuando su barra está visible, y
+ * aquí se oculta el flotante. Apilar dos CTAs al mismo canal es ruido, no
+ * insistencia (brief-v0.md §6).
+ *
+ * Va en CSS y no como prop porque el flotante se monta en el layout, que es un
+ * Server Component: pasarle estado desde un componente de cliente obligaría a
+ * envolver toda la aplicación en un contexto sólo para esto.
+ */
+body[data-sticky-cta] [data-whatsapp-floating] {
+  display: none;
+}
