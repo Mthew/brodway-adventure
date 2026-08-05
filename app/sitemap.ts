@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 
 import { SITE_URL } from "@/lib/config";
 import { routing } from "@/lib/i18n/routing";
+import { listDestinationSlugs } from "@/lib/destinations";
+import { listOfferSlugs } from "@/lib/offers";
 
 /**
  * Sitemap con entradas para ambos locales (spec-tecnica.md §3.5).
@@ -9,10 +11,24 @@ import { routing } from "@/lib/i18n/routing";
  * Las rutas que NO deben indexarse —`/design-system`, `/gracias` y las landings
  * de campaña `/lp/[campana]`— no van aquí y además declaran `robots: index:false`
  * en su propia metadata.
+ *
+ * Las rutas dinámicas se leen de las mismas capas que usan las páginas
+ * (`lib/offers`, `lib/destinations`) y no de una lista escrita a mano: una lista
+ * paralela se desincroniza en cuanto se publica una oferta, y nadie se entera
+ * porque el sitemap sigue generándose sin error.
  */
 
-/** Rutas públicas indexables. Ampliar conforme se construyan en Fase 1. */
-const ROUTES = ["", "/legal"] as const;
+/** Rutas estáticas indexables. */
+const RUTAS_FIJAS = [
+  "",
+  "/destinos",
+  "/paquetes",
+  "/nosotros",
+  "/contacto",
+  "/como-pagar",
+  "/faq",
+  "/legal",
+] as const;
 
 function urlFor(locale: string, route: string): string {
   // `es` es el locale por defecto y va sin prefijo (estrategia "as-needed").
@@ -20,8 +36,8 @@ function urlFor(locale: string, route: string): string {
   return `${SITE_URL}${prefix}${route}`;
 }
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  return ROUTES.map((route) => ({
+function entrada(route: string): MetadataRoute.Sitemap[number] {
+  return {
     url: urlFor(routing.defaultLocale, route),
     lastModified: new Date(),
     alternates: {
@@ -29,5 +45,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
         routing.locales.map((locale) => [locale, urlFor(locale, route)]),
       ),
     },
-  }));
+  };
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [destinos, paquetes] = await Promise.all([
+    listDestinationSlugs(),
+    listOfferSlugs(),
+  ]);
+
+  return [
+    ...RUTAS_FIJAS.map(entrada),
+    ...destinos.map((slug) => entrada(`/destinos/${slug}`)),
+    /**
+     * `listOfferSlugs` incluye las tarifas VENCIDAS a propósito: su página existe,
+     * responde 200 y capta un lead con intención alta. Dejarlas fuera del sitemap
+     * contradiría esa decisión. Los borradores sí quedan excluidos, porque no
+     * deben ser visibles en ningún sitio.
+     */
+    ...paquetes.map((slug) => entrada(`/paquetes/${slug}`)),
+  ];
 }

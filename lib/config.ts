@@ -16,6 +16,19 @@ export const WHATSAPP_NUMBER = "57XXXXXXXXXX";
 /** TODO: VERIFICAR — Registro Nacional de Turismo. Obligatorio en toda la publicidad. */
 export const RNT_NUMBER = "XXXXXX";
 
+/** TODO: VERIFICAR — Número de Identificación Tributaria. */
+export const NIT_NUMBER = "XXXXXXXXX";
+
+/**
+ * TODO: VERIFICAR — afiliaciones gremiales.
+ *
+ * Vacío a propósito: `investigation.md` menciona ANATO e IATA como sellos que usan
+ * los competidores, pero que BroWay esté afiliada NO está confirmado. Un sello de
+ * confianza inventado es peor que ninguno, porque es verificable y desmiente todo
+ * lo demás de la página.
+ */
+export const AFILIACIONES: readonly string[] = [];
+
 /** TODO: VERIFICAR — datos de contacto y domicilio comercial. */
 export const CONTACT = {
   ciudad: "Medellín, Colombia",
