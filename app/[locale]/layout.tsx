@@ -2,29 +2,55 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Inter, Outfit } from "next/font/google";
+import { Caveat, Lato, Montserrat } from "next/font/google";
 
 import { routing } from "@/lib/i18n/routing";
 import { CookieBanner } from "@/components/layout/cookie-banner";
 import "../globals.css";
 
 /**
- * TODO: confirmar tipografía oficial con el dueño de marca.
- * El manual de marca v2.0 no define tipografías (brief-v0.md §12), así que estas
- * son sustitutas: Outfit para títulos, Inter para cuerpo.
+ * TIPOGRAFÍAS OFICIALES DE MARCA. Confirmadas por el cliente el 2026-08-05.
+ *
+ * Sólo se cargan los pesos que el manual autoriza. Cada peso extra es descarga
+ * que paga el 83% de tráfico móvil, y aquí no hay ninguno de adorno:
+ *
+ *   Montserrat  600 SemiBold (H4, botones) · 700 Bold (H2, H3) · 800 ExtraBold (H1)
+ *   Lato        400 Regular · 700 Bold      (el manual recomienda hasta SemiBold,
+ *                                            que Lato no tiene: su salto es 400→700)
+ *   Caveat      700 Bold, único peso que el manual autoriza
+ *
+ * `display: "swap"` en las tres: el texto se ve con la fuente de respaldo desde
+ * el primer frame en vez de quedar invisible mientras descarga, que es lo que
+ * arruina el LCP en una conexión móvil.
  */
-const outfit = Outfit({
+const montserrat = Montserrat({
   // Deliberadamente NO se llama `--font-display`: ese es el token de globals.css
-  // y se declara como `var(--font-outfit), …`. Usar el mismo nombre en los dos
+  // y se declara como `var(--font-montserrat), …`. Usar el mismo nombre en los dos
   // lados crea una autorreferencia que mata la cadena de respaldo.
-  variable: "--font-outfit",
+  variable: "--font-montserrat",
   subsets: ["latin"],
+  weight: ["600", "700", "800"],
   display: "swap",
 });
 
-const inter = Inter({
-  variable: "--font-inter",
+const lato = Lato({
+  variable: "--font-lato",
   subsets: ["latin"],
+  weight: ["400", "700"],
+  display: "swap",
+});
+
+/**
+ * Caveat. Firma narrativa y nada más.
+ *
+ * El manual la limita a 8-10 palabras y la prohíbe en párrafos, precios,
+ * condiciones y mayúsculas sostenidas. Se carga un solo peso para que no haya
+ * tentación de usarla como familia de interfaz.
+ */
+const caveat = Caveat({
+  variable: "--font-caveat",
+  subsets: ["latin"],
+  weight: ["700"],
   display: "swap",
 });
 
@@ -79,7 +105,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
-      className={`${outfit.variable} ${inter.variable} h-full antialiased`}
+      className={`${montserrat.variable} ${lato.variable} ${caveat.variable} h-full antialiased`}
     >
       {/*
         Este layout NO monta navbar ni footer, a propósito.

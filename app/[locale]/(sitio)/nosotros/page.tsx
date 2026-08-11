@@ -177,7 +177,6 @@ export default async function NosotrosPage({
   );
 }
 
-/** TODO: VERIFICAR dato legal real antes de publicar. */
 function DatoLegal({ etiqueta, valor }: { etiqueta: string; valor: string }) {
   return (
     <div className="flex flex-col gap-1 border-t border-white/20 pt-4">

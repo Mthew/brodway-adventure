@@ -63,10 +63,13 @@ export default async function GraciasPage({
           <h1 className="text-h1 text-brand-navy">{t("titulo")}</h1>
 
           {/*
-            Expectativa concreta, no "te contactaremos pronto". Es lo que evita que
-            la persona se enfríe. El número sigue pendiente de la operación: no se
-            promete un tiempo que la agencia no pueda cumplir, y nunca "24/7".
-            TODO: confirmar el tiempo real de respuesta con la operación.
+            Expectativa concreta, no "te contactaremos pronto". Es lo que evita
+            que la persona se enfríe.
+
+            "Entre 1 y 5 minutos" lo confirmó la operación el 2026-08-05. Va
+            siempre acompañado de "dentro del horario de atención": prometer un
+            tiempo sin acotar la franja equivale a prometer 24/7, que la marca
+            prohíbe. El horario concreto sigue sin confirmarse.
           */}
           <p className="text-body-lg text-neutral-700">{t("expectativa")}</p>
 

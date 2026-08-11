@@ -98,7 +98,7 @@ export function Navbar() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="text-body-sm hover:text-brand-navy font-medium text-neutral-700"
+                className="text-body-sm hover:text-brand-navy font-display font-semibold text-neutral-700"
               >
                 {t(link.key)}
               </Link>
@@ -149,7 +149,7 @@ export function Navbar() {
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className="text-h3 text-brand-navy border-b border-neutral-100 py-4 font-semibold"
+              className="text-h3 text-brand-navy border-b border-neutral-100 py-4 font-display font-semibold"
             >
               {t(link.key)}
             </Link>

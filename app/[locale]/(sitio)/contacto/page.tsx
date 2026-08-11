@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Clock, MapPin } from "@phosphor-icons/react/dist/ssr";
+import { Clock, MapPin, Phone } from "@phosphor-icons/react/dist/ssr";
 
 import { ButtonLink } from "@/components/ui/button";
 import { Section } from "@/components/ui/section";
@@ -96,23 +96,32 @@ export default async function ContactoPage({
                     aria-hidden="true"
                   />
                 }
-                etiqueta={t("ciudad")}
-                valor={CONTACT.ciudad}
+                etiqueta={t("direccion")}
+                valor={`${CONTACT.direccion}, ${CONTACT.ciudad}`}
+              />
+
+              <Dato
+                icono={
+                  <Phone
+                    weight="regular"
+                    className="text-brand-turquoise size-5 shrink-0"
+                    aria-hidden="true"
+                  />
+                }
+                etiqueta={t("telefono")}
+                valor={CONTACT.telefono}
               />
             </dl>
 
             {/*
-              EL MAPA NO SE EMBEBE TODAVÍA, y es una decisión, no un olvido.
-              `CONTACT.direccion` es "XXXXXX": la dirección real no está confirmada.
-              Un mapa apuntando a un punto inventado es un dato falso verificable en
-              la página que existe justo para demostrar que la empresa es real.
-              Cuando llegue la dirección, va aquí con loading="lazy" para no
-              bloquear el LCP, y hay que revisarlo contra el banner de cookies del
-              Paso 8: un iframe de mapas es una petición a un tercero.
+              El mapa sigue sin embeberse pese a tener ya la dirección.
+
+              Un iframe de Google Maps es una petición a un tercero que planta
+              cookies, y este sitio declara el consentimiento como denegado hasta
+              que la persona decide (Paso 8). Embeberlo sin más lo saltaría en la
+              única página donde el usuario ni siquiera lo espera. Cuando entre,
+              va con `loading="lazy"` y detrás del consentimiento, no antes.
             */}
-            <p className="text-body-sm rounded-md border border-dashed border-neutral-300 bg-neutral-50 p-5 text-neutral-600">
-              {t("mapaPendiente")}
-            </p>
           </div>
 
           <div className="flex flex-col gap-4">

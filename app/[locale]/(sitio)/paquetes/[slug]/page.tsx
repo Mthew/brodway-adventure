@@ -284,7 +284,6 @@ export default async function PaquetePage({
               {t("formularioTexto")}
             </p>
             <Badge variant="trust" className="mt-4 self-start">
-              {/* TODO: VERIFICAR dato legal real antes de publicar */}
               RNT {RNT_NUMBER}
             </Badge>
           </div>

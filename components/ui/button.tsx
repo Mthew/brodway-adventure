@@ -16,7 +16,11 @@ import { cn } from "@/lib/utils";
  */
 const buttonVariants = cva(
   cn(
-    "inline-flex items-center justify-center gap-2 rounded-md font-semibold",
+    /*
+      `font-display` = Montserrat. El manual asigna Montserrat SemiBold a botones,
+      navegación y etiquetas; el cuerpo en Lato es sólo para texto de lectura.
+    */
+    "inline-flex items-center justify-center gap-2 rounded-md font-display font-semibold",
     "transition-colors select-none",
     // Área táctil mínima de 44x44 en móvil — el 83% del tráfico es táctil.
     "min-h-11",
@@ -41,9 +45,13 @@ const buttonVariants = cva(
         whatsapp: "bg-whatsapp text-brand-navy hover:bg-whatsapp/90",
       },
       size: {
-        sm: "px-4 py-2 text-body-sm",
+        /*
+           El manual fija UN tamaño de botón, 16/20. Los tamaños cambian el área
+           táctil y el peso visual con el padding, no agrandando la letra.
+        */
+        sm: "px-4 py-2 text-body",
         md: "px-6 py-3 text-body",
-        lg: "px-8 py-4 text-body-lg",
+        lg: "px-8 py-4 text-body",
       },
       fullWidth: {
         true: "w-full",

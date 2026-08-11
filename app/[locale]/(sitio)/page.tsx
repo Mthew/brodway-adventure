@@ -147,7 +147,6 @@ export default async function HomePage({
       {/* 2. FRANJA DE CONFIANZA. Debajo del hero, nunca dentro. */}
       <Section spacing="compact" background="alt">
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-          {/* TODO: VERIFICAR dato legal real antes de publicar */}
           <Badge variant="trust">RNT {RNT_NUMBER}</Badge>
           <p className="text-body-sm text-neutral-700">
             {t("confianzaLinea")}
@@ -413,12 +412,25 @@ async function JsonLd({ locale }: { locale: string }) {
     url: base,
     address: {
       "@type": "PostalAddress",
+      streetAddress: CONTACT.direccion,
       addressLocality: "Medellín",
       addressCountry: "CO",
     },
+    telephone: `+57${CONTACT.telefono.replace(/\D/g, "")}`,
+    email: CONTACT.email,
     areaServed: "CO",
-    // TODO: añadir telephone, email y address completos cuando estén verificados.
-    ...(CONTACT.email.includes("XXXXXX") ? {} : { email: CONTACT.email }),
+    /**
+     * El RNT va como identificador oficial del prestador turístico.
+     *
+     * Todo lo que se emite aquí está confirmado por el cliente: un dato
+     * estructurado inventado es peor que su ausencia, porque los buscadores lo
+     * tratan como declaración formal del negocio.
+     */
+    identifier: {
+      "@type": "PropertyValue",
+      name: "Registro Nacional de Turismo",
+      value: RNT_NUMBER,
+    },
   };
 
   return (

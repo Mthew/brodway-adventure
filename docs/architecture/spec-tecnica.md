@@ -54,8 +54,8 @@ la configuración del proyecto para que coincida con `.nvmrc`.
 | i18n | `next-intl` | 0 |
 | Estilos / tokens | Tailwind CSS v4 (configuración CSS-first con `@theme`) | 0 |
 | Componentes UI | Componentes propios sobre `cva` + `cn()` (convenciones de shadcn, sin su CLI — ver §4.1) | 0 |
-| CMS headless | Sanity, Contentful o Strapi (con soporte multilenguaje nativo) — solo contenido editorial | 0 (setup) / 1 (contenido real) |
-| Base de ofertas | BD estructurada externa (fuera de este repo) — fuente de verdad de tarifas | 1 |
+| CMS headless | **Sin CMS en Fase 1.** El cliente confirmó el 2026-08-05 que no existe ninguno; el contenido editorial vive en el repo tras `lib/destinations/` y `lib/campaigns/`. Se reevalúa en Fase 2 | 2 |
+| Base de ofertas | **No existe todavía** (confirmado 2026-08-05). Las tarifas viven en el repo tras `lib/offers/`, con su ciclo de vida completo: `offerId`, `vigenciaHasta` y `validadaEl` siguen siendo obligatorios | 1 |
 | CRM | **GoHighLevel** (Starter + add-on de WhatsApp) — fuera de este repo, lo monta el proveedor del sistema comercial | 1 (en paralelo) |
 | Formularios/Leads | API routes → webhook a GoHighLevel (§8) | 0-1 |
 | Pagos | Wompi o PayU | 2 |

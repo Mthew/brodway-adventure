@@ -16,32 +16,32 @@
 | 4 · Home | ✅ Mergeado | PR #6 |
 | 7 · `/lp/[campana]` | ✅ Mergeado | PR #7 |
 | 8 · Tracking + cookies | ✅ En revisión | PR #8 |
+| Datos del cliente + tipografía | ✅ En revisión | `fase-1/datos-cliente-y-tipografia` |
 | 9 · Pre-Flight + sitemap | ⏭️ Siguiente | — |
 
 ## Lo que hay que saber para no romper nada
 
-- **Node 24.14.1 obligatorio.** Si tu shell tiene otra, usa
-  `export PATH="$HOME/.nvm/versions/node/v24.14.1/bin:$PATH"`.
-- **No correr `shadcn init`.** Probado y revertido: destruye `lib/utils.ts` e instala paquetes
-  prohibidos. Detalle en [`history/001-shadcn-cli-descartado.md`](history/001-shadcn-cli-descartado.md).
-- **`pnpm check`** corre dentro del `build`: protege el fallo de contraste mudo y este techo.
+- **Node 24.14.1.** Si tu shell tiene otra: `export PATH="$HOME/.nvm/versions/node/v24.14.1/bin:$PATH"`
+- **No correr `shadcn init`.** Probado y revertido: destruye `lib/utils.ts`. Ver
+  [`history/001`](history/001-shadcn-cli-descartado.md).
 - **Sin IDs de medición no se carga ninguna etiqueta ni se emite ningún evento** (`.env.example`).
-- **Dos cromos, dos route groups.** `(sitio)` lleva navbar y pie; `lp/[campana]` ninguno de los
-  dos. Todo layout nuevo DEBE llamar a `setRequestLocale` o el sitio deja de ser estático sin dar
-  ningún error.
+- **Tipografías:** Montserrat (títulos, nav, botones, etiquetas), Lato (lectura), Caveat (firma
+  narrativa). Mínimo 14px en todo el sitio.
+- **Dos cromos:** `(sitio)` con navbar y pie, `lp/[campana]` sin ninguno. Todo layout nuevo DEBE
+  llamar a `setRequestLocale` o el sitio deja de ser estático sin dar ningún error.
 - **Verde = WhatsApp, naranja = enviar formulario.** Un solo color por intención en todo el sitio.
-- **Contraste: verifica contra la superficie real.** `Badge variant="destino"` sobre un hero navy
-  rinde 1.82:1; para fondos oscuros existe `destinoOscuro` (8.46:1).
-- **Deuda pendiente del Paso 9:** los enlaces del Footer miden 23px de alto en móvil, bajo el
-  mínimo táctil de 44px del Pre-Flight §11.C.
+- **Contraste: verifica contra la superficie real**, no contra blanco. Para fondos oscuros hay
+  variantes propias (`Badge destinoOscuro`).
+- **Deuda del Paso 9:** los 7 enlaces del Footer miden 23px, bajo el mínimo táctil de 44px.
 
 ## Bloqueos externos (ninguno se resuelve con código)
 
-Contrato de `/api/lead` sin firmar con quien monte GoHighLevel (los campos de GHL no se pueden
-convertir después de creados) · datos legales reales, hoy todos `XXXXXX` · número de WhatsApp
-`57XXXXXXXXXX`, o sea que todos los CTA son enlaces muertos · consentimiento sin validar por
-abogado · tiempo de respuesta que promete `/gracias` · marca (tipografías, hex, foto, logo SVG) ·
-titularidad de cuentas. Impacto de cada uno en `plan-fase-1.md` §5.
+Resueltos el 2026-08-05: WhatsApp, RNT, NIT, dirección, teléfono, tiempo de respuesta y
+tipografías. Detalle en [`history/003`](history/003-datos-del-cliente-y-marca.md).
+
+**Siguen abiertos:** contrato de `/api/lead` con GoHighLevel (sus campos no se convierten después
+de creados) · texto legal sin validar por abogado · titularidad de cuentas GA4/Meta/TikTok · hex
+oficiales, fotografía y logo SVG · horario · medios de pago · afiliaciones · correo.
 
 ## Decisiones abiertas
 

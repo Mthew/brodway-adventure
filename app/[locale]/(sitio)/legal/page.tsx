@@ -128,7 +128,6 @@ export default async function LegalPage({
 
           <section id="rnt" className="flex flex-col gap-3">
             <h2 className="text-h2 text-brand-navy">{SECTIONS[4].titulo}</h2>
-            {/* TODO: VERIFICAR dato legal real antes de publicar */}
             <p className="text-body text-neutral-700">
               BroWay Adventures opera bajo el Registro Nacional de Turismo número{" "}
               <strong>{RNT_NUMBER}</strong>. Puedes verificarlo en el registro
