@@ -46,7 +46,23 @@ export async function DestinationCard({
 
   return (
     <Card className="group flex flex-col">
-      <div className="relative aspect-[4/3] w-full bg-neutral-100">
+      {/* `overflow-hidden` es lo que recorta el zoom al hover; sin él la foto
+          ampliada se sale de la tarjeta. */}
+      <div className="zoom-foto relative aspect-[4/3] w-full overflow-hidden bg-neutral-100">
+        {/*
+          Aquí iría el morph de tarjeta a cabecera de destino con
+          `<ViewTransition name={...} share="morph">`, que es la transición de
+          ruta que este sitio pide y que costaría 0 kb.
+
+          NO se puede hoy: `ViewTransition` no existe en React 19.2.8 estable
+          (`node -e "require('react').ViewTransition"` da undefined), y la guía
+          `node_modules/next/dist/docs/01-app/02-guides/view-transitions.md`
+          asume que el App Router resuelve una canary de React, cosa que esta
+          combinación 16.3.0 + 19.2.8 no hace. Probado: da "Element type is
+          invalid" en el servidor. Habilitarlo obliga a mover el proyecto al
+          canal experimental de React, y eso no se hace en un sitio de captación
+          por una animación. Revisar cuando ViewTransition llegue a estable.
+        */}
         <Image
           src={destino.imagen}
           alt=""
@@ -98,7 +114,7 @@ export async function PackageCard({ offer }: { offer: Offer }) {
 
   return (
     <Card className="group flex flex-col">
-      <div className="relative aspect-[16/10] w-full bg-neutral-100">
+      <div className="zoom-foto relative aspect-[16/10] w-full overflow-hidden bg-neutral-100">
         {offer.imagenes[0] ? (
           <Image
             src={offer.imagenes[0]}

@@ -395,11 +395,11 @@ export default async function DesignSystemPage({
 
         <Block
           title="Hero"
-          description="El overlay tiene dos niveles y los dos están medidos contra el peor caso (foto blanca pura debajo), para que cambiar la foto no obligue a re-verificar el contraste."
+          description="El velo es un degradado, no un lavado plano: protege el contraste en la franja donde vive el texto y deja respirar la foto arriba. Sus paradas están medidas contra el peor caso (foto blanca pura debajo), así que cambiar la foto no obliga a re-verificar."
         >
           <div className="overflow-hidden rounded-lg">
             <Hero
-              imagen="https://picsum.photos/seed/broway-eje-cafetero/1600/900"
+              imagen="/destinos/eje-cafetero-hero.webp"
               imagenAlt=""
               overlay="normal"
               titulo="Elige tu próximo viaje con claridad y compañía"

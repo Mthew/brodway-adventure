@@ -87,7 +87,7 @@ export default async function NosotrosPage({
 
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-neutral-100">
             <Image
-              src="https://picsum.photos/seed/broway-fundadores-carretera/900/675"
+              src="/destinos/nosotros.webp"
               alt=""
               fill
               sizes="(max-width: 1024px) 100vw, 45vw"

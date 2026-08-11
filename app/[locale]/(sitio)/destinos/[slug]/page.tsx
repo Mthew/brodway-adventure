@@ -70,7 +70,7 @@ export default async function DestinoPage({
       <JsonLd destino={destino} locale={locale} />
 
       {/* Cabecera a sangre: imagen del destino con el nombre encima. */}
-      <section className="relative isolate">
+      <section className="relative isolate flex min-h-[62svh] flex-col justify-end">
         <Image
           src={destino.imagenHero}
           alt={destino.nombre}
@@ -79,10 +79,14 @@ export default async function DestinoPage({
           sizes="100vw"
           className="-z-10 object-cover"
         />
-        {/* navy/70: medido contra el peor caso, una foto blanca debajo. */}
-        <div className="bg-brand-navy/70 absolute inset-0 -z-10" />
+        {/* Mismo degradado que el Hero, y por la misma razón: el velo plano al
+            70% cumplía contraste pero aplanaba la foto del destino, que es
+            justamente lo que el visitante vino a ver. Ver la nota de `.hero-scrim`
+            en globals.css: por debajo del 58% de altura el velo es MÁS opaco que
+            el 70% de antes, y el texto vive ahí. */}
+        <div className="hero-scrim absolute inset-0 -z-10" />
 
-        <div className="mx-auto w-full max-w-6xl px-6 py-20 md:px-8 md:py-28">
+        <div className="mx-auto w-full max-w-6xl px-6 pt-24 pb-16 md:px-8 md:pt-28 md:pb-20">
           {/* `text-white` y no `white/80`: sobre una foto clara con overlay al 70%,
               el 80% de opacidad deja el texto pequeño por debajo de 4.5:1.
               `min-h-11` porque el mínimo táctil vale también para las migas. */}

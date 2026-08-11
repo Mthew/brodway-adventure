@@ -98,7 +98,14 @@ export function CookieBanner() {
           Rechazar va PRIMERO en el DOM y con el mismo tamaño que aceptar.
           El orden de lectura importa tanto como el tamaño.
         */}
-        <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
+        {/*
+          En fila desde el primer píxel, no apilados hasta `sm`. Apilados el
+          banner medía 314px, el 39% de una pantalla de 812px, y tapaba los CTA
+          del hero en la primera visita, que es justo la visita que importa.
+          "Rechazar" y "Aceptar" caben de sobra en una fila a 375px.
+          `flex-1` reparte el ancho para que ninguno parezca el botón principal.
+        */}
+        <div className="flex shrink-0 gap-3 [&>*]:flex-1 sm:[&>*]:flex-none">
           <Button
             type="button"
             variant="outline"

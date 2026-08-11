@@ -15,8 +15,8 @@ export const MOCK_DESTINATIONS: Destination[] = [
     slug: "eje-cafetero",
     nombre: "Eje Cafetero",
     tipo: "nacional",
-    imagen: "https://picsum.photos/seed/eje-cafetero-finca-cafe/800/600",
-    imagenHero: "https://picsum.photos/seed/eje-cafetero-valle-cocora/1600/900",
+    imagen: "/destinos/eje-cafetero.webp",
+    imagenHero: "/destinos/eje-cafetero-hero.webp",
     resumen:
       "Montaña, fincas de café y pueblos de colores, a una hora de vuelo de las grandes ciudades.",
     introduccion: [
@@ -70,8 +70,8 @@ export const MOCK_DESTINATIONS: Destination[] = [
     slug: "cartagena",
     nombre: "Cartagena",
     tipo: "nacional",
-    imagen: "https://picsum.photos/seed/cartagena-ciudad-amurallada/800/600",
-    imagenHero: "https://picsum.photos/seed/cartagena-atardecer-murallas/1600/900",
+    imagen: "/destinos/cartagena.webp",
+    imagenHero: "/destinos/cartagena-hero.webp",
     resumen:
       "Ciudad amurallada, Caribe y una historia de casi cinco siglos, en un mismo viaje.",
     introduccion: [
@@ -120,8 +120,8 @@ export const MOCK_DESTINATIONS: Destination[] = [
     slug: "santa-marta",
     nombre: "Santa Marta",
     tipo: "nacional",
-    imagen: "https://picsum.photos/seed/santa-marta-tayrona-playa/800/600",
-    imagenHero: "https://picsum.photos/seed/santa-marta-sierra-nevada/1600/900",
+    imagen: "/destinos/santa-marta.webp",
+    imagenHero: "/destinos/santa-marta-hero.webp",
     resumen:
       "Donde la Sierra Nevada baja hasta el mar. Playa, selva y montaña en pocos kilómetros.",
     introduccion: [
@@ -170,8 +170,8 @@ export const MOCK_DESTINATIONS: Destination[] = [
     slug: "san-andres",
     nombre: "San Andrés",
     tipo: "nacional",
-    imagen: "https://picsum.photos/seed/san-andres-mar-siete-colores/800/600",
-    imagenHero: "https://picsum.photos/seed/san-andres-johnny-cay/1600/900",
+    imagen: "/destinos/san-andres.webp",
+    imagenHero: "/destinos/san-andres-hero.webp",
     resumen:
       "Una isla caribeña que es Colombia sin necesidad de pasaporte, con su propia cultura raizal.",
     introduccion: [
@@ -220,8 +220,8 @@ export const MOCK_DESTINATIONS: Destination[] = [
     slug: "cancun",
     nombre: "Cancún",
     tipo: "internacional",
-    imagen: "https://picsum.photos/seed/cancun-playa-caribe/800/600",
-    imagenHero: "https://picsum.photos/seed/cancun-zona-hotelera/1600/900",
+    imagen: "/destinos/cancun.webp",
+    imagenHero: "/destinos/cancun-hero.webp",
     resumen:
       "Caribe mexicano, hoteles todo incluido y las ruinas mayas a un día de distancia.",
     introduccion: [
@@ -270,8 +270,8 @@ export const MOCK_DESTINATIONS: Destination[] = [
     slug: "punta-cana",
     nombre: "Punta Cana",
     tipo: "internacional",
-    imagen: "https://picsum.photos/seed/punta-cana-playa-palmeras/800/600",
-    imagenHero: "https://picsum.photos/seed/punta-cana-bavaro-mar/1600/900",
+    imagen: "/destinos/punta-cana.webp",
+    imagenHero: "/destinos/punta-cana-hero.webp",
     resumen:
       "Playas de palmeras en República Dominicana, con la logística resuelta de principio a fin.",
     introduccion: [

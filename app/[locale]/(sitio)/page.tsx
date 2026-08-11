@@ -104,7 +104,8 @@ export default async function HomePage({
       <Hero
         titulo={t("heroTitulo")}
         subtitulo={t("heroSubtitulo")}
-        imagen="https://picsum.photos/seed/broway-mirador-montana-amanecer/1600/900"
+        imagen="/destinos/home-hero.webp"
+        imagenMovil="/destinos/home-hero-movil.webp"
         imagenAlt={t("heroImagenAlt")}
         acciones={
           <>
@@ -155,10 +156,17 @@ export default async function HomePage({
       </Section>
 
       {/* 3. DESTINOS. Scroll-snap horizontal en móvil, rejilla en escritorio.
-          CSS puro, sin librería de carrusel (dial de motion 3). */}
+          CSS puro, sin librería de carrusel (dial de motion 3).
+
+          `reveal` sobre el <ul> entero y NO `reveal-stagger` sobre las tarjetas:
+          `overflow-x: auto` obliga al navegador a calcular `overflow-y` como
+          `auto` también, así que este <ul> ES un contenedor de scroll vertical
+          aunque nunca se desplace en vertical. Las tarjetas, al ser hijas suyas,
+          anclarían su `view(block)` a un scroll que no se mueve y no aparecerían
+          jamás. La fila entera sí se ancla al scroll de la página. */}
       <Section>
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-          <h2 className="text-h2 text-brand-navy max-w-[18ch]">
+          <h2 className="reveal text-h2 text-brand-navy max-w-[18ch]">
             {t("destinosTitulo")}
           </h2>
           <Link
@@ -169,7 +177,7 @@ export default async function HomePage({
           </Link>
         </div>
 
-        <ul className="-mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 lg:grid-cols-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <ul className="reveal -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 lg:grid-cols-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {tarjetas.map(({ destino, precio }) => (
             <li
               key={destino.slug}
@@ -188,9 +196,9 @@ export default async function HomePage({
       {/* 4. CÓMO FUNCIONA. Flujo de 3 pasos con línea conectora, NO tres tarjetas
           idénticas: esa fila es la firma de una plantilla. */}
       <Section background="navy">
-        <h2 className="text-h2 mb-12 max-w-[18ch]">{t("comoFuncionaTitulo")}</h2>
+        <h2 className="reveal text-h2 mb-12 max-w-[18ch]">{t("comoFuncionaTitulo")}</h2>
 
-        <ol className="relative grid gap-10 md:grid-cols-3 md:gap-8">
+        <ol className="reveal-stagger relative grid gap-10 md:grid-cols-3 md:gap-8">
           {/* La línea conectora sólo existe en escritorio, donde el flujo es
               horizontal. En móvil los pasos se apilan y la línea sobra. */}
           <div
@@ -216,10 +224,10 @@ export default async function HomePage({
 
       {/* 5. POR QUÉ BROWAY. Rejilla 2x2 con ícono, sin bordes de tarjeta. */}
       <Section>
-        <h2 className="text-h2 text-brand-navy mb-10 max-w-[18ch]">
+        <h2 className="reveal text-h2 text-brand-navy mb-10 max-w-[18ch]">
           {t("porQueTitulo")}
         </h2>
-        <dl className="grid gap-x-12 gap-y-10 md:grid-cols-2">
+        <dl className="reveal-stagger grid gap-x-12 gap-y-10 md:grid-cols-2">
           {razones.map(({ titulo, texto }) => (
             <div key={titulo} className="flex gap-4">
               <Check
@@ -240,7 +248,7 @@ export default async function HomePage({
 
       {/* 6. NEXT STOP. Única aparición de la firma verbal en toda la página. */}
       <Section background="turquoise" spacing="compact">
-        <div className="flex flex-col items-start gap-5 lg:flex-row lg:items-center lg:justify-between">
+        <div className="reveal flex flex-col items-start gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-col gap-2">
             <h2 className="text-h2">{t("nextStopTitulo")}</h2>
             <p className="text-body max-w-[45ch]">{t("nextStopTexto")}</p>
@@ -270,7 +278,7 @@ export default async function HomePage({
           {t("testimoniosNota")}
         </p>
 
-        <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
+        <div className="reveal-stagger grid gap-6 lg:grid-cols-[1.3fr_1fr]">
           <Testimonio
             cita={t(testimonios[0][0])}
             autor={t(testimonios[0][1])}
@@ -293,7 +301,7 @@ export default async function HomePage({
       {/* 8. CONFIANZA / ANTI-FRAUDE. Dos columnas: explicación y lista de
           comprobación. Tono sereno: informa, no asusta. */}
       <Section>
-        <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
+        <div className="reveal-stagger grid gap-10 lg:grid-cols-2 lg:gap-16">
           <div className="flex flex-col gap-4">
             <ShieldCheck
               weight="regular"
@@ -336,7 +344,7 @@ export default async function HomePage({
       {/* 9. CIERRE. WhatsApp como vía principal y el formulario como alternativa
           real, no como enlace escondido. */}
       <Section background="navy">
-        <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
+        <div className="reveal-stagger grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
           <div className="flex flex-col items-start gap-5">
             <h2 className="text-h2 max-w-[18ch]">{t("cierreTitulo")}</h2>
             <p className="text-body max-w-[45ch] text-white/90">
