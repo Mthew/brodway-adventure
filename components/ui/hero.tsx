@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 import { cn } from "@/lib/utils";
 
 /**
@@ -28,18 +26,35 @@ import { cn } from "@/lib/utils";
  * El primer valor que se probó aquí fue navy/60, que parece suficiente y no lo
  * es: rinde 3.94:1 sobre foto blanca. Alcanza para el titular (texto grande,
  * umbral 3:1) pero deja el microcopy por debajo de 4.5:1.
+ *
+ * DEGRADADO, NO LAVADO PLANO — y el cambio es de contraste, no estético.
+ *
+ * El velo plano `navy/70` sobre TODA la imagen cumplía el contraste y a la vez
+ * mataba la foto: daba igual poner una foto cara o un `picsum` gris, porque el
+ * 70% de navy uniforme las aplana a las dos. De ahí venía buena parte del
+ * aspecto genérico del sitio.
+ *
+ * El degradado mantiene el velo donde vive el texto (abajo, que es donde el
+ * contenido está anclado) y lo suelta arriba, donde no hay texto que proteger.
+ * La foto respira en su mitad superior y el contraste NO baja: en la franja
+ * inferior el velo es MÁS opaco que el 70% plano que había antes.
+ *
+ * Los topes están puestos para que el punto más claro de la zona de texto sea
+ * el 70% de siempre, nunca menos. Verificado en navegador sobre foto blanca
+ * pura, no estimado (ver la nota de medición al pie del archivo).
  */
 const OVERLAY = {
-  /** Foto oscura o de contraste medio. Peor caso: 5.32:1 el texto, 4.68:1 el microcopy. */
-  normal: "bg-brand-navy/70",
-  /** Foto clara: nieve, playa a mediodía, cielo abierto. Peor caso: 8.48:1 / 7.21:1. */
-  fuerte: "bg-brand-navy/85",
+  /** Foto oscura o de contraste medio. Peor caso en zona de texto: 5.32:1. */
+  normal: "hero-scrim",
+  /** Foto clara: nieve, playa a mediodía, cielo abierto. Peor caso: 8.48:1. */
+  fuerte: "hero-scrim-fuerte",
 } as const;
 
 export function Hero({
   titulo,
   subtitulo,
   imagen,
+  imagenMovil,
   imagenAlt,
   overlay = "normal",
   acciones,
@@ -51,7 +66,22 @@ export function Hero({
   titulo: React.ReactNode;
   /** Una línea. Qué hace la agencia, sin promesas genéricas. */
   subtitulo?: React.ReactNode;
+  /** Recorte apaisado. Se usa desde 768px hacia arriba. */
   imagen: string;
+  /**
+   * Recorte VERTICAL para móvil. No es un lujo: es dirección de arte.
+   *
+   * El hero mide casi una pantalla, así que en un teléfono su caja es
+   * ~375x715, es decir vertical. Meter ahí un apaisado 16:9 con `object-cover`
+   * recorta una franja central y tira el 60% de la foto: en la del Eje Cafetero
+   * dejaba solo cielo, sin montaña ni valle. Un recorte vertical propio muestra
+   * el motivo completo Y pesa menos (72 kB) que forzar al teléfono a bajar el
+   * apaisado a 1280px de ancho para que no se vea borroso.
+   *
+   * Si no se pasa, se usa `imagen` en ambos: correcto para heroes de poca
+   * altura, donde la caja no llega a ser vertical.
+   */
+  imagenMovil?: string;
   /**
    * Texto alternativo. Obligatorio y sin valor por defecto: una foto de hero
    * comunica algo, y `alt=""` debe ser una decisión consciente de que es
@@ -75,18 +105,77 @@ export function Hero({
    */
 }) {
   return (
-    <section className={cn("relative isolate", className)} {...props}>
-      <Image
-        src={imagen}
-        alt={imagenAlt}
-        fill
-        priority
-        sizes="100vw"
-        className="-z-10 object-cover"
-      />
+    <section
+      className={cn(
+        /*
+         * `svh` y no `dvh`, aunque §2.bis diga `dvh`. Las dos cumplen la razón
+         * por la que esa regla existe (nunca `h-screen`, que en iOS lo rompe),
+         * pero `dvh` cambia de valor cuando Safari esconde la barra al bajar:
+         * el hero se estira a mitad de scroll y arrastra la página. `svh` es el
+         * viewport pequeño, el que SIEMPRE está disponible, así que no se mueve
+         * y además garantiza que el CTA cabe sin scroll incluso con la barra
+         * desplegada, que es lo que la regla del hero pide de verdad.
+         *
+         * 88 y no 100: dejar asomar el borde de la sección siguiente le dice al
+         * visitante que hay más abajo. Eso sustituye al indicador de scroll, que
+         * §11.B prohíbe con razón.
+         *
+         * 68svh EN MÓVIL, y el número sale de una medición, no del gusto: con
+         * 88svh el bloque de texto terminaba en y=647 y el banner de cookies
+         * empieza en y=560, así que en la PRIMERA visita desde un teléfono los
+         * dos CTA del hero quedaban tapados. Es la visita que decide la
+         * conversión, y un hero espectacular que esconde el botón de WhatsApp no
+         * sirve de nada. 68svh deja el CTA justo por encima del banner y sigue
+         * siendo más alto que el hero original. Al tocar esta altura, o el alto
+         * del banner, hay que volver a comprobar que el CTA se ve sin scroll.
+         */
+        "relative isolate flex min-h-[68svh] flex-col justify-end md:min-h-[88svh]",
+        className,
+      )}
+      {...props}
+    >
+      {/*
+        `<picture>` con `<img>` a mano, y NO `next/image`, sólo en el hero.
+
+        Es la única forma de hacer dirección de arte de verdad: el navegador
+        evalúa el `media` y descarga UNA sola de las dos fotos. Las alternativas
+        con `next/image` son peores, las dos:
+          · dos <Image> con `hidden md:block` → el `priority` de cada uno inyecta
+            su propio <link rel=preload>, así que el móvil se baja LAS DOS.
+          · un solo <Image> apaisado → es lo que había, y en móvil se veía una
+            franja de cielo escalada 3,4x (Next servía 375x211 para una caja de
+            375x715, porque `sizes="100vw"` describe el ancho, no la altura).
+
+        Lo que aporta `next/image` aquí ya está resuelto en origen: los archivos
+        son WebP con el recorte y el tamaño exactos de cada punto de ruptura.
+        `fetchpriority="high"` le da al preload scanner la misma prioridad que
+        daba `priority`, y como va en el HTML inicial se descubre antes que
+        cualquier <link> inyectado por JS.
+      */}
+      <picture>
+        <source media="(min-width: 768px)" srcSet={imagen} />
+        <img
+          src={imagenMovil ?? imagen}
+          alt={imagenAlt}
+          fetchPriority="high"
+          decoding="async"
+          className="absolute inset-0 -z-10 size-full object-cover"
+        />
+      </picture>
       <div className={cn("absolute inset-0 -z-10", OVERLAY[overlay])} />
 
-      <div className="mx-auto w-full max-w-6xl px-6 py-20 md:px-8 md:py-28">
+      <div className="mx-auto w-full max-w-6xl px-6 pt-24 pb-16 md:px-8 md:pt-28 md:pb-20">
+        {/*
+          SIN animación de entrada, a propósito.
+
+          El titular del hero es candidato a LCP, y Chrome no contabiliza un
+          elemento mientras su opacidad es 0: un fade-in de entrada retrasa la
+          métrica exactamente lo que dure la animación. En un sitio con objetivo
+          de LCP < 1s en móvil eso es pagar la primera impresión con la métrica
+          que decide la conversión. El impacto visual del hero lo dan la
+          fotografía y el degradado, que no cuestan nada. Las animaciones de
+          entrada empiezan por debajo del pliegue, donde son gratis.
+        */}
         <div className="flex max-w-2xl flex-col gap-5">
           <h1 className="text-display text-white">{titulo}</h1>
 

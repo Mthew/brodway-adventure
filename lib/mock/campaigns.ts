@@ -18,7 +18,7 @@ export const MOCK_CAMPAIGNS: Campaign[] = [
     titular: "Cuatro días en el Eje Cafetero, con guía local",
     subtitular:
       "Fincas de café, Valle de Cocora y Salento. Traslados y alojamiento resueltos.",
-    imagen: "https://picsum.photos/seed/eje-cafetero-finca-cafe/1600/900",
+    imagen: "/destinos/eje-cafetero-campana.webp",
     imagenAlt: "Cafetales en ladera al amanecer en el Eje Cafetero",
     pruebaSocial: "Agencia registrada en Medellín, con asesor humano de principio a fin.",
     incluye: [

@@ -285,3 +285,146 @@
 body[data-sticky-cta] [data-whatsapp-floating] {
   display: none;
 }
+
+/* =================================================================
+ * VELO DEL HERO — degradado, no lavado plano
+ *
+ * Las paradas están calculadas, no elegidas a ojo. El texto del hero está
+ * anclado ABAJO, así que la única franja que tiene que cumplir contraste es la
+ * inferior, y ahí el velo es MÁS opaco que el `navy/70` plano que había antes.
+ * Por encima del 58% de altura ya no hay texto y la foto puede respirar.
+ *
+ * El 72% es el tope: es la parada donde el velo vale exactamente 70%, el valor
+ * medido del velo plano original (5.32:1 para texto blanco sobre foto blanca
+ * pura, que es el peor caso posible). Todo lo que quede por debajo de esa línea
+ * está igual o mejor que antes. Si algún día el texto del hero crece hasta
+ * pasar de esa línea, hay que volver a medir: no es un degradado decorativo,
+ * es el que sostiene la accesibilidad del titular.
+ *
+ * Ese tope estaba primero en el 58%, y la medición lo movió: la miga de pan de
+ * la ficha de destino es el texto que más arriba llega de todo el sitio (su
+ * cabecera mide 62svh, no 88svh, así que el contenido empieza más alto) y caía
+ * a 5.02:1. Pasa AA de sobra, pero no llegaba al 5.32 que este repo se fijó
+ * como suelo propio. Peor caso con las paradas de hoy, leído del CSS ya
+ * computado en el navegador sobre foto BLANCA pura:
+ *
+ *   miga de la ficha de destino   6.36:1   ← el peor de todo el sitio
+ *   titular del hero (375px)      6.96:1
+ *   titular del hero (1280px)     9.00:1
+ *
+ * Los tres por encima del 5.32 del velo plano que había antes. Al mover
+ * cualquier parada, volver a medir: el cálculo a ojo se equivocó aquí una vez.
+ * ================================================================= */
+.hero-scrim {
+  background-image: linear-gradient(
+    to top,
+    var(--color-brand-navy) 0%,
+    color-mix(in srgb, var(--color-brand-navy) 86%, transparent) 42%,
+    color-mix(in srgb, var(--color-brand-navy) 70%, transparent) 72%,
+    color-mix(in srgb, var(--color-brand-navy) 45%, transparent) 100%
+  );
+}
+
+.hero-scrim-fuerte {
+  background-image: linear-gradient(
+    to top,
+    var(--color-brand-navy) 0%,
+    color-mix(in srgb, var(--color-brand-navy) 94%, transparent) 42%,
+    color-mix(in srgb, var(--color-brand-navy) 85%, transparent) 72%,
+    color-mix(in srgb, var(--color-brand-navy) 62%, transparent) 100%
+  );
+}
+
+/* =================================================================
+ * ZOOM DE FOTO EN TARJETA
+ *
+ * Detrás de `@media (hover: hover)` a propósito. En un móvil táctil no existe
+ * el hover: el navegador lo emula al tocar y el estado se queda PEGADO hasta
+ * que tocas otra cosa, así que la tarjeta se quedaría con la foto ampliada
+ * después de volver atrás. Con el 83% del tráfico en móvil, ese detalle no es
+ * teórico. En táctil, el feedback lo da `:active`, que sí se suelta.
+ * ================================================================= */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .zoom-foto img {
+    transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .zoom-foto:hover img {
+    transform: scale(1.045);
+  }
+}
+
+/* =================================================================
+ * MOVIMIENTO — animaciones dirigidas por scroll, sin una sola línea de JS
+ *
+ * Esto es lo que en otros proyectos se resuelve con GSAP + ScrollTrigger
+ * (~70 kb) o Framer Motion (~35 kb). Aquí son 0 kb: `animation-timeline`
+ * es CSS nativo, el navegador lo corre fuera del hilo principal y por eso
+ * no compite con el LCP ni se atasca en un gama media Android, que es el
+ * 83% del tráfico.
+ *
+ * TRES REGLAS QUE NO SE TOCAN, porque cada una evita un fallo invisible:
+ *
+ * 1. EL ESTADO OCULTO VIVE DENTRO DE `@supports`. `animation-timeline` está
+ *    en ~84% de navegadores (Chrome/Edge 115+, Safari 18+, Firefox 132+) y
+ *    todavía NO es Baseline. Si `opacity: 0` se declarara fuera del
+ *    `@supports`, en el 16% restante el contenido quedaría invisible para
+ *    siempre y nadie se enteraría hasta perder las ventas. Sin soporte, aquí
+ *    no se aplica nada y la página se ve estática y completa.
+ *
+ * 2. TODO CUELGA DE `prefers-reduced-motion: no-preference`. No se anula el
+ *    movimiento después: directamente no se declara.
+ *
+ * 3. LOS HIJOS USAN `view(block)`, NO `view()`. `view()` se ancla al
+ *    contenedor con scroll más cercano, y la fila de destinos ES un carrusel
+ *    con `overflow-x: auto` en móvil: las tarjetas quedarían animadas por el
+ *    scroll HORIZONTAL y no aparecerían nunca al bajar. Forzar el eje de
+ *    bloque hace que suban hasta la raíz, que es el scroll real de la página.
+ * ================================================================= */
+@keyframes broway-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(1.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* Un bloque que aparece al entrar en pantalla. */
+    .reveal {
+      animation: broway-reveal linear both;
+      animation-timeline: view(block);
+      animation-range: entry 0% entry 55%;
+    }
+
+    /*
+     * Una rejilla cuyos hijos aparecen escalonados.
+     *
+     * El escalonado NO se hace con `animation-delay`: en una animación
+     * dirigida por scroll el "tiempo" es la posición de la barra, así que un
+     * delay no significa nada. Se desplaza el `animation-range` de cada hijo,
+     * que es el equivalente real.
+     */
+    .reveal-stagger > * {
+      animation: broway-reveal linear both;
+      animation-timeline: view(block);
+      animation-range: entry 0% entry 50%;
+    }
+
+    .reveal-stagger > *:nth-child(2) {
+      animation-range: entry 6% entry 56%;
+    }
+
+    .reveal-stagger > *:nth-child(3) {
+      animation-range: entry 12% entry 62%;
+    }
+
+    .reveal-stagger > *:nth-child(n + 4) {
+      animation-range: entry 18% entry 68%;
+    }
+  }
+}
