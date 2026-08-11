@@ -10,6 +10,19 @@ import { CONTACT, RNT_NUMBER } from "@/lib/config";
  * el mensaje anti-fraude son obligatorios o directamente la razón de ser de la
  * página para un visitante que desconfía del rubro.
  */
+/**
+ * Clases de los enlaces del pie.
+ *
+ * `inline-flex min-h-11` = 44px de alto. Medían 23px, menos de la mitad del
+ * mínimo táctil, en TODAS las páginas del sitio. Va como constante y no repetido
+ * siete veces para que el próximo enlace del pie no vuelva a nacer pequeño.
+ *
+ * Los enlaces se apilan en columna, así que `min-h-11` sólo los separa: no
+ * ensancha la caja ni cambia el ancho de la zona clicable.
+ */
+const ENLACE_PIE =
+  "text-body-sm inline-flex min-h-11 items-center text-white/70 hover:text-white";
+
 export async function Footer() {
   const t = await getTranslations("footer");
   const tNav = await getTranslations("nav");
@@ -25,23 +38,23 @@ export async function Footer() {
 
           <nav className="flex flex-col gap-3" aria-label={t("tituloDestinos")}>
             <p className="text-body-sm font-semibold">{t("tituloDestinos")}</p>
-            <Link href="/destinos" className="text-body-sm text-white/70 hover:text-white">
+            <Link href="/destinos" className={ENLACE_PIE}>
               {tNav("destinos")}
             </Link>
-            <Link href="/paquetes" className="text-body-sm text-white/70 hover:text-white">
+            <Link href="/paquetes" className={ENLACE_PIE}>
               {tNav("paquetes")}
             </Link>
           </nav>
 
           <nav className="flex flex-col gap-3" aria-label={t("tituloEmpresa")}>
             <p className="text-body-sm font-semibold">{t("tituloEmpresa")}</p>
-            <Link href="/nosotros" className="text-body-sm text-white/70 hover:text-white">
+            <Link href="/nosotros" className={ENLACE_PIE}>
               {tNav("nosotros")}
             </Link>
-            <Link href="/como-pagar" className="text-body-sm text-white/70 hover:text-white">
+            <Link href="/como-pagar" className={ENLACE_PIE}>
               {tNav("comoPagar")}
             </Link>
-            <Link href="/contacto" className="text-body-sm text-white/70 hover:text-white">
+            <Link href="/contacto" className={ENLACE_PIE}>
               {tNav("contacto")}
             </Link>
             {/* Paréntesis y no guion largo: el Pre-Flight §11.B prohíbe el `—` en
@@ -53,10 +66,10 @@ export async function Footer() {
 
           <nav className="flex flex-col gap-3" aria-label={t("tituloLegal")}>
             <p className="text-body-sm font-semibold">{t("tituloLegal")}</p>
-            <Link href="/legal" className="text-body-sm text-white/70 hover:text-white">
+            <Link href="/legal" className={ENLACE_PIE}>
               {t("legal")}
             </Link>
-            <Link href="/faq" className="text-body-sm text-white/70 hover:text-white">
+            <Link href="/faq" className={ENLACE_PIE}>
               {t("faq")}
             </Link>
             {/* TODO: VERIFICAR datos de contacto reales antes de publicar */}

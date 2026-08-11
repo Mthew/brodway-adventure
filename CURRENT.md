@@ -16,8 +16,8 @@
 | 4 · Home | ✅ Mergeado | PR #6 |
 | 7 · `/lp/[campana]` | ✅ Mergeado | PR #7 |
 | 8 · Tracking + cookies | ✅ En revisión | PR #8 |
-| Datos del cliente + tipografía | ✅ En revisión | `fase-1/datos-cliente-y-tipografia` |
-| 9 · Pre-Flight + sitemap | ⏭️ Siguiente | — |
+| Datos del cliente + tipografía | ✅ Mergeado | PR #9 |
+| 9 · Pre-Flight + sitemap | ✅ En revisión | `fase-1/paso-9-preflight` |
 
 ## Lo que hay que saber para no romper nada
 
@@ -30,9 +30,9 @@
 - **Dos cromos:** `(sitio)` con navbar y pie, `lp/[campana]` sin ninguno. Todo layout nuevo DEBE
   llamar a `setRequestLocale` o el sitio deja de ser estático sin dar ningún error.
 - **Verde = WhatsApp, naranja = enviar formulario.** Un solo color por intención en todo el sitio.
-- **Contraste: verifica contra la superficie real**, no contra blanco. Para fondos oscuros hay
-  variantes propias (`Badge destinoOscuro`).
-- **Deuda del Paso 9:** los 7 enlaces del Footer miden 23px, bajo el mínimo táctil de 44px.
+- **Contraste: verifica contra la superficie real**, no contra blanco.
+- **Pre-Flight limpio** en las 12 páginas a 375px y 1440px. Método y hallazgos en
+  [`history/004`](history/004-preflight-fase-1.md). Falta confirmar el foco visible a ojo.
 
 ## Bloqueos externos (ninguno se resuelve con código)
 
