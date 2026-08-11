@@ -8,9 +8,9 @@ import { listOfferSlugs } from "@/lib/offers";
 /**
  * Sitemap con entradas para ambos locales (spec-tecnica.md §3.5).
  *
- * Las rutas que NO deben indexarse —`/design-system`, `/gracias` y las landings
- * de campaña `/lp/[campana]`— no van aquí y además declaran `robots: index:false`
- * en su propia metadata.
+ * Las rutas que NO deben indexarse —`/design-system`, `/demo-crm`, `/gracias` y
+ * las landings de campaña `/lp/[campana]`— no van aquí y además declaran
+ * `robots: index:false` en su propia metadata.
  *
  * Las rutas dinámicas se leen de las mismas capas que usan las páginas
  * (`lib/offers`, `lib/destinations`) y no de una lista escrita a mano: una lista
