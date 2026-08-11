@@ -68,13 +68,14 @@ export async function Footer() {
 
       <div className="border-t border-white/15">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-8 md:px-8">
-          {/* TODO: VERIFICAR dato legal real antes de publicar */}
           <p className="text-body-sm font-semibold">
             {t("rnt", { numero: RNT_NUMBER })}
           </p>
           <p className="text-caption text-white/70">{t("escnna")}</p>
           <p className="text-caption text-white/70">{t("antifraude")}</p>
-          <p className="text-caption text-white/50">
+          {/* `white/60` y no `/50`: sobre navy, el 50% rinde 4.40:1 y no llega al
+              4.5 de AA. El 60% da 5.64:1. Medido, no estimado. */}
+          <p className="text-caption text-white/60">
             {t("derechos", { anio: new Date().getFullYear() })}
           </p>
         </div>

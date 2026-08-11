@@ -10,14 +10,19 @@
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://browayadventures.com";
 
-/** TODO: VERIFICAR — número real de WhatsApp comercial, en formato E.164 sin `+`. */
-export const WHATSAPP_NUMBER = "57XXXXXXXXXX";
+/** Confirmado por el cliente el 2026-08-05. E.164 sin `+`: 57 + 3054513307. */
+export const WHATSAPP_NUMBER = "573054513307";
 
-/** TODO: VERIFICAR — Registro Nacional de Turismo. Obligatorio en toda la publicidad. */
-export const RNT_NUMBER = "XXXXXX";
+/**
+ * Registro Nacional de Turismo. Confirmado por el cliente el 2026-08-05.
+ *
+ * Obligatorio en toda la publicidad de un prestador turístico, no sólo en el pie:
+ * por eso aparece también junto a cada precio publicado.
+ */
+export const RNT_NUMBER = "297515";
 
-/** TODO: VERIFICAR — Número de Identificación Tributaria. */
-export const NIT_NUMBER = "XXXXXXXXX";
+/** NIT con dígito de verificación. Confirmado por el cliente el 2026-08-05. */
+export const NIT_NUMBER = "1040742725-1";
 
 /**
  * TODO: VERIFICAR — afiliaciones gremiales.
@@ -29,11 +34,18 @@ export const NIT_NUMBER = "XXXXXXXXX";
  */
 export const AFILIACIONES: readonly string[] = [];
 
-/** TODO: VERIFICAR — datos de contacto y domicilio comercial. */
+/**
+ * Datos de contacto. Dirección y teléfono confirmados el 2026-08-05.
+ *
+ * El cliente entregó la dirección sin repetir la ciudad; se mantiene Medellín,
+ * que es la sede según toda la documentación. TODO: confirmar el correo, que
+ * sigue siendo el supuesto de la Fase 0 y no lo entregó el cliente.
+ */
 export const CONTACT = {
   ciudad: "Medellín, Colombia",
-  direccion: "XXXXXX",
-  telefono: "XXXXXX",
+  direccion: "Cl 2B Sur #78B-06",
+  /** Mismo número que WhatsApp, en formato legible. */
+  telefono: "305 4513307",
   email: "hola@browayadventures.com",
 } as const;
 

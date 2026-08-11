@@ -25,7 +25,7 @@
     "cuentanosComoViajar": "Cuéntanos cómo quieres viajar"
   },
   "microcopy": {
-    "respuestaEnMinutos": "Respuesta en minutos, sin compromiso",
+    "respuestaEnMinutos": "Primera respuesta entre 1 y 5 minutos, sin compromiso",
     "asesoraExperto": "Te asesora un experto en viajes, no un bot",
     "precioClaro": "Precio final claro antes de reservar"
   },
@@ -155,7 +155,7 @@
     "titulo": "Escríbenos y te respondemos",
     "entradilla": "Dos formas de empezar, y las dos llegan a la misma persona. Elige la que te resulte más cómoda.",
     "whatsappTitulo": "Por WhatsApp",
-    "whatsappTexto": "Es la vía más rápida. Te responde un asesor dentro del horario de atención.",
+    "whatsappTexto": "Es la vía más rápida. Un asesor te responde entre 1 y 5 minutos, dentro del horario de atención.",
     "formularioTitulo": "Con un formulario",
     "formularioTexto": "Si prefieres no chatear, déjanos tus datos y te escribimos nosotros.",
     "datosTitulo": "Dónde estamos",
@@ -164,7 +164,7 @@
     "ciudad": "Ciudad",
     "direccion": "Dirección",
     "correo": "Correo",
-    "mapaPendiente": "Aquí va el mapa. Todavía no lo mostramos porque la dirección exacta no está confirmada, y no queremos señalar un punto que no sea el real."
+    "telefono": "Teléfono"
   },
   "comoPagar": {
     "titulo": "Cómo se paga un viaje con nosotros",
@@ -265,7 +265,7 @@
   },
   "gracias": {
     "titulo": "Listo, recibimos tu solicitud",
-    "expectativa": "Te escribimos por WhatsApp dentro del horario de atención. Un asesor revisa tu solicitud y te responde con opciones claras.",
+    "expectativa": "Te escribimos por WhatsApp entre 1 y 5 minutos, dentro del horario de atención. Un asesor revisa tu solicitud y te responde con opciones claras.",
     "paso1": "Un asesor revisa lo que nos contaste y arma opciones para tu viaje.",
     "paso2": "Te escribe por WhatsApp con los precios y las condiciones completas.",
     "paso3": "Si algo no encaja, lo ajustan juntos antes de separar nada.",

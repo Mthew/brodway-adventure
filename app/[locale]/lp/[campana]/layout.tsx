@@ -49,7 +49,6 @@ export default async function LandingLayout({
 
       <footer className="bg-brand-navy text-white">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-10 md:px-8">
-          {/* TODO: VERIFICAR dato legal real antes de publicar */}
           <p className="text-body-sm font-semibold">
             {t("rnt", { numero: RNT_NUMBER })}
           </p>

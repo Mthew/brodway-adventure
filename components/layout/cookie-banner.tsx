@@ -85,7 +85,9 @@ export function CookieBanner() {
             {t("texto")}{" "}
             <Link
               href="/legal"
-              className="text-brand-turquoise-text font-semibold underline underline-offset-4"
+              /* `min-h-11` = 44px: el mínimo táctil aplica también a este enlace,
+                 que medía 41px dentro del párrafo del banner. */
+              className="text-brand-turquoise-text inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
             >
               {t("enlace")}
             </Link>
