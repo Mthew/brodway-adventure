@@ -58,7 +58,9 @@ export default async function LegalPage({
               <li key={section.id}>
                 <a
                   href={`#${section.id}`}
-                  className="text-body-sm hover:text-brand-navy text-neutral-600"
+                  /* `min-h-11` = 44px: son seis enlaces de índice apilados y
+                     medían 18px, menos de la mitad del mínimo táctil. */
+                  className="text-body-sm hover:text-brand-navy inline-flex min-h-11 items-center text-neutral-600"
                 >
                   {section.titulo}
                 </a>
@@ -71,7 +73,7 @@ export default async function LegalPage({
           <header className="flex flex-col gap-3">
             <h1 className="text-h1 text-brand-navy">Información legal</h1>
             <p className="text-body-sm text-neutral-600">
-              Política de tratamiento de datos — versión {POLICY_VERSION},
+              Política de tratamiento de datos, versión {POLICY_VERSION},
               vigente desde {POLICY_DATE}.
             </p>
             <p className="text-body-sm bg-surface-alt rounded-md p-4 text-neutral-700">
@@ -85,9 +87,9 @@ export default async function LegalPage({
             <p className="text-body text-neutral-700">
               [PENDIENTE DE REDACCIÓN LEGAL] Esta sección debe declarar: el
               responsable del tratamiento y sus datos de contacto; las finalidades
-              del tratamiento —gestionar la solicitud, elaborar cotizaciones, hacer
+              del tratamiento (gestionar la solicitud, elaborar cotizaciones, hacer
               seguimiento, enviar información comercial y publicidad
-              personalizada—; los derechos del titular a conocer, actualizar,
+              personalizada); los derechos del titular a conocer, actualizar,
               rectificar y suprimir sus datos y a revocar la autorización; el canal
               y el procedimiento para ejercerlos; y el aviso de transferencia
               internacional, ya que el CRM está alojado fuera de Colombia.

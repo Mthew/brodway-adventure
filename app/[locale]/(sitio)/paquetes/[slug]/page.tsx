@@ -86,16 +86,18 @@ export default async function PaquetePage({
       <JsonLd offer={offer} vencida={vencida} locale={locale} />
 
       <Section spacing="compact">
+        {/* `min-h-11` en las migas: el mínimo táctil aplica también aquí, y
+            medían 18px. Es el mismo arreglo que ya llevaba la página de destino. */}
         <nav aria-label="Ruta de navegación" className="text-body-sm mb-6">
           <ol className="flex flex-wrap items-center gap-2 text-neutral-600">
             <li>
-              <Link href="/" className="hover:underline">
+              <Link href="/" className="inline-flex min-h-11 items-center hover:underline">
                 {t("migaInicio")}
               </Link>
             </li>
             <li aria-hidden="true">/</li>
             <li>
-              <Link href="/paquetes" className="hover:underline">
+              <Link href="/paquetes" className="inline-flex min-h-11 items-center hover:underline">
                 {t("migaPaquetes")}
               </Link>
             </li>
@@ -104,10 +106,25 @@ export default async function PaquetePage({
           </ol>
         </nav>
 
-        <div className="grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:items-start lg:gap-12">
-          <Galeria imagenes={offer.imagenes} titulo={offer.titulo} />
+        {/*
+          EN MÓVIL EL BLOQUE DE CONVERSIÓN VA ANTES QUE LA GALERÍA.
 
-          <div className="flex flex-col gap-5">
+          Con la galería primero, este bloque medía 1179px sobre un viewport de
+          812: el precio y el CTA quedaban bajo el pliegue en la página que más
+          convierte. Y no cabía de ninguna forma — migas, titular, galería,
+          precio y dos CTA son más de lo que entra en una pantalla de teléfono,
+          por mucho que se recorte cada pieza.
+
+          Así que cede el ORDEN, no el contenido: primero titular, precio y CTA,
+          y la galería justo debajo. En escritorio, donde sí caben las dos
+          columnas, se recupera la disposición original.
+        */}
+        <div className="grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:items-start lg:gap-12">
+          <div className="order-2 lg:order-1">
+            <Galeria imagenes={offer.imagenes} titulo={offer.titulo} />
+          </div>
+
+          <div className="order-1 flex flex-col gap-5 lg:order-2">
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="destino">{offer.destino}</Badge>
               <Badge variant="neutral">
@@ -127,7 +144,16 @@ export default async function PaquetePage({
               <>
                 <PriceDisclosure offer={offer} />
 
-                <div className="flex flex-col gap-3 sm:flex-row">
+                {/*
+                  Apilados SIEMPRE, sin punto de ruptura a fila.
+
+                  Esta columna ocupa ~490px en escritorio, y "Ver itinerario día
+                  a día" junto a "Cotiza por WhatsApp" no cabe: el texto se parte
+                  en dos líneas, que el Pre-Flight §11.B prohíbe. Se probó con
+                  `sm:` y con `xl:` y falla en ambos, porque el ancho disponible
+                  no depende del viewport sino de la rejilla de dos columnas.
+                */}
+                <div className="flex flex-col gap-3">
                   <ButtonLink
                     href={whatsappHref}
                     variant="whatsapp"
