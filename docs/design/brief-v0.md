@@ -171,6 +171,12 @@ felices" ni reseñas ficticias con nombres reales: usa placeholders evidentes.
 
 ## 2.bis Dirección de diseño — declarar una vez, pegar en cada prompt
 
+> **Para el home hay un spec más detallado**: [`spec-home-v1.md`](spec-home-v1.md) baja esta
+> dirección a nueve secciones concretas, con la medición de la competencia directa
+> (appletravel.com.co) que justifica cada decisión, criterios de aceptación y un presupuesto de
+> rendimiento. Esta §2.bis sigue siendo la regla general del sitio; aquel spec es su aplicación
+> al home.
+
 El bloque §2 dice qué **no** escribir. Este dice **cómo debe verse**. Sale de aplicar
 [`.claude/skills/design-taste-frontend/SKILL.md`](../../.claude/skills/design-taste-frontend/SKILL.md)
 (skill anti-slop de frontend) a este proyecto: en lugar de re-derivar la dirección visual en cada
