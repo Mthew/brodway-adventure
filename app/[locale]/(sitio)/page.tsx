@@ -107,6 +107,10 @@ export default async function HomePage({
         imagen="/destinos/home-hero.webp"
         imagenMovil="/destinos/home-hero-movil.webp"
         imagenAlt={t("heroImagenAlt")}
+        ciclo={[
+          { imagen: "/destinos/cartagena-hero.webp", alt: t("heroImagenAlt2") },
+          { imagen: "/destinos/san-andres-hero.webp", alt: t("heroImagenAlt3") },
+        ]}
         acciones={
           <>
             {/*

@@ -461,6 +461,66 @@ body[data-sticky-cta] [data-whatsapp-floating] {
   }
 }
 
+/* =================================================================
+ * SLIDESHOW DEL HERO — dirigido por TIEMPO, no por scroll (spec-home-v1.md §3)
+ *
+ * Distinto de todo lo de arriba a propósito: esto no usa `animation-timeline`
+ * porque no depende de qué tanto scrolleó el visitante, depende de cuántos
+ * segundos lleva mirando el hero. `@keyframes` con `animation-delay` es
+ * Baseline desde hace años, así que esta base NO necesita `@supports`.
+ *
+ * Tres tiempos y se detiene — NO es un bucle infinito (§2.bis lo prohíbe):
+ *   - Foto 1 (prop `imagen` de `Hero`) es estática, sin animación. Es el LCP.
+ *   - Foto 2 aparece a los 5s, se sostiene, y a los ~7s vuelve a desvanecerse.
+ *   - Foto 3 aparece a los 11s y esta vez SE QUEDA (`both` sostiene el
+ *     último fotograma) — el slideshow termina ahí, no reinicia jamás.
+ *
+ * `opacity: 0` como base SÍ vive fuera de cualquier guarda, y no es el
+ * mismo error que las notas de arriba prohíben: para `.reveal` un fallo de
+ * soporte deja contenido único invisible para siempre, y eso es un fallo de
+ * negocio. Aquí, "sólo se ve la foto 1, quieta" es exactamente el estado
+ * que pide `prefers-reduced-motion: reduce` — un hero completo y correcto,
+ * no un hero roto.
+ * ================================================================= */
+.hero-slide-2,
+.hero-slide-3 {
+  opacity: 0;
+}
+
+@keyframes broway-hero-fade-cross {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  4%,
+  30% {
+    opacity: 1;
+  }
+  36% {
+    opacity: 0;
+  }
+}
+
+@keyframes broway-hero-fade-hold {
+  0% {
+    opacity: 0;
+  }
+  4%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-slide-2 {
+    animation: broway-hero-fade-cross 6s linear 5s both;
+  }
+
+  .hero-slide-3 {
+    animation: broway-hero-fade-hold 1.5s linear 11s both;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
     /* Un bloque que aparece al entrar en pantalla. */
