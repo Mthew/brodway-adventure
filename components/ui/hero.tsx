@@ -152,16 +152,26 @@ export function Hero({
         daba `priority`, y como va en el HTML inicial se descubre antes que
         cualquier <link> inyectado por JS.
       */}
-      <picture>
-        <source media="(min-width: 768px)" srcSet={imagen} />
-        <img
-          src={imagenMovil ?? imagen}
-          alt={imagenAlt}
-          fetchPriority="high"
-          decoding="async"
-          className="absolute inset-0 -z-10 size-full object-cover"
-        />
-      </picture>
+      {/*
+        `hero-parallax` sólo mueve `transform` (ver globals.css): no repinta
+        la foto, no toca su opacidad, así que no puede retrasar el LCP. Vive
+        en un wrapper con `overflow-hidden` propio y no en el `<picture>`
+        directamente, porque el `scale(1.12)` del parallax necesita recortarse
+        dentro del alto exacto del hero y no desbordar hacia las secciones
+        vecinas (el hero es `isolate`, pero no recorta por sí solo).
+      */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <picture>
+          <source media="(min-width: 768px)" srcSet={imagen} />
+          <img
+            src={imagenMovil ?? imagen}
+            alt={imagenAlt}
+            fetchPriority="high"
+            decoding="async"
+            className="hero-parallax size-full object-cover"
+          />
+        </picture>
+      </div>
       <div className={cn("absolute inset-0 -z-10", OVERLAY[overlay])} />
 
       <div className="mx-auto w-full max-w-6xl px-6 pt-24 pb-16 md:px-8 md:pt-28 md:pb-20">

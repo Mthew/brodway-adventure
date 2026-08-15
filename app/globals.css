@@ -363,6 +363,12 @@ body[data-sticky-cta] [data-whatsapp-floating] {
  * no compite con el LCP ni se atasca en un gama media Android, que es el
  * 83% del tráfico.
  *
+ * Dial subido de 3 a 7 el 2026-08-15 (brief-v0.md §2.bis): las variantes de
+ * abajo (`-strong`, `-scale`, `-curtain`, `line-draw`, `hero-parallax`) son
+ * más `@keyframes` sobre la MISMA maquinaria — ninguna añade JS ni cambia el
+ * presupuesto de bundle. El límite sigue siendo el mismo: transform/opacity
+ * únicamente (composición en GPU), nunca propiedades que disparan layout.
+ *
  * TRES REGLAS QUE NO SE TOCAN, porque cada una evita un fallo invisible:
  *
  * 1. EL ESTADO OCULTO VIVE DENTRO DE `@supports`. `animation-timeline` está
@@ -392,6 +398,69 @@ body[data-sticky-cta] [data-whatsapp-floating] {
   }
 }
 
+/* Mismo reveal, más recorrido y una pizca de escala: para títulos de sección
+   de peso alto, donde el fundido simple de `.reveal` se siente tímido. */
+@keyframes broway-reveal-strong {
+  from {
+    opacity: 0;
+    transform: translateY(3rem) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Escala desde dentro: para bloques de fondo de color plano (la franja Next
+   Stop), donde no hay foto que dé profundidad y el movimiento tiene que
+   salir del propio bloque. */
+@keyframes broway-reveal-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Cortina que se abre de abajo hacia arriba: para fotos de tarjeta. `clip-path`
+   y no `opacity`, porque la imagen ya está pintada y sólo se recorta — sigue
+   siendo compositor puro, no repinta nada. */
+@keyframes broway-reveal-curtain {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0% 0);
+  }
+}
+
+/* La línea conectora de "Cómo funciona" se dibuja de izquierda a derecha.
+   `scaleX`, no `width`: animar `width` dispara layout en cada frame, escalar
+   es sólo compositor. */
+@keyframes broway-line-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Parallax del fondo del hero. `scale(1.12)` fijo deja colchón de sobra para
+   que el `translateY` no descubra un borde vacío. El titular NUNCA anima
+   (ver `hero.tsx`): esto sólo mueve la fotografía, que ya está pintada. */
+@keyframes broway-hero-parallax {
+  from {
+    transform: scale(1.12) translateY(0%);
+  }
+  to {
+    transform: scale(1.12) translateY(-6%);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
     /* Un bloque que aparece al entrar en pantalla. */
@@ -399,6 +468,63 @@ body[data-sticky-cta] [data-whatsapp-floating] {
       animation: broway-reveal linear both;
       animation-timeline: view(block);
       animation-range: entry 0% entry 55%;
+    }
+
+    /* Título o bloque de peso alto: mismo timeline, más recorrido. */
+    .reveal-strong {
+      animation: broway-reveal-strong linear both;
+      animation-timeline: view(block);
+      animation-range: entry 0% entry 60%;
+    }
+
+    /* Bloque de fondo plano (franjas de color a ancho completo). */
+    .reveal-scale {
+      animation: broway-reveal-scale linear both;
+      animation-timeline: view(block);
+      animation-range: entry 0% entry 55%;
+    }
+
+    /* Foto de tarjeta: se necesita `overflow: hidden` en el contenedor, que
+       `.zoom-foto` ya trae. Convive con el zoom de :hover porque uno anima
+       `clip-path` en el contenedor y el otro `transform` en la imagen. */
+    .reveal-curtain {
+      animation: broway-reveal-curtain linear both;
+      animation-timeline: view(block);
+      animation-range: entry 0% entry 60%;
+    }
+
+    /* Dentro del carrusel horizontal de destinos (home, <768px) el `<ul>` ES
+       el scroll container, por la misma razón que ya obliga a que `.reveal`/
+       `.reveal-stagger` vivan en el `<ul>` y no en cada tarjeta (nota de las
+       "TRES REGLAS" arriba): su eje de bloque nunca se mueve, así que
+       `.reveal-curtain` se quedaría clavado en su fotograma inicial — la
+       foto INVISIBLE para siempre, no un fallo cosmético. Se desactiva bajo
+       el breakpoint md (768px), donde el mismo `<ul>` pasa a `md:grid` y deja
+       de ser scroller. */
+    @media (max-width: 767px) {
+      .carrusel-destinos .reveal-curtain {
+        animation: none;
+        clip-path: none;
+      }
+    }
+
+    /* `transform-origin: left` es obligatorio: sin él, `scaleX` crece desde
+       el centro y la línea se dibuja hacia los dos lados en vez de avanzar. */
+    .line-draw {
+      transform-origin: left;
+      animation: broway-line-draw linear both;
+      animation-timeline: view(block);
+      animation-range: entry 10% entry 70%;
+    }
+
+    /* Parallax del hero: se ancla al scroll de la RAÍZ (`view()` sin forzar
+       eje de bloque), no a un contenedor propio — a diferencia de la fila de
+       destinos, aquí no hay ningún `overflow-x: auto` de por medio que pueda
+       capturar el timeline. */
+    .hero-parallax {
+      animation: broway-hero-parallax linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
     }
 
     /*

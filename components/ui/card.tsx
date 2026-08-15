@@ -48,7 +48,7 @@ export async function DestinationCard({
     <Card className="group flex flex-col">
       {/* `overflow-hidden` es lo que recorta el zoom al hover; sin él la foto
           ampliada se sale de la tarjeta. */}
-      <div className="zoom-foto relative aspect-[4/3] w-full overflow-hidden bg-neutral-100">
+      <div className="zoom-foto reveal-curtain relative aspect-[4/3] w-full overflow-hidden bg-neutral-100">
         {/*
           Aquí iría el morph de tarjeta a cabecera de destino con
           `<ViewTransition name={...} share="morph">`, que es la transición de
@@ -114,7 +114,7 @@ export async function PackageCard({ offer }: { offer: Offer }) {
 
   return (
     <Card className="group flex flex-col">
-      <div className="zoom-foto relative aspect-[16/10] w-full overflow-hidden bg-neutral-100">
+      <div className="zoom-foto reveal-curtain relative aspect-[16/10] w-full overflow-hidden bg-neutral-100">
         {offer.imagenes[0] ? (
           <Image
             src={offer.imagenes[0]}

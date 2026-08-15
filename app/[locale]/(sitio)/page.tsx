@@ -166,7 +166,7 @@ export default async function HomePage({
           jamás. La fila entera sí se ancla al scroll de la página. */}
       <Section>
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-          <h2 className="reveal text-h2 text-brand-navy max-w-[18ch]">
+          <h2 className="reveal-strong text-h2 text-brand-navy max-w-[18ch]">
             {t("destinosTitulo")}
           </h2>
           <Link
@@ -177,7 +177,7 @@ export default async function HomePage({
           </Link>
         </div>
 
-        <ul className="reveal -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 lg:grid-cols-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <ul className="reveal carrusel-destinos -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 lg:grid-cols-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {tarjetas.map(({ destino, precio }) => (
             <li
               key={destino.slug}
@@ -196,14 +196,17 @@ export default async function HomePage({
       {/* 4. CÓMO FUNCIONA. Flujo de 3 pasos con línea conectora, NO tres tarjetas
           idénticas: esa fila es la firma de una plantilla. */}
       <Section background="navy">
-        <h2 className="reveal text-h2 mb-12 max-w-[18ch]">{t("comoFuncionaTitulo")}</h2>
+        <h2 className="reveal-strong text-h2 mb-12 max-w-[18ch]">{t("comoFuncionaTitulo")}</h2>
 
         <ol className="reveal-stagger relative grid gap-10 md:grid-cols-3 md:gap-8">
           {/* La línea conectora sólo existe en escritorio, donde el flujo es
-              horizontal. En móvil los pasos se apilan y la línea sobra. */}
+              horizontal. En móvil los pasos se apilan y la línea sobra.
+              `line-draw` la dibuja de izquierda a derecha según entra en
+              pantalla (globals.css): un `<div>`, no un SVG, así que sigue
+              siendo `transform: scaleX()`, no `stroke-dashoffset`. */}
           <div
             aria-hidden="true"
-            className="absolute top-6 right-0 left-0 hidden h-px bg-white/20 md:block"
+            className="line-draw absolute top-6 right-0 left-0 hidden h-px bg-white/20 md:block"
           />
 
           {pasos.map(({ icono: Icono, titulo, texto }) => (
@@ -224,7 +227,7 @@ export default async function HomePage({
 
       {/* 5. POR QUÉ BROWAY. Rejilla 2x2 con ícono, sin bordes de tarjeta. */}
       <Section>
-        <h2 className="reveal text-h2 text-brand-navy mb-10 max-w-[18ch]">
+        <h2 className="reveal-strong text-h2 text-brand-navy mb-10 max-w-[18ch]">
           {t("porQueTitulo")}
         </h2>
         <dl className="reveal-stagger grid gap-x-12 gap-y-10 md:grid-cols-2">
@@ -248,7 +251,7 @@ export default async function HomePage({
 
       {/* 6. NEXT STOP. Única aparición de la firma verbal en toda la página. */}
       <Section background="turquoise" spacing="compact">
-        <div className="reveal flex flex-col items-start gap-5 lg:flex-row lg:items-center lg:justify-between">
+        <div className="reveal-scale flex flex-col items-start gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-col gap-2">
             <h2 className="text-h2">{t("nextStopTitulo")}</h2>
             <p className="text-body max-w-[45ch]">{t("nextStopTexto")}</p>
@@ -269,7 +272,7 @@ export default async function HomePage({
       {/* 7. TESTIMONIOS. Uno destacado y dos apilados: asimétrico a propósito,
           para no caer en la fila de tres iguales. */}
       <Section background="alt">
-        <h2 className="text-h2 text-brand-navy mb-3 max-w-[20ch]">
+        <h2 className="reveal text-h2 text-brand-navy mb-3 max-w-[20ch]">
           {t("testimoniosTitulo")}
         </h2>
         {/* Marcados como relleno de forma evidente: ni cifras inventadas ni
