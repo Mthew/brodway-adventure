@@ -508,15 +508,6 @@ body[data-sticky-cta] [data-whatsapp-floating] {
       }
     }
 
-    /* `transform-origin: left` es obligatorio: sin él, `scaleX` crece desde
-       el centro y la línea se dibuja hacia los dos lados en vez de avanzar. */
-    .line-draw {
-      transform-origin: left;
-      animation: broway-line-draw linear both;
-      animation-timeline: view(block);
-      animation-range: entry 10% entry 70%;
-    }
-
     /* Parallax del hero: se ancla al scroll de la RAÍZ (`view()` sin forzar
        eje de bloque), no a un contenedor propio — a diferencia de la fila de
        destinos, aquí no hay ningún `overflow-x: auto` de por medio que pueda
@@ -551,6 +542,28 @@ body[data-sticky-cta] [data-whatsapp-floating] {
 
     .reveal-stagger > *:nth-child(n + 4) {
       animation-range: entry 18% entry 68%;
+    }
+
+    /*
+     * `.line-draw` va DESPUÉS de `.reveal-stagger > *` a propósito, no por
+     * orden alfabético. La línea conectora de "Cómo funciona" es un `<div>`
+     * hijo directo del mismo `<ol reveal-stagger>` que envuelve los 3 pasos,
+     * así que también matchea `.reveal-stagger > *`. Con especificidad igual
+     * (una sola clase en los dos selectores), gana quien aparece último en
+     * el archivo — si este bloque quedara ANTES de `.reveal-stagger > *`
+     * (como estuvo brevemente), la línea heredaba `broway-reveal` en vez de
+     * `broway-line-draw` y se desvanecía de golpe en lugar de dibujarse.
+     * Verificado en navegador: `getComputedStyle().animationName` debe leer
+     * `broway-line-draw`, nunca `broway-reveal`, para el elemento `.line-draw`.
+     *
+     * `transform-origin: left` es obligatorio: sin él, `scaleX` crece desde
+     * el centro y la línea se dibuja hacia los dos lados en vez de avanzar.
+     */
+    .line-draw {
+      transform-origin: left;
+      animation: broway-line-draw linear both;
+      animation-timeline: view(block);
+      animation-range: entry 10% entry 70%;
     }
   }
 }
