@@ -171,6 +171,12 @@ felices" ni reseñas ficticias con nombres reales: usa placeholders evidentes.
 
 ## 2.bis Dirección de diseño — declarar una vez, pegar en cada prompt
 
+> **Para el home hay un spec más detallado**: [`spec-home-v1.md`](spec-home-v1.md) baja esta
+> dirección a nueve secciones concretas, con la medición de la competencia directa
+> (appletravel.com.co) que justifica cada decisión, criterios de aceptación y un presupuesto de
+> rendimiento. Esta §2.bis sigue siendo la regla general del sitio; aquel spec es su aplicación
+> al home.
+
 El bloque §2 dice qué **no** escribir. Este dice **cómo debe verse**. Sale de aplicar
 [`.claude/skills/design-taste-frontend/SKILL.md`](../../.claude/skills/design-taste-frontend/SKILL.md)
 (skill anti-slop de frontend) a este proyecto: en lugar de re-derivar la dirección visual en cada
@@ -181,27 +187,41 @@ que el output la cumplió está en §11.
 
 > Sitio de **captación de leads + credibilidad institucional** para una agencia de viajes
 > colombiana, audiencia 83% móvil, con lenguaje **calmado y claro** (arquetipo Cuidador),
-> sobre tokens propios de Tailwind v4 y componentes propios, con **motion mínimo**.
+> sobre tokens propios de Tailwind v4 y componentes propios, con **motion notorio pero
+> disciplinado**: dirigido por scroll, 100% CSS nativo, sin costo de LCP ni de bundle.
 
 ### Los tres diales
 
-`DESIGN_VARIANCE: 6` · `MOTION_INTENSITY: 3` · `VISUAL_DENSITY: 4`
+`DESIGN_VARIANCE: 7` · `MOTION_INTENSITY: 7` · `VISUAL_DENSITY: 4`
+
+**Actualizado 2026-08-15.** Hasta esta fecha el motion estuvo fijo en 3, por una premisa que
+resultó falsa: que "más impacto visual" exigía una librería de animación, y que una librería de
+animación era incompatible con LCP < 1s en móvil. La sesión `fase-1/direccion-visual` (PR #12)
+demostró lo contrario en el propio código del repo — `animation-timeline: view()` en CSS puro
+entrega scroll-reveal sin una sola línea de JS (medido: +0 kB de bundle, +1.7 kB de CSS) — así
+que la premisa que sostenía el dial en 3 ya no aplica. Subir el dial no es aflojar el objetivo de
+rendimiento, es reconocer que motion e impacto visual no lo comprometían. Ver el bloque
+`MOVIMIENTO` más abajo para la técnica exacta y sus límites.
 
 Estos números no son gusto, son consecuencia de restricciones ya cerradas:
 
-- **VARIANCE 6, no 8.** El skill pondría 3-4 por "trust-first / regulado" (RNT, Ley 1581,
-  ESCNNA) y 7-9 por "landing page"; el punto medio es lo correcto aquí. El enemigo de marca
-  declarado es *la saturación visual* y la regla es *el diseño debe respirar*. 6 significa
-  asimetría controlada (heroes partidos, columnas de ancho desigual, alineación a la
-  izquierda) **sin** masonry, sin zonas vacías de 20vw, sin composiciones "de agencia".
-- **MOTION 3.** Forzado por el objetivo de LCP < 1s en móvil y por la prohibición de
-  librerías de animación (§2). El propio skill contempla esta salida: si no se puede
-  entregar motion funcional, se baja el dial a 3 y se entrega una página estática limpia,
-  en vez de dejar animaciones a medias. Efecto colateral deseable: el dial 3 desactiva de
-  raíz el scroll-hijack, los marquees, las secciones pinned y la física magnética.
-- **DENSITY 4.** La ficha de paquete tiene información que el usuario necesita para decidir
-  (qué incluye / qué no, itinerario, vigencia, disclosure de precio). No es galería de arte.
-  Pero 4 y no 7: espaciado de sección `py-16`/`py-24`, no interfaz de cabina.
+- **VARIANCE 7, no 8-9.** El skill pondría 3-4 por "trust-first / regulado" (RNT, Ley 1581,
+  ESCNNA) y 7-9 por "landing page"; sube un punto respecto al 6 anterior porque el objetivo
+  explícito ahora es "muy potente visualmente", pero el enemigo de marca declarado sigue siendo
+  *la saturación visual* y la regla sigue siendo *el diseño debe respirar*. 7 significa capas de
+  profundidad (parallax sutil, imágenes que revelan con recorte, contenido que entra con más
+  desplazamiento y más escala) **sin** masonry, sin zonas vacías de 20vw, sin composiciones "de
+  agencia".
+- **MOTION 7, no 10.** Ya no está limitado por LCP ni por la prohibición de librerías — sigue
+  prohibida la librería (§2 se mantiene: nada de `framer-motion`/`motion`/GSAP/Lenis/React Three
+  Fiber), pero no por peso de bundle sino porque `animation-timeline` nativo ya resuelve el mismo
+  problema a coste cero y con menos superficie de bugs. El techo en 7 y no en 10 es deliberado:
+  10 sería scroll-hijack, secciones pinned y física de resorte, que siguen prohibidas por UX (le
+  quitan al visitante el control del scroll) y no por rendimiento. Ver `MOVIMIENTO` abajo para lo
+  que el 7 sí habilita.
+- **DENSITY 4.** Sin cambios: la ficha de paquete tiene información que el usuario necesita para
+  decidir (qué incluye / qué no, itinerario, vigencia, disclosure de precio). No es galería de
+  arte. Pero 4 y no 7: espaciado de sección `py-16`/`py-24`, no interfaz de cabina.
 
 ### Overrides del skill (donde este proyecto gana)
 
@@ -210,7 +230,7 @@ se vuelven a discutir prompt por prompt:
 
 | Tema | Default del skill | Decisión de este proyecto | Por qué |
 |---|---|---|---|
-| Animación | Motion (`motion/react`) por defecto, GSAP para scroll | **Ninguna librería.** CSS puro + `scroll-snap` | LCP < 1s móvil; §2 lo prohíbe explícitamente |
+| Animación | Motion (`motion/react`) por defecto, GSAP para scroll | **Ninguna librería.** `animation-timeline`/`scroll-timeline` nativos de CSS, siempre dentro de `@supports` con fallback visible | No es una restricción de peso "para cumplir el mínimo": es que CSS nativo ya cubre lo que pediría una librería, a coste cero. Ver `MOVIMIENTO` en el bloque pegable |
 | Iconos | Phosphor / HugeIcons / Radix / Tabler; Lucide desaconsejado | **`@phosphor-icons/react`**, `weight="regular"` fijo en todo el sitio | Ver §12.4: no hay familia oficial de marca todavía. Es la decisión más cara de revertir, por eso se toma antes de instalar shadcn |
 | Modo oscuro | Obligatorio en sitios de consumo | **Solo modo claro**, declarado | Los ratios de contraste de `app/globals.css` están medidos sobre blanco, `#F4F7FA` y el tinte 10% de cada color. Un modo oscuro duplica esa matriz y hoy no aporta al objetivo de conversión |
 | Tipografía | Inter desaconsejado como default | Outfit / Plus Jakarta (títulos) + Inter (cuerpo), provisional | Convergen: Outfit ya está en el pool que el skill aprueba. Sigue pendiente §12.1 |
@@ -222,8 +242,9 @@ se vuelven a discutir prompt por prompt:
 ```text
 DIRECCIÓN DE DISEÑO
 
-Diales: DESIGN_VARIANCE 6 / MOTION_INTENSITY 3 / VISUAL_DENSITY 4.
-Asimetría controlada, movimiento mínimo, densidad media. El diseño debe respirar.
+Diales: DESIGN_VARIANCE 7 / MOTION_INTENSITY 7 / VISUAL_DENSITY 4.
+Asimetría con profundidad, movimiento notorio dirigido por scroll, densidad media.
+El diseño debe respirar, pero ya no tiene que quedarse quieto.
 
 LAYOUT. Reglas duras: incumplir cualquiera es entregar trabajo roto.
 - El HERO cabe en el viewport inicial: titular máx 2 líneas, subtítulo máx 20 palabras
@@ -263,13 +284,35 @@ IMÁGENES. Este es un producto visual, no un documento:
 - Iconos SOLO de @phosphor-icons/react con weight="regular". Nunca escribas paths de SVG
   a mano ni mezcles familias de iconos.
 
-MOVIMIENTO (dial 3):
-- Sin framer-motion, sin motion, sin GSAP, sin librerías de carrusel.
-- Sin window.addEventListener('scroll'). Si necesitas detectar visibilidad, IntersectionObserver.
-- Sin marquees, sin scroll-hijack, sin secciones pinned, sin parallax, sin loops infinitos.
-- Solo transiciones CSS en :hover / :focus-visible / :active, y feedback táctil en :active
-  (translate-y-[1px] o scale-[0.98]) porque el tráfico es móvil.
-- Todo lo que se mueva respeta prefers-reduced-motion.
+MOVIMIENTO (dial 7):
+- Técnica única y obligatoria: `animation-timeline: view()` / `scroll()` en CSS nativo. Cero
+  JavaScript, cero dependencias. Sin framer-motion, sin motion, sin GSAP, sin Lenis, sin React
+  Three Fiber, sin librerías de carrusel — no por presupuesto de bundle, sino porque CSS nativo
+  ya resuelve scroll-reveal, parallax y líneas que se dibujan, con menos superficie de bugs y
+  corriendo fuera del hilo principal.
+- Todo bloque de motion vive DENTRO de `@supports (animation-timeline: view())`. El estado sin
+  soporte (~16% de navegadores) es el contenido completo y visible, nunca oculto: `opacity: 0`
+  jamás se declara fuera del `@supports`. Ver el patrón ya implementado en `app/globals.css`
+  (bloque `MOVIMIENTO`) antes de escribir uno nuevo — no lo reinventes por sección.
+- Permitido y esperado: reveals de entrada con más desplazamiento/escala que un fundido simple,
+  parallax sutil en imágenes de fondo (`transform` únicamente, nunca `top`/`left`), recorte
+  progresivo (`clip-path`) en fotos que entran, trazo animado de líneas conectoras (SVG
+  `stroke-dashoffset`) atado al scroll.
+- Prohibido igual que antes: `window.addEventListener('scroll')` (si hace falta detectar
+  visibilidad para algo que no sea CSS puro, `IntersectionObserver`), marquees, scroll-hijack,
+  secciones pinned, loops infinitos, física de resorte. Estos no se prohíben por peso — se
+  prohíben porque le quitan al visitante el control del scroll, y el enemigo de marca declarado
+  es la presión, no solo la saturación visual.
+- El HERO no lleva animación de ENTRADA en su texto — es candidato a LCP y Chrome no cuenta un
+  elemento mientras su opacidad es 0, así que un fade-in ahí paga la métrica que decide la
+  conversión. Sí puede llevar parallax de scroll en la fotografía de fondo (`transform` atado a
+  `animation-timeline: scroll()`, nunca `opacity`): no retrasa el pintado inicial porque el
+  navegador pinta el keyframe inicial de inmediato y el parallax solo actúa según el usuario
+  se desplaza.
+- Transiciones CSS normales en :hover / :focus-visible / :active se mantienen, más feedback
+  táctil en :active (translate-y-[1px] o scale-[0.98]) porque el tráfico es móvil.
+- Todo lo que se mueva respeta `prefers-reduced-motion`: el motion dirigido por scroll cuelga de
+  `@media (prefers-reduced-motion: no-preference)`, nunca se anula después de declararlo.
 
 DENSIDAD Y COPY:
 - Subpárrafo por sección: máx 25 palabras. Titular de sección: máx 8 palabras.
@@ -869,14 +912,24 @@ datos de entrenamiento. Da por hecho que tendrás que corregir esto aunque el pr
 - [ ] Iconos únicamente de `@phosphor-icons/react` con `weight="regular"`. Ninguna familia
       mezclada, ningún `path` de SVG escrito a mano.
 
-**Movimiento (dial 3)**
+**Movimiento (dial 7)**
 
-- [ ] `package.json` no incluye `framer-motion`, `motion`, `gsap` ni librerías de carrusel.
+- [ ] `package.json` no incluye `framer-motion`, `motion`, `gsap`, `lenis`, `@react-three/fiber`
+      ni librerías de carrusel. Todo motion dirigido por scroll es `animation-timeline`/
+      `scroll-timeline` en CSS nativo.
 - [ ] No aparece `window.addEventListener('scroll')` en ningún archivo.
-- [ ] No hay marquees, scroll-hijack, secciones pinned, parallax ni animaciones en bucle.
+- [ ] No hay marquees, scroll-hijack ni secciones pinned. Parallax SÍ está permitido si es
+      `transform` puro atado a `animation-timeline: scroll()` — no confundir con scroll-hijack
+      (que le quita el scroll al visitante); parallax deja el scroll intacto y solo desplaza una
+      capa dentro de su propia sección.
+- [ ] Todo bloque de motion está dentro de `@supports (animation-timeline: view())`, con el
+      estado sin soporte visible y completo (nunca `opacity: 0` fuera del `@supports`).
+- [ ] El hero no anima la ENTRADA de su texto (protege el LCP). Si tiene parallax de fondo, es
+      solo `transform`, nunca `opacity`.
 - [ ] Todo interactivo tiene feedback táctil en `:active` (`-translate-y-[1px]` o `scale-[0.98]`).
 - [ ] Cualquier transición respeta `prefers-reduced-motion`.
-- [ ] Los `useEffect` con listeners o timers tienen función de limpieza.
+- [ ] Los `useEffect` con listeners o timers tienen función de limpieza (si el motion es 100% CSS,
+      esta casilla no aplica).
 
 **Densidad y estados**
 

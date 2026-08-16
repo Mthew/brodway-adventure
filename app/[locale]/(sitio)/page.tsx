@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import {
-  Check,
+  ChatCircleText,
   ChatText,
+  Clock,
   Compass,
+  HourglassSimple,
   ListChecks,
+  MapPin,
+  SealCheck,
   ShieldCheck,
+  Tag,
   UsersThree,
 } from "@phosphor-icons/react/dist/ssr";
 
@@ -19,6 +24,7 @@ import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
 import { buildWhatsAppUrl, CONTACT, RNT_NUMBER, SITE_URL } from "@/lib/config";
 import { Link } from "@/lib/i18n/navigation";
 import { getDestinationFromPrice, listDestinations } from "@/lib/destinations";
+import { cn } from "@/lib/utils";
 
 /**
  * Home.
@@ -83,10 +89,10 @@ export default async function HomePage({
   ] as const;
 
   const razones = [
-    { titulo: "porQue1Titulo", texto: "porQue1Texto" },
-    { titulo: "porQue2Titulo", texto: "porQue2Texto" },
-    { titulo: "porQue3Titulo", texto: "porQue3Texto" },
-    { titulo: "porQue4Titulo", texto: "porQue4Texto" },
+    { icono: Tag, titulo: "porQue1Titulo", texto: "porQue1Texto" },
+    { icono: ChatCircleText, titulo: "porQue2Titulo", texto: "porQue2Texto" },
+    { icono: SealCheck, titulo: "porQue3Titulo", texto: "porQue3Texto" },
+    { icono: HourglassSimple, titulo: "porQue4Titulo", texto: "porQue4Texto" },
   ] as const;
 
   const testimonios = [
@@ -107,6 +113,10 @@ export default async function HomePage({
         imagen="/destinos/home-hero.webp"
         imagenMovil="/destinos/home-hero-movil.webp"
         imagenAlt={t("heroImagenAlt")}
+        ciclo={[
+          { imagen: "/destinos/cartagena-hero.webp", alt: t("heroImagenAlt2") },
+          { imagen: "/destinos/san-andres-hero.webp", alt: t("heroImagenAlt3") },
+        ]}
         acciones={
           <>
             {/*
@@ -145,18 +155,45 @@ export default async function HomePage({
         }
       />
 
-      {/* 2. FRANJA DE CONFIANZA. Debajo del hero, nunca dentro. */}
+      {/* 2. FRANJA DE CONFIANZA. Debajo del hero, nunca dentro (spec-home-v1.md
+          §4). Tres señales, no una: el RNT es el sello oficial (Badge, como
+          en el resto del sitio); las otras dos son texto con ícono, más
+          liviano, porque son afirmaciones de la agencia, no un registro
+          verificable por un tercero. Cero cifras del tipo "+X viajeros" o
+          años de experiencia — es justo donde pierde credibilidad la
+          competencia medida en el spec, y el manual de marca lo prohíbe. */}
       <Section spacing="compact" background="alt">
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+        <div className="reveal flex flex-wrap items-center gap-x-8 gap-y-3">
           <Badge variant="trust">RNT {RNT_NUMBER}</Badge>
-          <p className="text-body-sm text-neutral-700">
-            {t("confianzaLinea")}
+          <Link
+            href="/nosotros"
+            className="text-body-sm text-brand-turquoise-text inline-flex min-h-11 items-center gap-2 font-semibold underline-offset-4 hover:underline"
+          >
+            <MapPin weight="regular" className="size-4 shrink-0" aria-hidden="true" />
+            {t("franjaVerificable")}
+          </Link>
+          <p className="text-body-sm inline-flex items-center gap-2 text-neutral-700">
+            <Clock weight="regular" className="size-4 shrink-0" aria-hidden="true" />
+            {t("franjaRespuesta")}
           </p>
         </div>
       </Section>
 
-      {/* 3. DESTINOS. Scroll-snap horizontal en móvil, rejilla en escritorio.
-          CSS puro, sin librería de carrusel (dial de motion 3).
+      {/* 3. DESTINOS. Scroll-snap horizontal en móvil, rejilla 2 columnas en
+          tablet (md), rejilla ASIMÉTRICA en escritorio (lg, spec-home-v1.md
+          §5.1): la primera tarjeta ocupa un bloque de 2x2 y las dos
+          siguientes se apilan a su lado — nunca la fila de 6 tarjetas
+          idénticas que §2.bis prohíbe como recurso genérico. CSS puro, sin
+          librería de carrusel.
+
+          `lg:grid-rows-[18rem_18rem_auto]`: filas 1 y 2 con alto FIJO a
+          propósito. Con `auto` en las tres, la tarjeta destacada (que
+          ocupa las dos filas) y la pareja de tarjetas laterales (una por
+          fila) podrían terminar de alturas distintas, porque cada fila
+          `auto` se mide por su propio contenido. Con alto fijo, la
+          destacada mide exactamente `2×18rem + gap` y la pareja lateral
+          suma exactamente lo mismo: coinciden siempre, sea cual sea el
+          largo del texto de cada tarjeta.
 
           `reveal` sobre el <ul> entero y NO `reveal-stagger` sobre las tarjetas:
           `overflow-x: auto` obliga al navegador a calcular `overflow-y` como
@@ -166,7 +203,7 @@ export default async function HomePage({
           jamás. La fila entera sí se ancla al scroll de la página. */}
       <Section>
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-          <h2 className="reveal text-h2 text-brand-navy max-w-[18ch]">
+          <h2 className="reveal-strong text-h2 text-brand-navy max-w-[18ch]">
             {t("destinosTitulo")}
           </h2>
           <Link
@@ -177,16 +214,26 @@ export default async function HomePage({
           </Link>
         </div>
 
-        <ul className="reveal -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 lg:grid-cols-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {tarjetas.map(({ destino, precio }) => (
+        <ul className="reveal carrusel-destinos -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 lg:grid-cols-3 lg:grid-rows-[18rem_18rem_auto] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {tarjetas.map(({ destino, precio }, i) => (
             <li
               key={destino.slug}
-              className="w-[80vw] shrink-0 snap-start sm:w-[55vw] md:w-auto"
+              className={cn(
+                "w-[80vw] shrink-0 snap-start sm:w-[55vw] md:w-auto",
+                // La primera tarjeta es la destacada: ocupa 2 columnas y las
+                // 2 filas de alto fijo. Sin span explícito, la colocación
+                // automática de grid ya deja las tarjetas 2 y 3 apiladas a
+                // su lado (fila 1 y fila 2 de la 3ª columna) y las tarjetas
+                // 4-6 en la fila `auto` de abajo — no hace falta más CSS.
+                i === 0 && "lg:col-span-2 lg:row-span-2",
+              )}
             >
               <DestinationCard
                 destino={destino}
                 precioDesde={precio?.precioDesde}
                 moneda={precio?.moneda}
+                destacado={i === 0}
+                imagenExpandida={i === 1 || i === 2}
               />
             </li>
           ))}
@@ -196,14 +243,17 @@ export default async function HomePage({
       {/* 4. CÓMO FUNCIONA. Flujo de 3 pasos con línea conectora, NO tres tarjetas
           idénticas: esa fila es la firma de una plantilla. */}
       <Section background="navy">
-        <h2 className="reveal text-h2 mb-12 max-w-[18ch]">{t("comoFuncionaTitulo")}</h2>
+        <h2 className="reveal-strong text-h2 mb-12 max-w-[18ch]">{t("comoFuncionaTitulo")}</h2>
 
         <ol className="reveal-stagger relative grid gap-10 md:grid-cols-3 md:gap-8">
           {/* La línea conectora sólo existe en escritorio, donde el flujo es
-              horizontal. En móvil los pasos se apilan y la línea sobra. */}
+              horizontal. En móvil los pasos se apilan y la línea sobra.
+              `line-draw` la dibuja de izquierda a derecha según entra en
+              pantalla (globals.css): un `<div>`, no un SVG, así que sigue
+              siendo `transform: scaleX()`, no `stroke-dashoffset`. */}
           <div
             aria-hidden="true"
-            className="absolute top-6 right-0 left-0 hidden h-px bg-white/20 md:block"
+            className="line-draw absolute top-6 right-0 left-0 hidden h-px bg-white/20 md:block"
           />
 
           {pasos.map(({ icono: Icono, titulo, texto }) => (
@@ -222,25 +272,34 @@ export default async function HomePage({
         </ol>
       </Section>
 
-      {/* 5. POR QUÉ BROWAY. Rejilla 2x2 con ícono, sin bordes de tarjeta. */}
+      {/* 5. POR QUÉ BROWAY. Rejilla 2x2 de tarjetas con superficie propia
+          (spec-home-v1.md §7), no la lista de checks planos de antes: al
+          lado de la rejilla de 6 beneficios de Apple Travel, los checks se
+          veían menos sustanciosos que su competencia. Siguen siendo 4 y no
+          6 — Apple Travel enumera servicios operativos (tiquetes, seguros,
+          traslados); estos son razones de confianza, y estirarlos a 6
+          obligaría a inventar dos. Un ícono DISTINTO por tarjeta, no el
+          mismo check cuatro veces: ayuda a leerlas como cuatro ideas, no
+          como una lista continua. */}
       <Section>
-        <h2 className="reveal text-h2 text-brand-navy mb-10 max-w-[18ch]">
+        <h2 className="reveal-strong text-h2 text-brand-navy mb-10 max-w-[18ch]">
           {t("porQueTitulo")}
         </h2>
-        <dl className="reveal-stagger grid gap-x-12 gap-y-10 md:grid-cols-2">
-          {razones.map(({ titulo, texto }) => (
-            <div key={titulo} className="flex gap-4">
-              <Check
+        <dl className="reveal-stagger grid gap-6 md:grid-cols-2">
+          {razones.map(({ icono: Icono, titulo, texto }) => (
+            <div
+              key={titulo}
+              className="bg-surface-alt flex flex-col gap-3 rounded-md border border-neutral-200 p-6"
+            >
+              <Icono
                 weight="regular"
-                className="text-brand-turquoise mt-1 size-6 shrink-0"
+                className="text-brand-turquoise size-7"
                 aria-hidden="true"
               />
-              <div className="flex flex-col gap-2">
-                <dt className="text-h3 text-brand-navy">{t(titulo)}</dt>
-                <dd className="text-body max-w-[45ch] text-neutral-700">
-                  {t(texto)}
-                </dd>
-              </div>
+              <dt className="text-h3 text-brand-navy">{t(titulo)}</dt>
+              <dd className="text-body max-w-[45ch] text-neutral-700">
+                {t(texto)}
+              </dd>
             </div>
           ))}
         </dl>
@@ -248,7 +307,7 @@ export default async function HomePage({
 
       {/* 6. NEXT STOP. Única aparición de la firma verbal en toda la página. */}
       <Section background="turquoise" spacing="compact">
-        <div className="reveal flex flex-col items-start gap-5 lg:flex-row lg:items-center lg:justify-between">
+        <div className="reveal-scale flex flex-col items-start gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-col gap-2">
             <h2 className="text-h2">{t("nextStopTitulo")}</h2>
             <p className="text-body max-w-[45ch]">{t("nextStopTexto")}</p>
@@ -269,7 +328,7 @@ export default async function HomePage({
       {/* 7. TESTIMONIOS. Uno destacado y dos apilados: asimétrico a propósito,
           para no caer en la fila de tres iguales. */}
       <Section background="alt">
-        <h2 className="text-h2 text-brand-navy mb-3 max-w-[20ch]">
+        <h2 className="reveal text-h2 text-brand-navy mb-3 max-w-[20ch]">
           {t("testimoniosTitulo")}
         </h2>
         {/* Marcados como relleno de forma evidente: ni cifras inventadas ni

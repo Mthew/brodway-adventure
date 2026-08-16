@@ -35,20 +35,58 @@ export async function DestinationCard({
   destino,
   precioDesde,
   moneda = "COP",
+  destacado = false,
+  imagenExpandida = false,
 }: {
   destino: Destination;
   precioDesde?: number;
   moneda?: "COP" | "USD";
+  /**
+   * La tarjeta 2x2 de la rejilla asimétrica de escritorio (spec-home-v1.md
+   * §5.1, ≥1024px). Implica `imagenExpandida` y además ensancha el `sizes`
+   * de la imagen: esta tarjeta ocupa ~62vw en ese layout, no el 30vw de una
+   * tarjeta normal, y sin ajustar `sizes` Next pediría una resolución de
+   * menos de la mitad de lo que realmente se pinta.
+   */
+  destacado?: boolean;
+  /**
+   * Tarjeta lateral de la misma rejilla: la imagen llena su celda del grid
+   * en vez de recortarse a `aspect-[4/3]`, pero conserva el `sizes` normal
+   * porque su ancho renderizado no cambia (sigue siendo ~30vw).
+   */
+  imagenExpandida?: boolean;
 }) {
   const t = await getTranslations("precio");
   const td = await getTranslations("destinos");
   const format = await getFormatter();
 
+  const expandir = destacado || imagenExpandida;
+
   return (
-    <Card className="group flex flex-col">
-      {/* `overflow-hidden` es lo que recorta el zoom al hover; sin él la foto
-          ampliada se sale de la tarjeta. */}
-      <div className="zoom-foto relative aspect-[4/3] w-full overflow-hidden bg-neutral-100">
+    <Card className="group flex h-full flex-col">
+      {/*
+        `overflow-hidden` es lo que recorta el zoom al hover; sin él la foto
+        ampliada se sale de la tarjeta.
+
+        Con `expandir`, la imagen pasa de `aspect-[4/3]` (una relación fija)
+        a `flex-1` (llena el espacio que le sobra a la columna después del
+        bloque de texto) — pero SÓLO en `lg:`. Por debajo de ese breakpoint
+        la tarjeta no vive dentro de una fila de grid con alto explícito
+        (`page.tsx` sólo define `lg:grid-rows-[...]`), así que `flex-1` ahí
+        no tendría contra qué crecer y la imagen colapsaría a 0 de alto. El
+        `h-full` de `Card` es igual de inerte fuera de ese contexto: un
+        `height: 100%` contra un padre de alto automático se resuelve como
+        `auto`, así que no cambia nada en el carrusel móvil ni en la rejilla
+        de 2 columnas de `md:`.
+      */}
+      <div
+        className={cn(
+          "zoom-foto reveal-curtain relative w-full overflow-hidden bg-neutral-100",
+          expandir
+            ? "aspect-[4/3] lg:aspect-auto lg:min-h-0 lg:flex-1"
+            : "aspect-[4/3]",
+        )}
+      >
         {/*
           Aquí iría el morph de tarjeta a cabecera de destino con
           `<ViewTransition name={...} share="morph">`, que es la transición de
@@ -67,7 +105,11 @@ export async function DestinationCard({
           src={destino.imagen}
           alt=""
           fill
-          sizes="(max-width: 768px) 85vw, (max-width: 1024px) 45vw, 30vw"
+          sizes={
+            destacado
+              ? "(max-width: 768px) 85vw, (max-width: 1024px) 45vw, 62vw"
+              : "(max-width: 768px) 85vw, (max-width: 1024px) 45vw, 30vw"
+          }
           className="object-cover"
         />
       </div>
@@ -114,7 +156,7 @@ export async function PackageCard({ offer }: { offer: Offer }) {
 
   return (
     <Card className="group flex flex-col">
-      <div className="zoom-foto relative aspect-[16/10] w-full overflow-hidden bg-neutral-100">
+      <div className="zoom-foto reveal-curtain relative aspect-[16/10] w-full overflow-hidden bg-neutral-100">
         {offer.imagenes[0] ? (
           <Image
             src={offer.imagenes[0]}

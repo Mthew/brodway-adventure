@@ -56,6 +56,7 @@ export function Hero({
   imagen,
   imagenMovil,
   imagenAlt,
+  ciclo,
   overlay = "normal",
   acciones,
   microcopy,
@@ -88,6 +89,27 @@ export function Hero({
    * decorativa, no el descuido de no haberlo escrito.
    */
   imagenAlt: string;
+  /**
+   * Fotos adicionales del slideshow (spec-home-v1.md §3). Opcional: sin esta
+   * prop el hero se comporta exactamente como antes, una sola foto estática.
+   * Máximo 2 entradas — el sistema de motion de `globals.css` sólo define
+   * `.hero-slide-2` y `.hero-slide-3`, una tercera entrada no tendría CSS que
+   * la anime y quedaría invisible para siempre (no es un fallback, es un bug).
+   *
+   * Cada foto es un `<img>` sin `<picture>`/`source`: no existe un recorte
+   * vertical propio para estas fotos (a diferencia de `imagenMovil`), así que
+   * usan el mismo recorte apaisado en cualquier viewport con `object-cover`.
+   * Es una foto secundaria de un slideshow que se desvanece sola, no la
+   * pieza que sostiene el contraste del titular — no hace falta el mismo
+   * nivel de dirección de arte que la foto 1.
+   *
+   * NO llevan `hero-parallax`: combinar el parallax dirigido por scroll con
+   * el fundido dirigido por tiempo en el mismo `animation` exige timelines
+   * en paralelo (`animation-timeline: auto, view()`), una función más nueva
+   * y con soporte más parejo que el resto del sistema de motion. La foto 1
+   * ya lleva el parallax y es la que más tiempo acumulado se ve.
+   */
+  ciclo?: { imagen: string; alt: string }[];
   overlay?: keyof typeof OVERLAY;
   /** CTA primario + a lo sumo un secundario. */
   acciones?: React.ReactNode;
@@ -152,16 +174,46 @@ export function Hero({
         daba `priority`, y como va en el HTML inicial se descubre antes que
         cualquier <link> inyectado por JS.
       */}
-      <picture>
-        <source media="(min-width: 768px)" srcSet={imagen} />
-        <img
-          src={imagenMovil ?? imagen}
-          alt={imagenAlt}
-          fetchPriority="high"
-          decoding="async"
-          className="absolute inset-0 -z-10 size-full object-cover"
-        />
-      </picture>
+      {/*
+        `hero-parallax` sólo mueve `transform` (ver globals.css): no repinta
+        la foto, no toca su opacidad, así que no puede retrasar el LCP. Vive
+        en un wrapper con `overflow-hidden` propio y no en el `<picture>`
+        directamente, porque el `scale(1.12)` del parallax necesita recortarse
+        dentro del alto exacto del hero y no desbordar hacia las secciones
+        vecinas (el hero es `isolate`, pero no recorta por sí solo).
+      */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <picture>
+          <source media="(min-width: 768px)" srcSet={imagen} />
+          <img
+            src={imagenMovil ?? imagen}
+            alt={imagenAlt}
+            fetchPriority="high"
+            decoding="async"
+            className="hero-parallax size-full object-cover"
+          />
+        </picture>
+
+        {/*
+          `loading="lazy"` y sin `fetchPriority`: estas fotos nunca deben
+          competir con la foto 1 por ancho de banda en el primer pintado. Si
+          el presupuesto de la home se ajusta (spec-home-v1.md §12), estas dos
+          peticiones son las primeras que se recortan, no la foto 1.
+        */}
+        {ciclo?.slice(0, 2).map((foto, i) => (
+          <img
+            key={foto.imagen}
+            src={foto.imagen}
+            alt={foto.alt}
+            loading="lazy"
+            decoding="async"
+            className={cn(
+              "absolute inset-0 size-full object-cover",
+              i === 0 ? "hero-slide-2" : "hero-slide-3",
+            )}
+          />
+        ))}
+      </div>
       <div className={cn("absolute inset-0 -z-10", OVERLAY[overlay])} />
 
       <div className="mx-auto w-full max-w-6xl px-6 pt-24 pb-16 md:px-8 md:pt-28 md:pb-20">
