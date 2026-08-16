@@ -494,10 +494,11 @@ cada iteración:
 
 1. ~~Sistema de motion en `globals.css`~~ ✅ hecho y verificado (PR #13)
 2. ~~Parallax del hero, cortina, línea conectora~~ ✅ hecho y verificado (PR #13)
-3. **Slideshow del hero** (§3) — el de mayor impacto y mayor riesgo de LCP
-4. **Franja de confianza a 3 señales** (§4) — barato, alto retorno en credibilidad
-5. **Rejilla asimétrica de destinos** (§5) — mata el anti-patrón de las 6 tarjetas iguales
-6. **Tarjetas de "Por qué"** (§7) — cosmético, va al final
+3. ~~Slideshow del hero~~ ✅ hecho y verificado (§3, PR #13)
+4. ~~Franja de confianza a 3 señales~~ ✅ hecho y verificado (§4, PR #13)
+5. ~~Rejilla asimétrica de destinos~~ ✅ hecho y verificado (§5, PR #13)
+6. ~~Tarjetas de "Por qué"~~ ✅ hecho y verificado (§7, PR #13)
 
-Cada paso se verifica en navegador a 375px y 1440px antes de pasar al siguiente. El paso 3 se
-mide además en el waterfall de red: es el único que puede romper el presupuesto.
+Las 9 secciones del home descritas en este spec están implementadas. Cada paso se verificó en
+navegador a 375px y 1440px; el paso 3 se midió además en el waterfall de red. Pendiente: revisión
+del PR #13 completo antes de mergear a `main`.

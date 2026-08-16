@@ -10,7 +10,7 @@
 |---|---|---|
 | 0-1 a 9 · Fase 1 completa: entorno, oferta, LeadForm, paquetes, destinos, institucionales, home, landing, tracking, Pre-Flight | ✅ Mergeado | PR #1-#10 |
 | Guion demo GoHighLevel · Dirección visual (fotografía + motion CSS-only) | ✅ Mergeado | PR #11, #12 |
-| Motion más potente (diales 7/7) + spec del home ([`spec-home-v1.md`](docs/design/spec-home-v1.md)) | 🔧 En curso | `fase-1/motion-potente` |
+| Motion más potente (diales 7/7) + rediseño del home completo ([`spec-home-v1.md`](docs/design/spec-home-v1.md)) | 🔍 Listo, en revisión | PR #13 |
 
 ## Lo que hay que saber para no romper nada
 
