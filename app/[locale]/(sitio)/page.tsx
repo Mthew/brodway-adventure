@@ -248,36 +248,65 @@ export default async function HomePage({
         </ul>
       </Section>
 
-      {/* 4. CÓMO FUNCIONA. Flujo de 3 pasos con línea conectora, NO tres tarjetas
-          idénticas: esa fila es la firma de una plantilla. */}
+      {/* 4. CÓMO FUNCIONA.
+          Era una fila de TRES COLUMNAS IDÉNTICAS (medidas: 3 × 180×341), que
+          es literalmente el recurso que §2.bis prohíbe; lo único que la
+          separaba de la plantilla genérica era una línea de 1px. Ahora es un
+          layout asimétrico: el titular ocupa su propia columna y los pasos
+          bajan en secuencia vertical, enhebrados por un espinazo que se
+          dibuja al entrar en pantalla.
+
+          La secuencia vertical no es sólo estética: estos son pasos de un
+          proceso (un `<ol>`), y leerlos de arriba abajo comunica el orden
+          mejor que tres columnas en paralelo, que sugieren simultaneidad. */}
       <Section background="navy">
-        <h2 className="reveal-strong text-h2 mb-12 max-w-[18ch]">{t("comoFuncionaTitulo")}</h2>
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-20">
+          {/* `lg:self-start` y NO `lg:sticky`: con la sección en ~554px y un
+              viewport de 900 el pegajoso no llega a activarse nunca, así que
+              sería una promesa de comportamiento que no ocurre. */}
+          <h2 className="reveal-strong text-h2 max-w-[14ch] lg:self-start">
+            {t("comoFuncionaTitulo")}
+          </h2>
 
-        <ol className="reveal-stagger relative grid gap-10 md:grid-cols-3 md:gap-8">
-          {/* La línea conectora sólo existe en escritorio, donde el flujo es
-              horizontal. En móvil los pasos se apilan y la línea sobra.
-              `line-draw` la dibuja de izquierda a derecha según entra en
-              pantalla (globals.css): un `<div>`, no un SVG, así que sigue
-              siendo `transform: scaleX()`, no `stroke-dashoffset`. */}
-          <div
-            aria-hidden="true"
-            className="line-draw absolute top-6 right-0 left-0 hidden h-px bg-white/20 md:block"
-          />
+          <ol className="reveal-stagger relative flex flex-col gap-10">
+            {/* `left-6` = 24px = centro exacto del círculo de 48px, y `top-6`
+                lo hace arrancar en el centro del primer ícono en vez del borde
+                del <ol>: una línea que asoma por encima del primer paso se lee
+                como un borde suelto, no como un hilo que los une.
 
-          {pasos.map(({ icono: Icono, titulo, texto }) => (
-            <li key={titulo} className="relative flex flex-col gap-3">
-              <span className="bg-brand-navy ring-brand-turquoise/40 flex size-12 items-center justify-center rounded-full ring-2">
-                <Icono
-                  weight="regular"
-                  className="text-brand-turquoise size-6"
-                  aria-hidden="true"
-                />
-              </span>
-              <h3 className="text-h3">{t(titulo)}</h3>
-              <p className="text-body max-w-[38ch] text-white/90">{t(texto)}</p>
-            </li>
-          ))}
-        </ol>
+                Abajo NO termina en el centro del último ícono, sino 24px antes
+                del final del <ol> (medido: el último ícono está en y=292 y el
+                espinazo llega a y=338). La diferencia es el alto del texto del
+                último paso, que baja más que su ícono. Dejarlo correr hasta ahí
+                es lo correcto: el hilo acompaña al último bloque de texto en
+                vez de cortarse a media altura. */}
+            <div
+              aria-hidden="true"
+              className="line-draw-y absolute top-6 bottom-6 left-6 w-px bg-white/20"
+            />
+
+            {pasos.map(({ icono: Icono, titulo, texto }) => (
+              <li key={titulo} className="relative flex gap-5">
+                {/* `z-10` + fondo navy propio: el espinazo pasa por detrás y
+                    el círculo lo tapa, así la línea no se ve cruzando el
+                    ícono. */}
+                <span className="bg-brand-navy ring-brand-turquoise/40 z-10 flex size-12 shrink-0 items-center justify-center rounded-full ring-2">
+                  <Icono
+                    weight="regular"
+                    className="text-brand-turquoise size-6"
+                    aria-hidden="true"
+                  />
+                </span>
+                <div className="flex flex-col gap-2 pt-2">
+                  <h3 className="text-h3">{t(titulo)}</h3>
+                  <p className="text-body max-w-[46ch] text-white/90">
+                    {t(texto)}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
       </Section>
 
       {/* 5. POR QUÉ BROWAY. Rejilla 2x2 de tarjetas con superficie propia

@@ -546,6 +546,18 @@ body[data-sticky-cta] [data-whatsapp-floating] {
   }
 }
 
+/* La misma idea en vertical, para el espinazo de "Cómo funciona": la línea
+   baja de arriba abajo a medida que la sección entra en pantalla. `scaleY`
+   por el mismo motivo que la horizontal usa `scaleX`. */
+@keyframes broway-line-draw-y {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
 /* Parallax del fondo del hero. `scale(1.12)` fijo deja colchón de sobra para
    que el `translateY` no descubra un borde vacío. El titular NUNCA anima
    (ver `hero.tsx`): esto sólo mueve la fotografía, que ya está pintada. */
@@ -721,6 +733,27 @@ body[data-sticky-cta] [data-whatsapp-floating] {
       animation: broway-line-draw linear both;
       animation-timeline: view(block);
       animation-range: entry 10% entry 70%;
+    }
+
+    /*
+     * Espinazo vertical. Va junto a `.line-draw` y DESPUÉS de
+     * `.reveal-stagger > *` por la misma razón de cascada explicada arriba:
+     * también es hijo directo del `<ol>` que lleva `reveal-stagger`.
+     *
+     * `transform-origin: top` es el equivalente vertical del `left` de la
+     * horizontal: sin él la línea crecería desde el centro hacia arriba y
+     * abajo a la vez, en vez de bajar.
+     *
+     * El rango llega hasta `entry 85%` y no `70%`: el espinazo es tan alto
+     * como toda la lista de pasos, así que si termina de dibujarse antes, la
+     * parte de abajo aparece ya completa mientras su paso todavía está
+     * entrando.
+     */
+    .line-draw-y {
+      transform-origin: top;
+      animation: broway-line-draw-y linear both;
+      animation-timeline: view(block);
+      animation-range: entry 10% entry 85%;
     }
   }
 }
