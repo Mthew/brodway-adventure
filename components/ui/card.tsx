@@ -63,28 +63,48 @@ export async function DestinationCard({
   const expandir = destacado || imagenExpandida;
 
   return (
-    <Card className="group flex h-full flex-col">
+    /*
+      SIN borde y con sombra que sube al hover, en vez del marco de 1px que
+      tenía antes. El borde dibujaba una caja alrededor de la foto y hacía que
+      la tarjeta se leyera como una ficha de documento; sin él, la fotografía
+      llega hasta el filo y manda ella. La sombra es lo que sigue separando la
+      tarjeta del fondo blanco de la sección.
+
+      La transición cuelga de `motion-safe:` porque `prefers-reduced-motion`
+      también aplica a un cambio de sombra, aunque no desplace nada.
+    */
+    <Card className="group flex h-full flex-col border-0 shadow-md motion-safe:transition-shadow motion-safe:duration-300 hover:shadow-xl">
       {/*
         `overflow-hidden` es lo que recorta el zoom al hover; sin él la foto
         ampliada se sale de la tarjeta.
 
-        Con `expandir`, la imagen pasa de `aspect-[4/3]` (una relación fija)
-        a `flex-1` (llena el espacio que le sobra a la columna después del
-        bloque de texto) — pero SÓLO en `lg:`. Por debajo de ese breakpoint
-        la tarjeta no vive dentro de una fila de grid con alto explícito
-        (`page.tsx` sólo define `lg:grid-rows-[...]`), así que `flex-1` ahí
-        no tendría contra qué crecer y la imagen colapsaría a 0 de alto. El
-        `h-full` de `Card` es igual de inerte fuera de ese contexto: un
-        `height: 100%` contra un padre de alto automático se resuelve como
-        `auto`, así que no cambia nada en el carrusel móvil ni en la rejilla
-        de 2 columnas de `md:`.
+        RELACIÓN 4:5 (vertical) y no 4:3. Es el cambio que más peso visual le
+        da a la tarjeta: con 4:3 la foto quedaba en una franja de ~150px de
+        alto contra un bloque de texto de ~130px, así que la mitad de la
+        tarjeta era espacio blanco y el resultado se parecía más a una ficha
+        que a una tarjeta de viajes. En vertical la foto pasa a mandar, que es
+        lo que hacen los referentes del sector.
+
+        Las fotos de origen son 4:3 (1000x750): `object-cover` recorta a los
+        lados, no estira. Verificado destino por destino que el motivo sigue
+        entrando en el recorte vertical.
+
+        Con `expandir`, la imagen pasa de la relación fija a `flex-1` (llena
+        el espacio que le sobra a la columna después del bloque de texto) —
+        pero SÓLO en `lg:`. Por debajo de ese breakpoint la tarjeta no vive
+        dentro de una fila de grid con alto explícito (`page.tsx` sólo define
+        `lg:grid-rows-[...]`), así que `flex-1` ahí no tendría contra qué
+        crecer y la imagen colapsaría a 0 de alto. El `h-full` de `Card` es
+        igual de inerte fuera de ese contexto: un `height: 100%` contra un
+        padre de alto automático se resuelve como `auto`, así que no cambia
+        nada en el carrusel móvil ni en la rejilla de 2 columnas de `md:`.
       */}
       <div
         className={cn(
           "zoom-foto reveal-curtain relative w-full overflow-hidden bg-neutral-100",
           expandir
-            ? "aspect-[4/3] lg:aspect-auto lg:min-h-0 lg:flex-1"
-            : "aspect-[4/3]",
+            ? "aspect-[4/5] lg:aspect-auto lg:min-h-0 lg:flex-1"
+            : "aspect-[4/5]",
         )}
       >
         {/*
@@ -113,16 +133,48 @@ export async function DestinationCard({
           className="object-cover"
         />
       </div>
-      <div className="flex flex-1 flex-col gap-3 p-5">
+      {/*
+        `flex-1` en el texto sirve para que, en una fila de tarjetas de alto
+        automático, todas se estiren igual y el enlace quede alineado abajo
+        (junto al `mt-auto` del `Link`).
+
+        Pero cuando la imagen es `lg:flex-1` las dos cajas compiten por el
+        espacio sobrante y se lo reparten: medido, la destacada quedaba con
+        406px de foto contra 446px de texto, es decir más texto que
+        fotografía, que es exactamente lo contrario de lo que busca esta
+        tarjeta. En ese caso el texto pasa a `lg:flex-none` (alto natural) y
+        todo lo que sobra va a la foto.
+      */}
+      <div
+        className={cn(
+          "flex flex-1 flex-col gap-2.5 p-5",
+          expandir && "lg:flex-none",
+        )}
+      >
         <Badge variant="destino" className="self-start">
           {td(destino.tipo)}
         </Badge>
         <h3 className="text-h3 text-brand-navy">{destino.nombre}</h3>
-        <p className="text-body-sm text-neutral-600">{destino.resumen}</p>
+        {/*
+          `line-clamp-2`: los resúmenes del mock van de 2 a 3 líneas, y en una
+          fila de tres tarjetas esa línea de más desalineaba el precio y el
+          enlace de una tarjeta respecto a sus vecinas. Recortar a 2 los deja
+          a la misma altura sin tener que igualar el copy a mano cada vez que
+          alguien edite un destino. El texto completo vive en la ficha.
+        */}
+        <p className="text-body-sm line-clamp-2 text-neutral-600">
+          {destino.resumen}
+        </p>
+        {/*
+          El precio es el dato que decide, así que sube de tamaño mientras el
+          "desde" y el "por persona" se quedan pequeños. No es letra chica
+          engañosa al revés: los dos matices siguen visibles y legibles, que es
+          lo que exige el bloque de disclosure (brief-v0.md §6).
+        */}
         {precioDesde ? (
-          <p className="text-body-sm text-neutral-700">
+          <p className="text-caption text-neutral-700">
             {t("desde")}{" "}
-            <span className="text-brand-navy font-semibold">
+            <span className="text-body text-brand-navy font-semibold">
               {format.number(precioDesde, {
                 style: "currency",
                 currency: moneda,
@@ -155,8 +207,17 @@ export async function PackageCard({ offer }: { offer: Offer }) {
   const format = await getFormatter();
 
   return (
-    <Card className="group flex flex-col">
-      <div className="zoom-foto reveal-curtain relative aspect-[16/10] w-full overflow-hidden bg-neutral-100">
+    /*
+      Mismo tratamiento que `DestinationCard` (sin borde, sombra que sube al
+      hover): las dos conviven en `/destinos/[slug]` y en `/paquetes`, y dos
+      estilos de tarjeta distintos en la misma página se leen como un error.
+
+      La relación se queda en 4:3 y no pasa a 4:5 como la de destino: la de
+      paquete es más ancha en su rejilla (dos columnas, no tres) y en vertical
+      quedaría desproporcionada.
+    */
+    <Card className="group flex h-full flex-col border-0 shadow-md motion-safe:transition-shadow motion-safe:duration-300 hover:shadow-xl">
+      <div className="zoom-foto reveal-curtain relative aspect-[4/3] w-full overflow-hidden bg-neutral-100">
         {offer.imagenes[0] ? (
           <Image
             src={offer.imagenes[0]}
@@ -167,13 +228,15 @@ export async function PackageCard({ offer }: { offer: Offer }) {
           />
         ) : null}
       </div>
-      <div className="flex flex-1 flex-col gap-3 p-5">
+      <div className="flex flex-1 flex-col gap-2.5 p-5">
         <h3 className="text-h3 text-brand-navy">{offer.titulo}</h3>
-        <p className="text-body-sm text-neutral-600">{offer.beneficioCorto}</p>
+        <p className="text-body-sm line-clamp-2 text-neutral-600">
+          {offer.beneficioCorto}
+        </p>
         <div className="mt-auto flex flex-col gap-1">
-          <p className="text-body-sm text-neutral-700">
+          <p className="text-caption text-neutral-700">
             {t("desde")}{" "}
-            <span className="text-brand-navy font-semibold">
+            <span className="text-body text-brand-navy font-semibold">
               {format.number(offer.precioDesde, {
                 style: "currency",
                 currency: offer.moneda,
