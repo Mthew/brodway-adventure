@@ -40,7 +40,9 @@ Lo que se salva: el encapsulamiento fue correcto. `lib/destinations/index.ts` y
 ninguna página. Lo que falta es el otro lado: elegir CMS y construir el panel —
 `mvp-features.md` todavía deja "elegir Sanity vs Contentful vs Strapi" sin decidir.
 
-**No es un ajuste de documentación: es un bloque de trabajo nuevo dentro de la Fase 1.**
+**No es un ajuste de documentación: es un bloque de trabajo nuevo dentro de la Fase 1.** Las
+features concretas de ese panel — entidades, campos, flujos y la decisión que bloquea elegir
+herramienta — están extraídas en [`backoffice-features.md`](backoffice-features.md).
 
 ### B. Tres categorías, no dos 🔴
 
@@ -227,7 +229,9 @@ ya son bloqueos externos en `CURRENT.md` (redes, horario, medios de pago, RNT re
 ## 6. Puntos que requieren decisión antes de planear la ejecución
 
 1. **CMS y alcance del panel administrativo.** Bloquea todo lo demás de esta lista: taxonomía,
-   colecciones, ALT automático y estados son campos de ese modelo.
+   colecciones, ALT automático y estados son campos de ese modelo. La pregunta previa a elegir
+   herramienta — ¿el backoffice **es** la base de ofertas o publica sobre una externa? — está
+   planteada en [`backoffice-features.md`](backoffice-features.md) §7.
 2. **Contrato de `/api/lead` con NextGen**, con los campos de §19/§20/§21 —
    incorporar `tipoViaje`, `nombreOferta`, `categoria`, `seccionOrigen`, y decidir si
    `ciudadOrigen` deja de ser obligatorio en el formulario general.

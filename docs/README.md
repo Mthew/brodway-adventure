@@ -20,6 +20,8 @@ con WhatsApp como canal de conversión dominante.
 > que pide `mvp-features.md`. El contraste completo, con lo que gana, lo que falta y lo que sigue
 > abierto, está en [`product/brecha-estructura-funcional.md`](product/brecha-estructura-funcional.md)
 > — léelo antes de tocar navegación, taxonomía de destinos/ofertas, el formulario o `/api/lead`.
+> Las features del panel administrativo, extraídas de las catorce secciones donde el cliente las
+> reparte, están en [`product/backoffice-features.md`](product/backoffice-features.md).
 
 ## Estructura de `docs/`
 
@@ -36,6 +38,7 @@ con WhatsApp como canal de conversión dominante.
 0. **[`research/sistema-comercial.md`](research/sistema-comercial.md)** ★ — el roadmap del **cliente**: el sistema comercial completo (GoHighLevel como CRM y fuente de verdad, WhatsApp Business Platform multiagente, agente de IA propio, n8n, base de ofertas de mayoristas) del cual este sitio es **una** de seis fuentes de captación. Léelo primero: reencuadra todo lo demás. Define el CRM, el contrato de `offer_id`, quién dispara cada evento de conversión, el registro de consentimiento y la regla de no encender pauta antes de que el CRM funcione.
 1. **[`research/investigation.md`](research/investigation.md)** ★ — investigación de mercado (contexto completo: benchmarks, anatomía de ficha de paquete, CTAs, tracking, SEO, stack recomendado originalmente).
 1.bis **[`product/estructura-funcional-cliente.md`](product/estructura-funcional-cliente.md)** ★ — la especificación de alcance funcional del **cliente** (2026-08-16): menú, arquitectura de información, panel administrativo, taxonomía de destinos/ofertas y qué campo va en cada formulario. Manda sobre `mvp-features.md`/`fases-entrega.md` en qué y cuándo se construye (ver precedencia). Léelo antes de `mvp-features.md`, y junto con [`product/brecha-estructura-funcional.md`](product/brecha-estructura-funcional.md), el contraste contra lo ya documentado y construido.
+1.ter **[`product/backoffice-features.md`](product/backoffice-features.md)** — las features del backoffice extraídas de las catorce secciones donde el cliente las reparte: entidades, campos, flujos de trabajo, los cinco campos que el sitio ya exige y el cliente no listó, y la decisión que bloquea elegir herramienta (¿el backoffice **es** la base de ofertas o publica sobre una externa?). Léelo antes de evaluar CMS o diseñar pantallas de administración.
 2. **[`product/mvp-features.md`](product/mvp-features.md)** — traduce la investigación a un alcance de MVP concreto sobre Next.js/Vercel (stack real del proyecto, que reemplaza la recomendación de WordPress de `investigation.md`). Donde contradiga a `estructura-funcional-cliente.md` en alcance, gana este último — ver `brecha-estructura-funcional.md`.
 3. **[`architecture/spec-tecnica.md`](architecture/spec-tecnica.md)** — cómo se construye técnicamente: i18n y sistema de diseño desde Fase 0, estructura de carpetas, requisitos no funcionales, checklist de arranque.
 4. **[`product/fases-entrega.md`](product/fases-entrega.md)** — fases de entrega (1: MVP/credibilidad, 2: escalamiento de conversión, 3: roadmap) con umbrales explícitos para pasar de una fase a otra.
