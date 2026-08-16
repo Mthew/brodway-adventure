@@ -118,6 +118,31 @@
   --text-display--line-height: 1.17;
   --text-display--letter-spacing: -0.02em;
 
+  /**
+   * TITULAR DE HERO — un escalón por encima del manual, y a propósito.
+   *
+   * El manual de marca sólo llega hasta H1 48/56, y `--text-display` respeta ese
+   * tope para todo el sitio. Este token NO lo sustituye: existe aparte, y lo usa
+   * únicamente el titular del hero de la home, que es una pieza de portada y no
+   * un encabezado de contenido.
+   *
+   * El motivo es medido, no de gusto. Los dos referentes que puso el cliente
+   * resuelven su titular de portada muy por encima de 48px:
+   *   vivotravel.com.co   60px a 1440 (`md:text-8xl`, hasta 96px)
+   *   appletravel.com.co  titular de portada a pantalla completa
+   * A 48px el nuestro competía en desventaja contra los dos.
+   *
+   * El tope de 72px sigue por debajo del de ambos: es el escalón que gana
+   * presencia sin romper la regla de "titular ≤ 2 líneas", verificada a 375px
+   * con el copy real ("Elige tu viaje con claridad").
+   *
+   * PENDIENTE DE MARCA: el manual no contempla un nivel de portada. Confirmar
+   * con quien mantiene la marca antes de publicar (ver CURRENT.md).
+   */
+  --text-hero: clamp(2.25rem, 1.5rem + 3.6vw, 4.5rem);
+  --text-hero--line-height: 1.08;
+  --text-hero--letter-spacing: -0.03em;
+
   /* Manual H2 · 36/44 · Montserrat Bold */
   --text-h1: clamp(1.75rem, 1.4rem + 1.75vw, 2.25rem);
   --text-h1--line-height: 1.22;
@@ -287,52 +312,124 @@ body[data-sticky-cta] [data-whatsapp-floating] {
 }
 
 /* =================================================================
- * VELO DEL HERO — degradado, no lavado plano
+ * VELO DEL HERO — negro neutro y direccional
  *
- * Las paradas están calculadas, no elegidas a ojo. El texto del hero está
- * anclado ABAJO, así que la única franja que tiene que cumplir contraste es la
- * inferior, y ahí el velo es MÁS opaco que el `navy/70` plano que había antes.
- * Por encima del 58% de altura ya no hay texto y la foto puede respirar.
+ * Reescrito el 2026-08-16 tras MEDIR los dos referentes del cliente en el
+ * navegador. El punto de partida era "ellos no ponen velo y por eso su foto
+ * pega más", y es falso: los dos ponen.
  *
- * El 72% es el tope: es la parada donde el velo vale exactamente 70%, el valor
- * medido del velo plano original (5.32:1 para texto blanco sobre foto blanca
- * pura, que es el peor caso posible). Todo lo que quede por debajo de esa línea
- * está igual o mejor que antes. Si algún día el texto del hero crece hasta
- * pasar de esa línea, hay que volver a medir: no es un degradado decorativo,
- * es el que sostiene la accesibilidad del titular.
+ *   vivotravel.com.co  →  `bg-black/40` plano + degradado inferior de 192px
+ *   appletravel.com.co →  `linear-gradient(150deg, #000, #b3b3b3 25%)` al 50%
  *
- * Ese tope estaba primero en el 58%, y la medición lo movió: la miga de pan de
- * la ficha de destino es el texto que más arriba llega de todo el sitio (su
- * cabecera mide 62svh, no 88svh, así que el contenido empieza más alto) y caía
- * a 5.02:1. Pasa AA de sobra, pero no llegaba al 5.32 que este repo se fijó
- * como suelo propio. Peor caso con las paradas de hoy, leído del CSS ya
- * computado en el navegador sobre foto BLANCA pura:
+ * Lo que sí cambia entre ellos y nosotros son otras dos cosas, y son las que
+ * de verdad explican la diferencia de impacto:
  *
- *   miga de la ficha de destino   6.36:1   ← el peor de todo el sitio
- *   titular del hero (375px)      6.96:1
- *   titular del hero (1280px)     9.00:1
+ * 1. TEÑIDO vs NEUTRO. El nuestro era navy. Un lavado navy sobre una foto de
+ *    montaña verde no la oscurece: le cambia el matiz y la vuelve azul-gris,
+ *    así que da igual la foto que pongas. El negro sólo baja la luminosidad y
+ *    respeta el color propio de la imagen. Ésa es la razón perceptual por la
+ *    que el velo ajeno "parece que no existe" y el nuestro se sentía pesado.
  *
- * Los tres por encima del 5.32 del velo plano que había antes. Al mover
- * cualquier parada, volver a medir: el cálculo a ojo se equivocó aquí una vez.
+ * 2. LLEGABA A OPACO. El nuestro valía `navy` puro al 0% de altura, así que la
+ *    franja inferior del hero no era una foto velada: era un rectángulo de
+ *    color plano, sin un solo pixel de fotografía. Los referentes no pasan del
+ *    40-50% en ningún punto.
+ *
+ * La salida no es quitar el velo (rompería el 4.5:1 y la accesibilidad es
+ * innegociable) sino CONCENTRARLO donde vive el texto y soltarlo en el resto.
+ * De ahí que sea direccional: en escritorio el texto está abajo a la
+ * izquierda, así que el velo va de esa esquina hacia la contraria y deja el
+ * cuadrante superior derecho de la foto casi limpio.
+ *
+ * ARITMÉTICA DEL SUELO (peor caso: foto BLANCA pura debajo).
+ * Para texto blanco sobre negro al alfa `a` encima de blanco puro:
+ *   a ≥ 0.52  → 4.5:1, el umbral de texto pequeño (microcopy)
+ *   a ≥ 0.41  → 3:1,   el umbral de texto grande (titular)
+ * Por eso la parada de la zona de texto no baja de 0.62: deja margen sobre el
+ * 0.52 que exige el microcopy, incluso con una foto de playa a mediodía.
+ * Los valores medidos en navegador van al pie de este bloque, no aquí, para
+ * que no se queden desactualizados en silencio.
  * ================================================================= */
+/*
+ * VERTICAL, no diagonal — y el primer intento de este rediseño fue diagonal.
+ *
+ * La diagonal `to top right` es tentadora porque el texto vive abajo a la
+ * izquierda y deja el cuadrante opuesto limpio. Medida, falla: el bloque de
+ * texto llega hasta el 59% del ancho, y ahí la diagonal ya sólo daba 0.34 de
+ * alfa. Sobre el peor caso (foto blanca) eso es 2.38:1 en el titular y 2.84:1
+ * en el subtítulo — por debajo del 3:1 y del 4.5:1 que exige AA.
+ *
+ * El velo vertical protege TODO el ancho de la franja de texto, que es lo que
+ * hace falta, y el impacto se recupera igual porque la mitad superior de la
+ * foto queda casi intacta (0.22 al 72% de altura, 0 arriba del todo) en vez
+ * del 45-70% de navy que tenía antes.
+ */
+/*
+ * MÓVIL — paradas propias, y no por gusto: el hero móvil mide 68svh (552px en
+ * un iPhone de 812) y el bloque de texto empieza al 72% de esa altura, porque
+ * ahí los dos CTA se apilan en vertical. Con las paradas de escritorio el
+ * titular caía a 1.69:1. Aquí el velo tiene que seguir siendo fuerte mucho más
+ * arriba; lo que se conserva es que arriba del todo no llega a tapar la foto
+ * (0.12) y que es negro neutro, no navy.
+ */
 .hero-scrim {
   background-image: linear-gradient(
     to top,
-    var(--color-brand-navy) 0%,
-    color-mix(in srgb, var(--color-brand-navy) 86%, transparent) 42%,
-    color-mix(in srgb, var(--color-brand-navy) 70%, transparent) 72%,
-    color-mix(in srgb, var(--color-brand-navy) 45%, transparent) 100%
+    rgb(0 0 0 / 0.86) 0%,
+    rgb(0 0 0 / 0.76) 30%,
+    rgb(0 0 0 / 0.64) 60%,
+    rgb(0 0 0 / 0.5) 80%,
+    rgb(0 0 0 / 0.12) 100%
   );
 }
 
 .hero-scrim-fuerte {
   background-image: linear-gradient(
     to top,
-    var(--color-brand-navy) 0%,
-    color-mix(in srgb, var(--color-brand-navy) 94%, transparent) 42%,
-    color-mix(in srgb, var(--color-brand-navy) 85%, transparent) 72%,
-    color-mix(in srgb, var(--color-brand-navy) 62%, transparent) 100%
+    rgb(0 0 0 / 0.9) 0%,
+    rgb(0 0 0 / 0.82) 30%,
+    rgb(0 0 0 / 0.72) 60%,
+    rgb(0 0 0 / 0.6) 80%,
+    rgb(0 0 0 / 0.22) 100%
   );
+}
+
+/*
+ * ESCRITORIO — el velo se suelta antes y deja limpia la franja superior de la
+ * foto, que es el punto de todo este bloque.
+ *
+ * La parada del 58% NO está puesta para el hero de la home, sino para la
+ * cabecera de la ficha de destino, que es el peor caso del sitio y ya lo era
+ * antes de este rediseño: mide 62svh en vez de 88svh, así que su miga de pan
+ * arranca al 56% de la altura, más arriba que ningún otro texto sobre foto.
+ * Con las paradas pensadas sólo para la home caía a 3.48:1 — por debajo del
+ * 4.5:1 que exige un texto de 15px. Medido, no supuesto.
+ *
+ * Al tocar cualquier parada hay que volver a medir LAS DOS páginas, no sólo la
+ * home: `/` y `/destinos/[slug]`.
+ */
+@media (min-width: 768px) {
+  .hero-scrim {
+    background-image: linear-gradient(
+      to top,
+      rgb(0 0 0 / 0.82) 0%,
+      rgb(0 0 0 / 0.72) 30%,
+      rgb(0 0 0 / 0.58) 58%,
+      rgb(0 0 0 / 0.2) 80%,
+      transparent 100%
+    );
+  }
+
+  .hero-scrim-fuerte {
+    background-image: linear-gradient(
+      to top,
+      rgb(0 0 0 / 0.88) 0%,
+      rgb(0 0 0 / 0.8) 30%,
+      rgb(0 0 0 / 0.68) 58%,
+      rgb(0 0 0 / 0.3) 80%,
+      rgb(0 0 0 / 0.08) 100%
+    );
+  }
 }
 
 /* =================================================================

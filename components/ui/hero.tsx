@@ -229,7 +229,7 @@ export function Hero({
           entrada empiezan por debajo del pliegue, donde son gratis.
         */}
         <div className="flex max-w-2xl flex-col gap-5">
-          <h1 className="text-display text-white">{titulo}</h1>
+          <h1 className="text-hero text-white text-balance">{titulo}</h1>
 
           {subtitulo ? (
             <p className="text-body-lg text-white">{subtitulo}</p>
