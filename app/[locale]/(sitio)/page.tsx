@@ -3,8 +3,10 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import {
   Check,
   ChatText,
+  Clock,
   Compass,
   ListChecks,
+  MapPin,
   ShieldCheck,
   UsersThree,
 } from "@phosphor-icons/react/dist/ssr";
@@ -150,12 +152,26 @@ export default async function HomePage({
         }
       />
 
-      {/* 2. FRANJA DE CONFIANZA. Debajo del hero, nunca dentro. */}
+      {/* 2. FRANJA DE CONFIANZA. Debajo del hero, nunca dentro (spec-home-v1.md
+          §4). Tres señales, no una: el RNT es el sello oficial (Badge, como
+          en el resto del sitio); las otras dos son texto con ícono, más
+          liviano, porque son afirmaciones de la agencia, no un registro
+          verificable por un tercero. Cero cifras del tipo "+X viajeros" o
+          años de experiencia — es justo donde pierde credibilidad la
+          competencia medida en el spec, y el manual de marca lo prohíbe. */}
       <Section spacing="compact" background="alt">
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+        <div className="reveal flex flex-wrap items-center gap-x-8 gap-y-3">
           <Badge variant="trust">RNT {RNT_NUMBER}</Badge>
-          <p className="text-body-sm text-neutral-700">
-            {t("confianzaLinea")}
+          <Link
+            href="/nosotros"
+            className="text-body-sm text-brand-turquoise-text inline-flex min-h-11 items-center gap-2 font-semibold underline-offset-4 hover:underline"
+          >
+            <MapPin weight="regular" className="size-4 shrink-0" aria-hidden="true" />
+            {t("franjaVerificable")}
+          </Link>
+          <p className="text-body-sm inline-flex items-center gap-2 text-neutral-700">
+            <Clock weight="regular" className="size-4 shrink-0" aria-hidden="true" />
+            {t("franjaRespuesta")}
           </p>
         </div>
       </Section>
