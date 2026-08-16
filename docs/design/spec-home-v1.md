@@ -354,9 +354,26 @@ fila inferior 437/219.
 Ya es la sección mejor resuelta estructuralmente: flujo de 3 pasos conectados por una línea, no
 tres tarjetas sueltas.
 
+### 6.0 Segunda pasada (2026-08-16): dejó de ser tres columnas iguales
+
+La primera versión decía que esta sección "ya es la mejor resuelta". Medida, no lo era: eran
+**tres columnas de 180×341 idénticas**, exactamente el recurso que §2.bis prohíbe, y lo único que
+la separaba de la plantilla genérica era una línea de 1px. Además es la única sección del home sin
+una sola fotografía, así que no podía apoyarse en la imagen como el resto.
+
+Ahora es un **layout asimétrico**: el titular ocupa su propia columna (403px) y los tres pasos
+bajan en secuencia vertical (605px) enhebrados por un espinazo que se dibuja al entrar en pantalla
+(`.line-draw-y`, `scaleY` con `transform-origin: top`).
+
+El cambio no es sólo visual: son pasos de un proceso (un `<ol>`), y leerlos de arriba abajo
+comunica el orden mejor que tres columnas en paralelo, que sugieren simultaneidad.
+
+Medido a 1440px: columnas 403/605, espinazo en x=24 = centro exacto de los íconos de 48px.
+A 375px colapsa a una columna, el espinazo sigue alineado y no hay overflow horizontal.
+
 ### 6.1 Qué cambia
 
-Sólo motion. La línea conectora ahora **se dibuja** de izquierda a derecha según entra en
+La línea conectora ahora **se dibuja** de izquierda a derecha según entra en
 pantalla (`.line-draw`, `scaleX` con `transform-origin: left`).
 
 > Bug ya encontrado y corregido en este PR: la línea es hija directa del mismo
