@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import {
-  Check,
+  ChatCircleText,
   ChatText,
   Clock,
   Compass,
+  HourglassSimple,
   ListChecks,
   MapPin,
+  SealCheck,
   ShieldCheck,
+  Tag,
   UsersThree,
 } from "@phosphor-icons/react/dist/ssr";
 
@@ -86,10 +89,10 @@ export default async function HomePage({
   ] as const;
 
   const razones = [
-    { titulo: "porQue1Titulo", texto: "porQue1Texto" },
-    { titulo: "porQue2Titulo", texto: "porQue2Texto" },
-    { titulo: "porQue3Titulo", texto: "porQue3Texto" },
-    { titulo: "porQue4Titulo", texto: "porQue4Texto" },
+    { icono: Tag, titulo: "porQue1Titulo", texto: "porQue1Texto" },
+    { icono: ChatCircleText, titulo: "porQue2Titulo", texto: "porQue2Texto" },
+    { icono: SealCheck, titulo: "porQue3Titulo", texto: "porQue3Texto" },
+    { icono: HourglassSimple, titulo: "porQue4Titulo", texto: "porQue4Texto" },
   ] as const;
 
   const testimonios = [
@@ -269,25 +272,34 @@ export default async function HomePage({
         </ol>
       </Section>
 
-      {/* 5. POR QUÉ BROWAY. Rejilla 2x2 con ícono, sin bordes de tarjeta. */}
+      {/* 5. POR QUÉ BROWAY. Rejilla 2x2 de tarjetas con superficie propia
+          (spec-home-v1.md §7), no la lista de checks planos de antes: al
+          lado de la rejilla de 6 beneficios de Apple Travel, los checks se
+          veían menos sustanciosos que su competencia. Siguen siendo 4 y no
+          6 — Apple Travel enumera servicios operativos (tiquetes, seguros,
+          traslados); estos son razones de confianza, y estirarlos a 6
+          obligaría a inventar dos. Un ícono DISTINTO por tarjeta, no el
+          mismo check cuatro veces: ayuda a leerlas como cuatro ideas, no
+          como una lista continua. */}
       <Section>
         <h2 className="reveal-strong text-h2 text-brand-navy mb-10 max-w-[18ch]">
           {t("porQueTitulo")}
         </h2>
-        <dl className="reveal-stagger grid gap-x-12 gap-y-10 md:grid-cols-2">
-          {razones.map(({ titulo, texto }) => (
-            <div key={titulo} className="flex gap-4">
-              <Check
+        <dl className="reveal-stagger grid gap-6 md:grid-cols-2">
+          {razones.map(({ icono: Icono, titulo, texto }) => (
+            <div
+              key={titulo}
+              className="bg-surface-alt flex flex-col gap-3 rounded-md border border-neutral-200 p-6"
+            >
+              <Icono
                 weight="regular"
-                className="text-brand-turquoise mt-1 size-6 shrink-0"
+                className="text-brand-turquoise size-7"
                 aria-hidden="true"
               />
-              <div className="flex flex-col gap-2">
-                <dt className="text-h3 text-brand-navy">{t(titulo)}</dt>
-                <dd className="text-body max-w-[45ch] text-neutral-700">
-                  {t(texto)}
-                </dd>
-              </div>
+              <dt className="text-h3 text-brand-navy">{t(titulo)}</dt>
+              <dd className="text-body max-w-[45ch] text-neutral-700">
+                {t(texto)}
+              </dd>
             </div>
           ))}
         </dl>
