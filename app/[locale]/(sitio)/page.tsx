@@ -186,14 +186,22 @@ export default async function HomePage({
           idénticas que §2.bis prohíbe como recurso genérico. CSS puro, sin
           librería de carrusel.
 
-          `lg:grid-rows-[18rem_18rem_auto]`: filas 1 y 2 con alto FIJO a
+          `lg:grid-rows-[26rem_26rem_auto]`: filas 1 y 2 con alto FIJO a
           propósito. Con `auto` en las tres, la tarjeta destacada (que
           ocupa las dos filas) y la pareja de tarjetas laterales (una por
           fila) podrían terminar de alturas distintas, porque cada fila
           `auto` se mide por su propio contenido. Con alto fijo, la
-          destacada mide exactamente `2×18rem + gap` y la pareja lateral
+          destacada mide exactamente `2×26rem + gap` y la pareja lateral
           suma exactamente lo mismo: coinciden siempre, sea cual sea el
           largo del texto de cada tarjeta.
+
+          26rem y no 18rem, y el número sale de una medición. En las
+          tarjetas laterales la foto es `flex-1`, así que se queda con lo
+          que sobra de la fila después del texto: con filas de 18rem
+          (288px) y un bloque de texto de 219px, a la foto le quedaban
+          **69px**, una franja. Era un fallo que ya venía de la rejilla
+          asimétrica original. Con 26rem (416px) la foto recupera ~197px y
+          la destacada llega a ~534px, que es la que sostiene la sección.
 
           `reveal` sobre el <ul> entero y NO `reveal-stagger` sobre las tarjetas:
           `overflow-x: auto` obliga al navegador a calcular `overflow-y` como
@@ -214,7 +222,7 @@ export default async function HomePage({
           </Link>
         </div>
 
-        <ul className="reveal carrusel-destinos -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 lg:grid-cols-3 lg:grid-rows-[18rem_18rem_auto] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <ul className="reveal carrusel-destinos -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 lg:grid-cols-3 lg:grid-rows-[26rem_26rem_auto] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {tarjetas.map(({ destino, precio }, i) => (
             <li
               key={destino.slug}

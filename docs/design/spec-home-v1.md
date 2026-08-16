@@ -309,13 +309,43 @@ precio. Un dato desactualizado es peor que ningún dato.
   (§2, regla 4). Ya implementado y verificado.
 - `reveal-stagger` en la rejilla de escritorio.
 
+### 5.3.bis La anatomía de la tarjeta (2026-08-16)
+
+Segunda pasada, con el skill `ui-ux-pro-max`. Su ficha de *Travel/Tourism Agency* recomienda
+**Motion-Driven** y "colores vibrantes del destino": la fotografía tiene que llevar el peso, no
+un marco. Tres cambios y una restricción que los acota:
+
+| Cambio | Antes | Ahora | Por qué |
+|---|---|---|---|
+| Relación de la foto | `aspect-[4/3]` | `aspect-[4/5]` | Con 4:3 la foto quedaba en ~150px contra un texto de ~130px: media tarjeta era espacio blanco |
+| Marco | `border` de 1px | sin borde, `shadow-md` → `shadow-xl` al hover | El borde dibujaba una caja alrededor de la foto y la tarjeta se leía como ficha de documento |
+| Precio | `text-body-sm` | número en `text-body`, matices en `text-caption` | Es el dato que decide; los matices "desde"/"por persona" siguen legibles (§6 lo exige) |
+
+**La restricción**: `brief-v0.md` §2.bis prohíbe explícitamente *"etiquetas o pills superpuestas
+sobre las fotos"*, y es casilla del Pre-Flight §11.B. Eso descarta el patrón de appletravel.com.co
+de poner el nombre del destino encima de la imagen, que es su recurso principal en las tarjetas.
+El impacto se consigue con la relación de aspecto y el marco, no superponiendo.
+
+**Un fallo de la iteración anterior, corregido aquí**: en la rejilla asimétrica las dos tarjetas
+laterales tenían la foto en **69px** — una franja. Las filas estaban fijas en `18rem` (288px) y el
+bloque de texto ocupa ~219px, así que a la imagen `flex-1` le sobraba muy poco. Además el `<div>`
+del texto también era `flex-1`, así que competía con la foto por el espacio: en la destacada
+daba 406px de foto contra 446px de texto. Se corrige subiendo las filas a `26rem` y poniendo el
+texto en `lg:flex-none` cuando la imagen es expandida.
+
+Medido después del cambio (1440px): destacada 623px de foto / 229 de texto · laterales 197/219 ·
+fila inferior 437/219.
+
 ### 5.4 Criterios de aceptación
 
-- [ ] La rejilla de escritorio NO es 6 tarjetas del mismo tamaño.
-- [ ] A <768px sigue siendo el carrusel con scroll-snap actual, con las fotos **visibles**
+- [x] La rejilla de escritorio NO es 6 tarjetas del mismo tamaño.
+- [x] A <768px sigue siendo el carrusel con scroll-snap actual, con las fotos **visibles**
       (`clip-path: none` verificado en navegador).
-- [ ] Ninguna tarjeta muestra fecha o duración inventada.
-- [ ] Cada tarjeta declara su colapso a una columna bajo 768px.
+- [x] Ninguna tarjeta muestra fecha o duración inventada.
+- [x] Cada tarjeta declara su colapso a una columna bajo 768px.
+- [x] En toda variante la foto ocupa más que el bloque de texto, salvo las laterales de la
+      rejilla asimétrica, donde la proporción es pareja por la geometría del slot.
+- [x] Ninguna etiqueta ni texto superpuesto sobre las fotos (§11.B).
 
 ---
 
