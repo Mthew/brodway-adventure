@@ -23,6 +23,7 @@ import { extendTailwindMerge } from "tailwind-merge";
  * desaparece. El bloque @theme de globals.css tiene la nota recíproca.
  */
 export const FONT_SIZE_TOKENS = [
+  "hero",
   "display",
   "h1",
   "h2",
