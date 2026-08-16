@@ -19,6 +19,7 @@ import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
 import { buildWhatsAppUrl, CONTACT, RNT_NUMBER, SITE_URL } from "@/lib/config";
 import { Link } from "@/lib/i18n/navigation";
 import { getDestinationFromPrice, listDestinations } from "@/lib/destinations";
+import { cn } from "@/lib/utils";
 
 /**
  * Home.
@@ -159,8 +160,21 @@ export default async function HomePage({
         </div>
       </Section>
 
-      {/* 3. DESTINOS. Scroll-snap horizontal en móvil, rejilla en escritorio.
-          CSS puro, sin librería de carrusel (dial de motion 3).
+      {/* 3. DESTINOS. Scroll-snap horizontal en móvil, rejilla 2 columnas en
+          tablet (md), rejilla ASIMÉTRICA en escritorio (lg, spec-home-v1.md
+          §5.1): la primera tarjeta ocupa un bloque de 2x2 y las dos
+          siguientes se apilan a su lado — nunca la fila de 6 tarjetas
+          idénticas que §2.bis prohíbe como recurso genérico. CSS puro, sin
+          librería de carrusel.
+
+          `lg:grid-rows-[18rem_18rem_auto]`: filas 1 y 2 con alto FIJO a
+          propósito. Con `auto` en las tres, la tarjeta destacada (que
+          ocupa las dos filas) y la pareja de tarjetas laterales (una por
+          fila) podrían terminar de alturas distintas, porque cada fila
+          `auto` se mide por su propio contenido. Con alto fijo, la
+          destacada mide exactamente `2×18rem + gap` y la pareja lateral
+          suma exactamente lo mismo: coinciden siempre, sea cual sea el
+          largo del texto de cada tarjeta.
 
           `reveal` sobre el <ul> entero y NO `reveal-stagger` sobre las tarjetas:
           `overflow-x: auto` obliga al navegador a calcular `overflow-y` como
@@ -181,16 +195,26 @@ export default async function HomePage({
           </Link>
         </div>
 
-        <ul className="reveal carrusel-destinos -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 lg:grid-cols-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {tarjetas.map(({ destino, precio }) => (
+        <ul className="reveal carrusel-destinos -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 lg:grid-cols-3 lg:grid-rows-[18rem_18rem_auto] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {tarjetas.map(({ destino, precio }, i) => (
             <li
               key={destino.slug}
-              className="w-[80vw] shrink-0 snap-start sm:w-[55vw] md:w-auto"
+              className={cn(
+                "w-[80vw] shrink-0 snap-start sm:w-[55vw] md:w-auto",
+                // La primera tarjeta es la destacada: ocupa 2 columnas y las
+                // 2 filas de alto fijo. Sin span explícito, la colocación
+                // automática de grid ya deja las tarjetas 2 y 3 apiladas a
+                // su lado (fila 1 y fila 2 de la 3ª columna) y las tarjetas
+                // 4-6 en la fila `auto` de abajo — no hace falta más CSS.
+                i === 0 && "lg:col-span-2 lg:row-span-2",
+              )}
             >
               <DestinationCard
                 destino={destino}
                 precioDesde={precio?.precioDesde}
                 moneda={precio?.moneda}
+                destacado={i === 0}
+                imagenExpandida={i === 1 || i === 2}
               />
             </li>
           ))}
