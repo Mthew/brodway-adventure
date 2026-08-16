@@ -2,15 +2,15 @@
 
 > Máximo 50 líneas. Al rebasarlo, se archiva en `history/` (ver `CLAUDE.md` §Flujo de trabajo).
 
-**Actualizado:** 2026-08-15 · **Fase:** 1 (MVP) · **Plan:** [`docs/product/plan-fase-1.md`](docs/product/plan-fase-1.md)
+**Actualizado:** 2026-08-16 · **Fase:** 1 (MVP) · **Plan:** [`docs/product/plan-fase-1.md`](docs/product/plan-fase-1.md)
 
 ## En qué punto va
 
 | Paso | Estado | Rama / PR |
 |---|---|---|
-| Fase 1 completa (pasos 0-9) · demo GoHighLevel · dirección visual · rediseño del home ([`spec-home-v1.md`](docs/design/spec-home-v1.md)) | ✅ Mergeado | PR #1-#13 |
-| Impacto visual: hero ([`history/005`](history/005-velo-del-hero.md)) · tarjetas de destino | ✅ Mergeado | PR #14, #15 |
-| "Cómo funciona": de 3 columnas iguales a secuencia vertical con espinazo | 🔧 En curso | `fase-1/como-funciona` |
+| Fase 1 según los docs pre-2026-08-16 (pasos 0-9) · demo GoHighLevel · rediseño del home ([`spec-home-v1.md`](docs/design/spec-home-v1.md)) | ✅ Mergeado | PR #1-#13 |
+| Impacto visual: hero ([`history/005`](history/005-velo-del-hero.md)) · tarjetas de destino · "Cómo funciona" en secuencia vertical | ✅ Mergeado | PR #14, #15, #17 |
+| **El cliente entregó su especificación de alcance** ([`estructura-funcional-cliente.md`](docs/product/estructura-funcional-cliente.md)): manda sobre `mvp-features.md`/`fases-entrega.md`. Panel administrativo a Fase 1 ([`backoffice-features.md`](docs/product/backoffice-features.md)), 3ª categoría "Pueblos de Antioquia", menú y formulario distintos. Brecha: [`brecha-estructura-funcional.md`](docs/product/brecha-estructura-funcional.md) | 🔧 Sin replanificar | — |
 
 ## Lo que hay que saber para no romper nada
 
@@ -45,6 +45,6 @@ oficiales y logo SVG · **fotografía propia** · horario · medios de pago · a
 
 - `.agents/`, `.claude/`, `.codex/` (8.5 MB de skills) sin trackear: falta decidir si entran.
 - El precio se formatea como "1.290.000 COP", sin el `$` del brief. Falta confirmarlo con marca.
-- **`--text-hero` (titular de portada, hasta 72px) supera el H1 48/56 del manual.** Es un nivel
-  que el manual no contempla; confirmar con marca. `--text-display` sigue respetando el tope.
+- **`--text-hero` (hasta 72px) supera el H1 48/56 del manual**: confirmar con marca. `--text-display` sí lo respeta.
 - **Las fotos de `public/destinos/` son de Unsplash, no del cliente.** Sirven para juzgar el diseño, no para publicar.
+- **¿El backoffice ES la base de ofertas o publica sobre una externa?** Decide si es CMS o herramienta a medida, y bloquea elegir CMS: [`backoffice-features.md`](docs/product/backoffice-features.md) §7.

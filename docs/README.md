@@ -10,13 +10,23 @@ con WhatsApp como canal de conversión dominante.
 > [`product/plan-fase-1.md`](product/plan-fase-1.md) §1. Estos documentos siguen siendo la fuente de
 > verdad sobre qué construir y por qué. El `CLAUDE.md` de la raíz resume las reglas no negociables
 > para quien implemente.
+>
+> **2026-08-16 — el cliente entregó su propia especificación de alcance funcional**
+> ([`product/estructura-funcional-cliente.md`](product/estructura-funcional-cliente.md)), que pasa
+> a mandar sobre `mvp-features.md`/`fases-entrega.md` en qué y cuándo se construye (ver la regla de
+> precedencia más abajo). Introduce un panel administrativo en Fase 1 (no en Fase 2, como decía
+> `plan-fase-1.md`), una tercera categoría de destino ("Pueblos de Antioquia"), un menú y una
+> arquitectura de información distintos a los actuales, y campos de formulario más cortos que los
+> que pide `mvp-features.md`. El contraste completo, con lo que gana, lo que falta y lo que sigue
+> abierto, está en [`product/brecha-estructura-funcional.md`](product/brecha-estructura-funcional.md)
+> — léelo antes de tocar navegación, taxonomía de destinos/ofertas, el formulario o `/api/lead`.
 
 ## Estructura de `docs/`
 
 | Carpeta | Contenido |
 |---------|-----------|
 | [`research/`](research/) | Dos documentos: la investigación de mercado (el **por qué** detrás de las decisiones) y el roadmap del sistema comercial del cliente (el **dónde encaja** este sitio). |
-| [`product/`](product/) | Alcance de producto: features del MVP, fases de entrega (roadmap) y el plan de ejecución de la Fase 1. El **qué**, el **cuándo** y el **en qué orden**. |
+| [`product/`](product/) | Alcance de producto: la especificación funcional del cliente (manda), su contraste contra lo construido, features del MVP, fases de entrega (roadmap) y el plan de ejecución de la Fase 1. El **qué**, el **cuándo** y el **en qué orden**. |
 | [`architecture/`](architecture/) | Especificación técnica: stack, i18n, sistema de diseño, estructura de carpetas. El **cómo** se construye. |
 | [`brand/`](brand/) | Manual de marca oficial (PDF) y logo fuente. La **identidad** — nombre, ADN, voz/tono, sistema visual. |
 | [`design/`](design/) | Dos briefs para generar el MVP con un agente tipo v0: uno de **producto** (qué es el sitio, sin nada técnico) y uno **técnico** (prompts con stack y versiones). El **arranque** de la capa visual. |
@@ -25,7 +35,8 @@ con WhatsApp como canal de conversión dominante.
 
 0. **[`research/sistema-comercial.md`](research/sistema-comercial.md)** ★ — el roadmap del **cliente**: el sistema comercial completo (GoHighLevel como CRM y fuente de verdad, WhatsApp Business Platform multiagente, agente de IA propio, n8n, base de ofertas de mayoristas) del cual este sitio es **una** de seis fuentes de captación. Léelo primero: reencuadra todo lo demás. Define el CRM, el contrato de `offer_id`, quién dispara cada evento de conversión, el registro de consentimiento y la regla de no encender pauta antes de que el CRM funcione.
 1. **[`research/investigation.md`](research/investigation.md)** ★ — investigación de mercado (contexto completo: benchmarks, anatomía de ficha de paquete, CTAs, tracking, SEO, stack recomendado originalmente).
-2. **[`product/mvp-features.md`](product/mvp-features.md)** — traduce la investigación a un alcance de MVP concreto sobre Next.js/Vercel (stack real del proyecto, que reemplaza la recomendación de WordPress de `investigation.md`).
+1.bis **[`product/estructura-funcional-cliente.md`](product/estructura-funcional-cliente.md)** ★ — la especificación de alcance funcional del **cliente** (2026-08-16): menú, arquitectura de información, panel administrativo, taxonomía de destinos/ofertas y qué campo va en cada formulario. Manda sobre `mvp-features.md`/`fases-entrega.md` en qué y cuándo se construye (ver precedencia). Léelo antes de `mvp-features.md`, y junto con [`product/brecha-estructura-funcional.md`](product/brecha-estructura-funcional.md), el contraste contra lo ya documentado y construido.
+2. **[`product/mvp-features.md`](product/mvp-features.md)** — traduce la investigación a un alcance de MVP concreto sobre Next.js/Vercel (stack real del proyecto, que reemplaza la recomendación de WordPress de `investigation.md`). Donde contradiga a `estructura-funcional-cliente.md` en alcance, gana este último — ver `brecha-estructura-funcional.md`.
 3. **[`architecture/spec-tecnica.md`](architecture/spec-tecnica.md)** — cómo se construye técnicamente: i18n y sistema de diseño desde Fase 0, estructura de carpetas, requisitos no funcionales, checklist de arranque.
 4. **[`product/fases-entrega.md`](product/fases-entrega.md)** — fases de entrega (1: MVP/credibilidad, 2: escalamiento de conversión, 3: roadmap) con umbrales explícitos para pasar de una fase a otra.
 4.bis **[`product/plan-fase-1.md`](product/plan-fase-1.md)** — el plan de ejecución de la Fase 1: en qué orden se construyen las páginas y por qué ese orden, qué está realmente hecho de la Fase 0 (más de lo que dice `CLAUDE.md`), qué cuatro instrucciones de `design/brief-v0.md` quedaron obsoletas al existir el repo, los dos conflictos entre documentos que siguen sin resolver, y el inventario de bloqueos externos con su impacto. Léelo antes de escribir la primera página de contenido; no redefine alcance, lo secuencia.
@@ -47,9 +58,10 @@ La precedencia depende de **sobre qué** es el conflicto:
 **Construcción del sitio** (stack, rutas, i18n, design system, componentes, copy):
 
 1. **`CLAUDE.md`** (raíz) — reglas no negociables para quien implemente.
-2. **`architecture/spec-tecnica.md`** — cómo se construye (stack, rutas, i18n, design system, contrato con el CRM).
-3. **`product/mvp-features.md`** y **`product/fases-entrega.md`** — qué y cuándo se construye.
-4. **`design/brief-v0.md`** — cómo se ve y cómo se redacta. `design/brief-v0-producto.md` describe el mismo sitio sin decisiones técnicas: si los dos difieren en marca o contenido, hay que corregir el que esté desactualizado; si difieren en algo técnico, el de producto simplemente no opina.
-5. **`research/investigation.md`** — el porqué; su recomendación de stack (WordPress) está **superada** por el stack real definido en `mvp-features.md`/`spec-tecnica.md` (Next.js 16 + React 19 + Tailwind v4 + shadcn/ui sobre Vercel, con Node 24.14.1 y pnpm 10.34.3).
+2. **`architecture/spec-tecnica.md`** — cómo se construye (stack, rutas, i18n, design system, contrato con el CRM). Esto **no** lo mueve `estructura-funcional-cliente.md`: el cliente no opina sobre stack, i18n ni sistema de diseño.
+3. **`product/estructura-funcional-cliente.md`** — qué construye el sitio: menú, arquitectura de información, taxonomía de destinos/ofertas, panel administrativo, campos de formulario. Es la especificación del cliente y manda sobre los dos puntos siguientes en materia de alcance y **qué** se construye — no en **cómo** (eso lo sigue definiendo `spec-tecnica.md`).
+4. **`product/mvp-features.md`** y **`product/fases-entrega.md`** — el resto del qué y el cuándo, donde no lo cubre el punto anterior (tracking, pagos, SEO, umbrales de fase). Donde contradigan a `estructura-funcional-cliente.md`, ceden — ver [`product/brecha-estructura-funcional.md`](product/brecha-estructura-funcional.md) para el inventario completo de puntos en conflicto.
+5. **`design/brief-v0.md`** — cómo se ve y cómo se redacta. `design/brief-v0-producto.md` describe el mismo sitio sin decisiones técnicas: si los dos difieren en marca o contenido, hay que corregir el que esté desactualizado; si difieren en algo técnico, el de producto simplemente no opina.
+6. **`research/investigation.md`** — el porqué; su recomendación de stack (WordPress) está **superada** por el stack real definido en `mvp-features.md`/`spec-tecnica.md` (Next.js 16 + React 19 + Tailwind v4 + shadcn/ui sobre Vercel, con Node 24.14.1 y pnpm 10.34.3).
 
 `sistema-comercial.md` **no** decide cómo se construye el sitio: asume "sitio actual conectado con HighLevel" y no contempla que aquí se construye uno nuevo desde cero (ver `mvp-features.md` §Riesgos).
