@@ -12,10 +12,26 @@ import type { PreguntaFrecuente } from "@/lib/types/offer";
  * migración a un CMS en Fase 2, y por eso todo el acceso pasa por
  * `lib/destinations/`: cuando llegue el CMS cambia esa capa y ninguna página.
  */
+/**
+ * Las tres categorías principales de destino.
+ *
+ * "Pueblos de Antioquia" NO es un subtipo de "nacional": el cliente la declara
+ * categoría principal independiente, con su propio ítem de menú y su propia página
+ * (`estructura-funcional-cliente.md` §13, §24).
+ *
+ * Y se comporta distinto que las otras dos: no lleva lista fija de destinos. Los
+ * pueblos aparecen y desaparecen según haya oferta del proveedor, así que es la
+ * única categoría dirigida por inventario y no por catálogo editorial.
+ */
+export type DestinationCategory =
+  | "nacional"
+  | "internacional"
+  | "pueblos-de-antioquia";
+
 export type Destination = {
   slug: string;
   nombre: string;
-  tipo: "nacional" | "internacional";
+  tipo: DestinationCategory;
 
   /** Imagen de tarjeta (4:3). */
   imagen: string;
@@ -41,4 +57,22 @@ export type Destination = {
   queHacer: { titulo: string; descripcion: string }[];
 
   faq: PreguntaFrecuente[];
+
+  /*
+   * Campos de CURADURÍA. No describen el lugar: describen cómo la agencia quiere
+   * mostrarlo (`estructura-funcional-cliente.md` §24). Hoy se editan en el
+   * repositorio; en E3/E4 los administra el backoffice.
+   */
+
+  /**
+   * Aparece en la home.
+   *
+   * "No todos los destinos deben tener necesariamente el mismo protagonismo" (§9):
+   * la home muestra una selección, no el catálogo entero.
+   */
+  destacadoEnHome: boolean;
+  /** Orden de aparición dentro de su categoría y en la home. Menor va primero. */
+  orden: number;
+  /** Un destino inactivo desaparece del sitio sin borrarse (§24). */
+  estado: "activo" | "inactivo";
 };

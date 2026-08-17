@@ -1,6 +1,14 @@
 import type { Destination } from "@/lib/types/destination";
 
 /**
+ * SEMILLA de la base de datos — ya NO es la fuente del sitio.
+ *
+ * Desde que existe Supabase, `lib/destinations` lee de la tabla `destinos`. Este
+ * archivo sólo sirve para sembrar una base vacía. Cambiar algo aquí NO cambia el
+ * sitio: hay que editarlo en la base.
+ */
+
+/**
  * CONTENIDO EDITORIAL DE EJEMPLO.
  *
  * Nadie debe importar este archivo directamente: se accede por `lib/destinations`.
@@ -65,6 +73,9 @@ export const MOCK_DESTINATIONS: Destination[] = [
           "Sólo para la ruta larga del Valle de Cocora. El resto del recorrido es tranquilo y hay alternativas cortas para cada actividad.",
       },
     ],
+    destacadoEnHome: true,
+    orden: 2,
+    estado: "activo",
   },
   {
     slug: "cartagena",
@@ -115,6 +126,9 @@ export const MOCK_DESTINATIONS: Destination[] = [
           "Depende del plan. En cada ficha dice exactamente qué incluye y qué no, y la tasa de ingreso a las islas casi siempre se paga aparte.",
       },
     ],
+    destacadoEnHome: true,
+    orden: 1,
+    estado: "activo",
   },
   {
     slug: "santa-marta",
@@ -165,6 +179,9 @@ export const MOCK_DESTINATIONS: Destination[] = [
           "El Rodadero y Minca sí. Las caminatas largas del Tayrona pueden ser exigentes para los más pequeños; te ayudamos a armar el plan según las edades.",
       },
     ],
+    destacadoEnHome: true,
+    orden: 3,
+    estado: "activo",
   },
   {
     slug: "san-andres",
@@ -215,6 +232,9 @@ export const MOCK_DESTINATIONS: Destination[] = [
           "Cuatro o cinco días permiten conocer la isla con calma e incluir Providencia si te interesa. Con tres se puede, pero queda ajustado.",
       },
     ],
+    destacadoEnHome: true,
+    orden: 4,
+    estado: "activo",
   },
   {
     slug: "cancun",
@@ -265,6 +285,9 @@ export const MOCK_DESTINATIONS: Destination[] = [
           "Varía según el hotel. Por lo general alimentación y bebidas dentro del hotel; las excursiones fuera se pagan aparte. En cada plan lo dice con detalle.",
       },
     ],
+    destacadoEnHome: false,
+    orden: 6,
+    estado: "activo",
   },
   {
     slug: "punta-cana",
@@ -315,5 +338,113 @@ export const MOCK_DESTINATIONS: Destination[] = [
           "Si buscas descanso, no hace falta. Si quieres conocer, Isla Saona y Hoyo Azul son las salidas que más recomiendan quienes ya fueron.",
       },
     ],
+    destacadoEnHome: true,
+    orden: 5,
+    estado: "activo",
+  },
+
+  /*
+   * PUEBLOS DE ANTIOQUIA.
+   *
+   * La categoría no lleva lista fija: los pueblos aparecen y desaparecen según haya
+   * oferta del proveedor (`estructura-funcional-cliente.md` §13). Estos dos existen
+   * porque hoy hay tarifa para ellos, no porque sean un catálogo cerrado — y por eso
+   * su página prioriza las promociones activas sobre el directorio (§14).
+   */
+  {
+    slug: "jardin",
+    nombre: "Jardín",
+    tipo: "pueblos-de-antioquia",
+    imagen: "/destinos/eje-cafetero.webp",
+    imagenHero: "/destinos/eje-cafetero-hero.webp",
+    resumen: "Un pueblo de montaña con cable aéreo, café y un parque que sigue siendo el centro de todo.",
+    introduccion: [
+      "Jardín está a unas tres horas de Medellín y es de los pocos pueblos de Antioquia que no ha cambiado su parque principal por otra cosa. La basílica, las mesas de colores y la gente sentada a mirar siguen siendo el plan.",
+      "Alrededor hay fincas cafeteras que reciben visitas, dos cables aéreos que cruzan el valle y caminos para la cueva del Esplendor. Se puede hacer en un fin de semana sin correr.",
+      "Es un destino de clima templado y noches frescas, cómodo para quien viaja con niños o con adultos mayores: casi todo está a distancia caminable del parque.",
+    ],
+    mejorEpoca:
+      "Todo el año. Entre diciembre y marzo llueve menos, y en junio la cosecha cafetera hace más interesante la visita a las fincas.",
+    queHacer: [
+      {
+        titulo: "Cable aéreo",
+        descripcion: "Dos líneas cruzan el valle y dejan ver el pueblo desde arriba. La subida toma unos 15 minutos.",
+      },
+      {
+        titulo: "Finca cafetera con catación",
+        descripcion: "Recorrido por el cultivo y el beneficiadero, terminando en una catación guiada.",
+      },
+      {
+        titulo: "Cueva del Esplendor",
+        descripcion: "Caminata de dificultad media hasta una cascada que cae dentro de una cueva.",
+      },
+      {
+        titulo: "Parque principal y basílica",
+        descripcion: "El centro social del pueblo, con la basílica de piedra al frente. No requiere plan.",
+      },
+    ],
+    faq: [
+      {
+        pregunta: "¿Cuánto se demora el viaje desde Medellín?",
+        respuesta:
+          "Entre tres y cuatro horas por carretera, según el tráfico de salida. La vía está pavimentada todo el trayecto.",
+      },
+      {
+        pregunta: "¿Se necesita buena condición física?",
+        respuesta:
+          "Sólo para la cueva del Esplendor, que exige una caminata de dificultad media. El resto del pueblo es plano y caminable.",
+      },
+    ],
+    destacadoEnHome: true,
+    orden: 7,
+    estado: "activo",
+  },
+  {
+    slug: "guatape",
+    nombre: "Guatapé",
+    tipo: "pueblos-de-antioquia",
+    imagen: "/destinos/cartagena.webp",
+    imagenHero: "/destinos/cartagena-hero.webp",
+    resumen: "La piedra, el embalse y los zócalos: el pueblo más fotografiado de Antioquia, a dos horas de Medellín.",
+    introduccion: [
+      "Guatapé está a dos horas de Medellín y es el plan de un día que más se repite entre quienes visitan la ciudad. La piedra del Peñol, los 740 escalones y la vista del embalse son la razón.",
+      "El pueblo tiene su propio atractivo: los zócalos, esos relieves de colores en la parte baja de las casas, cuentan oficios e historias de cada familia. Se recorre a pie en un par de horas.",
+      "En el embalse se puede navegar, y hay operadores que ofrecen paseos en lancha de una hora. Es un destino cómodo para hacer en el día o quedarse una noche.",
+    ],
+    mejorEpoca:
+      "Todo el año. Entre semana hay bastante menos gente en la piedra que en fin de semana o festivo.",
+    queHacer: [
+      {
+        titulo: "Piedra del Peñol",
+        descripcion: "740 escalones hasta el mirador, con vista completa del embalse. Se sube en unos 30 minutos.",
+      },
+      {
+        titulo: "Zócalos del pueblo",
+        descripcion: "Recorrido a pie por las calles del centro, donde cada casa cuenta su oficio en relieve.",
+      },
+      {
+        titulo: "Paseo en lancha por el embalse",
+        descripcion: "Recorrido de una hora que pasa por las islas y la antigua zona inundada.",
+      },
+      {
+        titulo: "Malecón",
+        descripcion: "Zona de restaurantes frente al agua, para cerrar el día sin plan fijo.",
+      },
+    ],
+    faq: [
+      {
+        pregunta: "¿Se puede hacer en un solo día desde Medellín?",
+        respuesta:
+          "Sí. Es el formato más común: salida temprano, piedra y pueblo, y regreso en la tarde. Quedarse una noche permite ver el pueblo sin la multitud del mediodía.",
+      },
+      {
+        pregunta: "¿Subir la piedra es exigente?",
+        respuesta:
+          "Son 740 escalones con descansos y barandas. No requiere entrenamiento, pero sí ir con calma si tienes problemas de rodilla o de respiración.",
+      },
+    ],
+    destacadoEnHome: false,
+    orden: 8,
+    estado: "activo",
   },
 ];

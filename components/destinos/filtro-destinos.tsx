@@ -4,8 +4,9 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
+import type { DestinationCategory } from "@/lib/types/destination";
 
-type Tipo = "todos" | "nacional" | "internacional";
+type Tipo = "todos" | DestinationCategory;
 
 /**
  * Filtro del listado de destinos.
@@ -20,7 +21,7 @@ type Tipo = "todos" | "nacional" | "internacional";
 export function FiltroDestinos({
   items,
 }: {
-  items: { slug: string; tipo: "nacional" | "internacional"; card: React.ReactNode }[];
+  items: { slug: string; tipo: DestinationCategory; card: React.ReactNode }[];
 }) {
   const t = useTranslations("destinos");
   const [tipo, setTipo] = useState<Tipo>("todos");
@@ -29,6 +30,7 @@ export function FiltroDestinos({
     { valor: "todos", etiqueta: t("filtroTodos") },
     { valor: "nacional", etiqueta: t("filtroNacionales") },
     { valor: "internacional", etiqueta: t("filtroInternacionales") },
+    { valor: "pueblos-de-antioquia", etiqueta: t("filtroPueblosAntioquia") },
   ];
 
   const visibles = items.filter(

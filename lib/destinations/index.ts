@@ -1,30 +1,98 @@
-import { MOCK_DESTINATIONS } from "@/lib/mock/destinations";
 import { listActiveOffers } from "@/lib/offers";
-import type { Destination } from "@/lib/types/destination";
+import { getSupabase } from "@/lib/supabase/client";
+import { filaADestino } from "@/lib/supabase/mapeo";
+import type { Destination, DestinationCategory } from "@/lib/types/destination";
 import type { Offer } from "@/lib/types/offer";
 
 /**
  * ÚNICA puerta de acceso a los destinos.
  *
- * Mismo patrón que `lib/offers`: hoy lee de mocks locales y en Fase 2 la edición
- * pasa a un CMS (`fases-entrega.md`). Cuando eso ocurra cambia el interior de este
- * módulo y ninguna página se toca.
+ * Mismo patrón que `lib/offers`: lee de Supabase y ninguna página sabe de dónde
+ * vienen los datos.
  *
- * Ninguna página debe importar de `lib/mock/` directamente.
+ * Ninguna página debe consultar Supabase directamente.
  */
 
-export async function listDestinations(): Promise<Destination[]> {
-  return MOCK_DESTINATIONS;
+async function consultarDestinos(): Promise<Destination[]> {
+  const { data, error } = await getSupabase()
+    .from("destinos")
+    .select("*")
+    .order("orden", { ascending: true })
+    .order("nombre", { ascending: true });
+
+  if (error) {
+    throw new Error(`No se pudieron leer los destinos: ${error.message}`);
+  }
+
+  return data.map(filaADestino);
 }
 
+/**
+ * Destinos publicables.
+ *
+ * Filtra por `estado` aquí y no en cada página: un destino desactivado debe
+ * desaparecer de TODAS partes a la vez, y dejar ese filtro a criterio de quien
+ * escribe la página es cómo se cuela en una sola.
+ */
+export async function listDestinations(): Promise<Destination[]> {
+  const destinos = await consultarDestinos();
+  return destinos.filter((destino) => destino.estado === "activo");
+}
+
+export async function listDestinationsByCategory(
+  categoria: DestinationCategory,
+): Promise<Destination[]> {
+  const destinos = await listDestinations();
+  return destinos.filter((destino) => destino.tipo === categoria);
+}
+
+/**
+ * Los que la agencia eligió mostrar en la home.
+ *
+ * "No todos los destinos deben tener necesariamente el mismo protagonismo"
+ * (`estructura-funcional-cliente.md` §9): la home es una selección curada, no el
+ * catálogo entero.
+ */
+export async function listFeaturedDestinations(
+  categoria?: DestinationCategory,
+): Promise<Destination[]> {
+  const destinos = categoria
+    ? await listDestinationsByCategory(categoria)
+    : await listDestinations();
+  return destinos.filter((destino) => destino.destacadoEnHome);
+}
+
+/**
+ * Slugs con página propia.
+ *
+ * Incluye los INACTIVOS a propósito: desactivar un destino lo saca de los listados,
+ * pero su URL puede estar en un anuncio ya publicado o indexada en Google. Devolver
+ * un 404 ahí pierde a alguien que llegó con intención.
+ */
 export async function listDestinationSlugs(): Promise<string[]> {
-  return MOCK_DESTINATIONS.map((destino) => destino.slug);
+  const { data, error } = await getSupabase().from("destinos").select("slug");
+
+  if (error) {
+    throw new Error(`No se pudieron leer los slugs de destinos: ${error.message}`);
+  }
+
+  return data.map((fila) => fila.slug);
 }
 
 export async function getDestination(
   slug: string,
 ): Promise<Destination | null> {
-  return MOCK_DESTINATIONS.find((destino) => destino.slug === slug) ?? null;
+  const { data, error } = await getSupabase()
+    .from("destinos")
+    .select("*")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`No se pudo leer el destino ${slug}: ${error.message}`);
+  }
+
+  return data ? filaADestino(data) : null;
 }
 
 /** Ofertas publicables de un destino. Una vencida no se ofrece como catálogo. */
@@ -40,8 +108,8 @@ export async function listOffersForDestination(
  *
  * Devuelve `null` si no hay ninguna, y entonces la tarjeta se muestra sin precio.
  * Esa es la decisión correcta: un precio desactualizado es peor que ningún precio,
- * y el "desde" de un destino no es un dato editable sino el resultado de las
- * ofertas que hoy se pueden vender.
+ * y el "desde" de un destino no es un dato editable sino el resultado de las ofertas
+ * que hoy se pueden vender.
  */
 export async function getDestinationFromPrice(
   destinoSlug: string,
