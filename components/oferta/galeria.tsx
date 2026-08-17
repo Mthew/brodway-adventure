@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 /**
- * Galería de la ficha de paquete.
+ * Galería de la ficha de oferta.
  *
  * Sin librería de carrusel y sin lightbox: en móvil es scroll horizontal con
  * `scroll-snap` puro de CSS, que es lo que pide el dial de motion 3 y lo que no

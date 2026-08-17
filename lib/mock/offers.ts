@@ -1,11 +1,13 @@
 import type { Offer } from "@/lib/types/offer";
 
 /**
- * DATOS DE EJEMPLO — no son ofertas reales.
+ * SEMILLA de la base de datos — ya NO es la fuente del sitio.
  *
- * Nadie debe importar este archivo directamente: se accede a través de
- * `lib/offers`. Cuando se decida la fuente real (base de ofertas o CMS, decisión
- * abierta en mvp-features.md §Riesgos), sólo cambia el interior de esa capa.
+ * Desde que existe Supabase, `lib/offers` lee de la tabla `ofertas` y este archivo
+ * dejó de servirse en tiempo de ejecución. Su único uso es sembrar una base vacía
+ * (entorno nuevo, base de pruebas), así que sigue aquí en vez de borrarse.
+ *
+ * Cambiar algo aquí NO cambia el sitio: hay que editarlo en la base.
  *
  * Los precios son plausibles pero inventados, y todos los `mayorista` son ficticios.
  */
@@ -18,6 +20,9 @@ export const MOCK_OFFERS: Offer[] = [
     ciudadOrigen: "Medellín",
     noches: 3,
     ocupacionBase: "doble",
+    hotel: "Hacienda Venecia",
+    alimentacion: "Desayuno incluido",
+    fechaPeriodo: "Salidas todos los viernes",
     precioDesde: 1_290_000,
     moneda: "COP",
     titulo: "Eje Cafetero 4 días: café y naturaleza con guía local",
@@ -88,10 +93,16 @@ export const MOCK_OFFERS: Offer[] = [
           "Sí. El precio publicado sale desde Medellín; cuéntanos tu ciudad y te pasamos el valor con el ajuste que corresponda.",
       },
     ],
-    vigenciaHasta: "2026-09-30",
-    validadaEl: "2026-07-28",
+    vigenciaDesde: "2026-07-01",
+    vigenciaHasta: "2026-12-15",
+    validadaEl: "2026-08-12",
+    actualizadoEl: "2026-08-12",
     estado: "vigente",
     mayorista: "Mayorista ejemplo A",
+    mostrarEnMejoresOfertas: true,
+    mostrarEnPlayasYHoteles: false,
+    mostrarEnHome: true,
+    orden: 2,
   },
   {
     offerId: "OF-2026-0157",
@@ -101,6 +112,9 @@ export const MOCK_OFFERS: Offer[] = [
     ciudadOrigen: "Bogotá",
     noches: 4,
     ocupacionBase: "doble",
+    hotel: "Hotel Almirante Cartagena",
+    alimentacion: "Desayuno incluido",
+    fechaPeriodo: "12 al 16 de septiembre",
     precioDesde: 1_850_000,
     moneda: "COP",
     titulo: "Cartagena 5 días: ciudad amurallada y playa",
@@ -175,10 +189,16 @@ export const MOCK_OFFERS: Offer[] = [
           "Queda a pocos minutos caminando. Te confirmamos el hotel exacto antes de que separes el viaje.",
       },
     ],
-    vigenciaHasta: "2026-08-15",
-    validadaEl: "2026-07-30",
+    vigenciaDesde: "2026-07-15",
+    vigenciaHasta: "2026-11-30",
+    validadaEl: "2026-08-14",
+    actualizadoEl: "2026-08-14",
     estado: "vigente",
     mayorista: "Mayorista ejemplo B",
+    mostrarEnMejoresOfertas: true,
+    mostrarEnPlayasYHoteles: true,
+    mostrarEnHome: true,
+    orden: 1,
   },
   {
     offerId: "OF-2026-0098",
@@ -188,6 +208,9 @@ export const MOCK_OFFERS: Offer[] = [
     ciudadOrigen: "Bogotá",
     noches: 5,
     ocupacionBase: "doble",
+    hotel: "Riu Palace Las Américas",
+    alimentacion: "Todo incluido",
+    fechaPeriodo: "8 al 13 de junio",
     precioDesde: 4_390_000,
     moneda: "COP",
     titulo: "Cancún 6 días todo incluido",
@@ -262,10 +285,24 @@ export const MOCK_OFFERS: Offer[] = [
       },
     ],
     /** Deliberadamente vencida: sirve para probar el estado de tarifa expirada. */
+    /*
+     * FIXTURE DE TARIFA VENCIDA — no lo "arregles" subiendo la fecha.
+     *
+     * Es la única oferta que ejercita el estado de vencida de `spec-tecnica.md` §8.4:
+     * no se lista en ninguna sección, pero su ficha sigue viva con el CTA de
+     * recotización en vez de un 404. Si todas las ofertas están vigentes, ese camino
+     * deja de tener cobertura y se rompe sin que nadie lo note.
+     */
+    vigenciaDesde: "2026-04-01",
     vigenciaHasta: "2026-06-30",
     validadaEl: "2026-05-20",
+    actualizadoEl: "2026-05-20",
     estado: "vigente",
     mayorista: "Mayorista ejemplo C",
+    mostrarEnMejoresOfertas: false,
+    mostrarEnPlayasYHoteles: true,
+    mostrarEnHome: true,
+    orden: 4,
   },
   {
     offerId: "OF-2026-0161",
@@ -287,10 +324,254 @@ export const MOCK_OFFERS: Offer[] = [
     fechasSalida: [],
     politicaCancelacion: "",
     faq: [],
+    vigenciaDesde: "2026-08-01",
     vigenciaHasta: "2026-12-31",
     validadaEl: "2026-08-01",
+    actualizadoEl: "2026-08-01",
     /** Extraída de una imagen pero sin validar: NUNCA debe renderizarse. */
     estado: "borrador",
     mayorista: "Mayorista ejemplo A",
+    /*
+     * Marcada para TODAS las secciones a propósito: es la prueba de que el estado
+     * `borrador` manda sobre la curaduría. Si aparece en algún listado, el filtro de
+     * `lib/offers` está roto.
+     */
+    mostrarEnMejoresOfertas: true,
+    mostrarEnPlayasYHoteles: true,
+    mostrarEnHome: true,
+    orden: 0,
+  },
+  {
+    offerId: "OF-2026-0173",
+    slug: "santa-marta-tayrona",
+    destino: "Santa Marta",
+    destinoSlug: "santa-marta",
+    ciudadOrigen: "Medellín",
+    noches: 4,
+    ocupacionBase: "doble",
+    hotel: "Hotel Bahía Taganga",
+    alimentacion: "Desayuno incluido",
+    fechaPeriodo: "Salidas semanales hasta noviembre",
+    precioDesde: 1_690_000,
+    moneda: "COP",
+    titulo: "Santa Marta 5 días: Tayrona y Taganga",
+    beneficioCorto: "Un día completo en el Parque Tayrona, con entrada y transporte",
+    imagenes: [
+      "/destinos/santa-marta-hero.webp",
+      "/destinos/santa-marta-2.webp",
+      "/destinos/santa-marta-3.webp",
+    ],
+    highlights: [
+      "Día completo en el Parque Tayrona con entrada incluida",
+      "Atardecer en Taganga",
+      "Centro histórico de Santa Marta a pie",
+    ],
+    incluye: [
+      "Tiquetes aéreos ida y regreso desde Medellín",
+      "4 noches de alojamiento con desayuno",
+      "Traslados aeropuerto - hotel - aeropuerto",
+      "Entrada y transporte al Parque Tayrona",
+      "Asistencia médica en viaje",
+    ],
+    noIncluye: [
+      "Almuerzos y cenas",
+      "Gastos personales",
+      "Actividades no descritas en el itinerario",
+    ],
+    itinerario: [
+      {
+        dia: 1,
+        titulo: "Llegada y centro histórico",
+        descripcion:
+          "Traslado al hotel y tarde libre para caminar el centro y el malecón.",
+      },
+      {
+        dia: 2,
+        titulo: "Parque Tayrona",
+        descripcion:
+          "Día completo en el parque, con caminata hasta Cabo San Juan y tiempo de playa.",
+      },
+      {
+        dia: 3,
+        titulo: "Taganga",
+        descripcion: "Mañana libre y tarde en Taganga para ver el atardecer.",
+      },
+      { dia: 4, titulo: "Día libre", descripcion: "Día sin actividades programadas." },
+      { dia: 5, titulo: "Regreso", descripcion: "Traslado al aeropuerto y vuelo de regreso." },
+    ],
+    fechasSalida: [],
+    politicaCancelacion:
+      "Cancelaciones con más de 15 días de anticipación: penalidad del 20%. Entre 15 y 7 días: 50%. Con menos de 7 días: sin reembolso.",
+    faq: [
+      {
+        pregunta: "¿La entrada al Tayrona está incluida?",
+        respuesta:
+          "Sí, la entrada y el transporte están incluidos. El parque cierra algunas semanas al año por descanso ecológico; si tu fecha coincide, te proponemos una alternativa.",
+      },
+    ],
+    informacionImportante: [
+      "El Parque Tayrona cierra varias semanas al año por descanso ecológico.",
+      "La caminata a Cabo San Juan toma unas 2 horas por terreno irregular.",
+    ],
+    vigenciaDesde: "2026-08-01",
+    vigenciaHasta: "2026-11-15",
+    validadaEl: "2026-08-13",
+    actualizadoEl: "2026-08-13",
+    estado: "vigente",
+    mayorista: "Mayorista ejemplo B",
+    mostrarEnMejoresOfertas: true,
+    mostrarEnPlayasYHoteles: true,
+    mostrarEnHome: true,
+    orden: 3,
+  },
+  {
+    offerId: "OF-2026-0180",
+    slug: "punta-cana-todo-incluido",
+    destino: "Punta Cana",
+    destinoSlug: "punta-cana",
+    ciudadOrigen: "Medellín",
+    noches: 5,
+    ocupacionBase: "doble",
+    hotel: "Riu Palace Punta Cana",
+    alimentacion: "Todo incluido",
+    fechaPeriodo: "20 al 26 de octubre",
+    precioDesde: 4_950_000,
+    moneda: "COP",
+    titulo: "Punta Cana 6 días todo incluido",
+    beneficioCorto: "Resort frente al mar, con vuelos, traslados y todo incluido",
+    imagenes: [
+      "/destinos/punta-cana-hero.webp",
+      "/destinos/punta-cana-2.webp",
+      "/destinos/punta-cana-3.webp",
+    ],
+    highlights: [
+      "Resort frente a Playa Bávaro",
+      "Todo incluido: comidas, bebidas y snacks",
+      "Traslados privados desde el aeropuerto",
+    ],
+    incluye: [
+      "Tiquetes aéreos ida y regreso desde Medellín",
+      "5 noches en régimen de todo incluido",
+      "Traslados aeropuerto - hotel - aeropuerto",
+      "Impuestos hoteleros",
+      "Asistencia médica en viaje",
+    ],
+    noIncluye: [
+      "Tasa de entrada a República Dominicana",
+      "Excursiones opcionales",
+      "Gastos personales y propinas",
+    ],
+    itinerario: [
+      {
+        dia: 1,
+        titulo: "Llegada",
+        descripcion: "Traslado al resort y tarde libre en la playa.",
+      },
+      {
+        dia: 2,
+        titulo: "Día de playa",
+        descripcion: "Día libre para disfrutar Playa Bávaro y las instalaciones.",
+      },
+      {
+        dia: 3,
+        titulo: "Isla Saona (opcional)",
+        descripcion: "Excursión opcional de día completo a Isla Saona.",
+      },
+      { dia: 4, titulo: "Día libre", descripcion: "Sin actividades programadas." },
+      { dia: 5, titulo: "Día libre", descripcion: "Sin actividades programadas." },
+      { dia: 6, titulo: "Regreso", descripcion: "Traslado al aeropuerto y vuelo de regreso." },
+    ],
+    fechasSalida: [],
+    politicaCancelacion:
+      "Cancelaciones con más de 30 días de anticipación: penalidad del 25%. Entre 30 y 15 días: 60%. Con menos de 15 días: sin reembolso.",
+    faq: [
+      {
+        pregunta: "¿Necesito visa para República Dominicana?",
+        respuesta:
+          "Los ciudadanos colombianos no requieren visa de turismo, pero sí pasaporte con vigencia mínima de seis meses. Confirma tus documentos con tu asesor antes de reservar.",
+      },
+    ],
+    documentacion: [
+      "Pasaporte con vigencia mínima de seis meses",
+      "Tarjeta de entrada y salida (se diligencia en línea antes del viaje)",
+    ],
+    informacionImportante: [
+      "La tasa de entrada al país se paga en destino y no está incluida en la tarifa.",
+    ],
+    vigenciaDesde: "2026-08-05",
+    vigenciaHasta: "2026-10-10",
+    validadaEl: "2026-08-15",
+    actualizadoEl: "2026-08-15",
+    estado: "vigente",
+    mayorista: "Mayorista ejemplo C",
+    mostrarEnMejoresOfertas: false,
+    mostrarEnPlayasYHoteles: true,
+    mostrarEnHome: true,
+    orden: 5,
+  },
+  {
+    offerId: "OF-2026-0188",
+    slug: "jardin-fin-de-semana",
+    destino: "Jardín",
+    destinoSlug: "jardin",
+    ciudadOrigen: "Medellín",
+    noches: 2,
+    ocupacionBase: "doble",
+    hotel: "Hotel Jardín Plaza",
+    alimentacion: "Desayuno incluido",
+    fechaPeriodo: "Salidas todos los sábados",
+    precioDesde: 620_000,
+    moneda: "COP",
+    titulo: "Jardín: fin de semana entre montañas y café",
+    beneficioCorto: "Dos noches en el pueblo, con cable aéreo y finca cafetera",
+    imagenes: [
+      "/destinos/eje-cafetero-hero.webp",
+      "/destinos/eje-cafetero-2.webp",
+    ],
+    highlights: [
+      "Cable aéreo con vista al valle",
+      "Visita a finca cafetera con catación",
+      "Parque principal y basílica",
+    ],
+    incluye: [
+      "Transporte terrestre ida y regreso desde Medellín",
+      "2 noches de alojamiento con desayuno",
+      "Visita guiada a finca cafetera con catación",
+      "Asistencia médica en viaje",
+    ],
+    noIncluye: ["Almuerzos y cenas", "Cable aéreo", "Gastos personales"],
+    itinerario: [
+      {
+        dia: 1,
+        titulo: "Llegada y parque principal",
+        descripcion: "Traslado desde Medellín y tarde libre en el parque y la basílica.",
+      },
+      {
+        dia: 2,
+        titulo: "Finca cafetera",
+        descripcion: "Visita guiada con catación y tarde libre para el cable aéreo.",
+      },
+      { dia: 3, titulo: "Regreso", descripcion: "Mañana libre y regreso a Medellín." },
+    ],
+    fechasSalida: [],
+    politicaCancelacion:
+      "Cancelaciones con más de 7 días de anticipación: penalidad del 20%. Con menos de 7 días: sin reembolso.",
+    faq: [
+      {
+        pregunta: "¿El viaje es en transporte compartido?",
+        respuesta:
+          "Sí, el traslado desde Medellín es en van compartida. Si prefieres transporte privado, tu asesor te pasa el valor.",
+      },
+    ],
+    vigenciaDesde: "2026-08-01",
+    vigenciaHasta: "2026-12-20",
+    validadaEl: "2026-08-14",
+    actualizadoEl: "2026-08-14",
+    estado: "vigente",
+    mayorista: "Mayorista ejemplo D",
+    mostrarEnMejoresOfertas: true,
+    mostrarEnPlayasYHoteles: false,
+    mostrarEnHome: true,
+    orden: 6,
   },
 ];

@@ -6,13 +6,19 @@
   },
   "nav": {
     "destinos": "Destinos",
-    "paquetes": "Paquetes",
+    "mejoresOfertas": "Mejores Ofertas",
+    "playasYHoteles": "Mejores Playas y Hoteles",
+    "destinosInternacionales": "Destinos Internacionales",
+    "destinosNacionales": "Destinos Nacionales",
+    "pueblosAntioquia": "Pueblos de Antioquia",
+    "verTodosDestinos": "Ver todos los destinos",
     "comoPagar": "Cómo pagar",
     "nosotros": "Nosotros",
     "contacto": "Contacto",
     "abrirMenu": "Abrir menú",
     "cerrarMenu": "Cerrar menú",
-    "irAlInicio": "Ir al inicio"
+    "irAlInicio": "Ir al inicio",
+    "abrirDestinos": "Ver categorías de destino"
   },
   "cta": {
     "cotizaWhatsapp": "Cotiza por WhatsApp",
@@ -42,7 +48,7 @@
   "footer": {
     "proposito": "Hacer que viajar se sienta más claro, cercano y posible.",
     "tituloDestinos": "Destinos",
-    "tituloPaquetes": "Paquetes",
+    "tituloOfertas": "Ofertas",
     "tituloEmpresa": "Empresa",
     "tituloLegal": "Legal y contacto",
     "blog": "Blog",
@@ -66,12 +72,6 @@
     "verificadaEl": "Tarifa verificada el {fecha}, sujeta a disponibilidad y reconfirmación.",
     "consultaCondiciones": "Consulta condiciones, impuestos y servicios incluidos."
   },
-  "oferta": {
-    "vencidaTitulo": "Esta tarifa ya no está vigente",
-    "vencidaTexto": "Estuvo vigente hasta el {fecha}. Te preparamos una actualizada con las mismas fechas o las que prefieras.",
-    "vencidaCta": "Pídenos una tarifa actualizada",
-    "vencidaMensajeWhatsapp": "Hola, vi el plan de {titulo} en la página y la tarifa ya venció. ¿Me pueden preparar una actualizada?"
-  },
   "home": {
     "heroTitulo": "Elige tu viaje con claridad",
     "heroSubtitulo": "Te acompañamos a comparar opciones reales, con el precio completo y sus condiciones.",
@@ -82,6 +82,18 @@
     "franjaRespuesta": "Te responde una persona, en minutos",
     "destinosTitulo": "A dónde viaja la gente que nos escribe",
     "destinosVerTodos": "Ver todos los destinos",
+    "ofertasTitulo": "Las ofertas que más nos piden",
+    "ofertasVerTodas": "Ver todas las ofertas",
+    "hotelesTitulo": "Hoteles y playas que recomendamos",
+    "hotelesTexto": "Selección nuestra, no un ranking: son los sitios que le mandaríamos a un amigo.",
+    "hotelesVerTodas": "Ver todas las opciones",
+    "internacionalesTitulo": "Destinos internacionales",
+    "internacionalesVerTodos": "Ver todos los internacionales",
+    "nacionalesTitulo": "Destinos nacionales",
+    "nacionalesVerTodos": "Ver todos los nacionales",
+    "pueblosTitulo": "Pueblos de Antioquia",
+    "pueblosTexto": "Escapadas cerca de Medellín. Los pueblos cambian según las promociones que consigamos, así que esta lista se mueve.",
+    "pueblosVerTodos": "Ver los pueblos disponibles",
     "comoFuncionaTitulo": "Cómo funciona",
     "paso1Titulo": "Cuéntanos cómo quieres viajar",
     "paso1Texto": "Con quién vas, en qué fechas y desde qué ciudad. Con eso arrancamos.",
@@ -207,14 +219,12 @@
   },
   "destinos": {
     "tituloListado": "A dónde te podemos llevar",
-    "introListado": "Seis destinos que conocemos bien. Si el tuyo no está aquí, escríbenos: también armamos viajes a medida.",
+    "introListado": "Destinos que conocemos bien. Si el tuyo no está aquí, escríbenos: también armamos viajes a medida.",
     "nacional": "Nacional",
     "internacional": "Internacional",
+    "pueblos-de-antioquia": "Pueblos de Antioquia",
+    "pueblosAntioquia": "Pueblos de Antioquia",
     "verOpciones": "Ver opciones",
-    "filtroTodos": "Todos",
-    "filtroNacionales": "Nacionales",
-    "filtroInternacionales": "Internacionales",
-    "filtroEtiqueta": "Filtrar destinos por tipo",
     "sinResultados": "No hay destinos de ese tipo por ahora.",
     "migaInicio": "Inicio",
     "migaDestinos": "Destinos",
@@ -226,12 +236,12 @@
     "ctaTitulo": "¿Te suena este destino?",
     "mensajeWhatsapp": "Hola, quiero información para viajar a {destino}"
   },
-  "paquetes": {
-    "tituloListado": "Planes armados y listos para salir",
-    "introListado": "Cada plan trae su precio explicado, lo que incluye y lo que no. Si quieres otra fecha o salir desde otra ciudad, lo ajustamos.",
+  "ofertas": {
+    "tituloListado": "Mejores Ofertas",
+    "introListado": "Las promociones que destacamos por tarifa. Cada una trae su precio explicado, la ciudad de salida y lo que incluye.",
     "vacio": "Por ahora no hay planes publicados. Escríbenos y armamos uno contigo.",
     "migaInicio": "Inicio",
-    "migaPaquetes": "Paquetes",
+    "migaOfertas": "Ofertas",
     "duracion": "{noches, plural, one {# noche} other {# noches}}",
     "verPlan": "Ver el plan completo",
     "loMejor": "Lo mejor de este viaje",
@@ -248,7 +258,12 @@
     "formularioTexto": "Déjanos tus datos y un asesor te responde con las opciones para este plan.",
     "relacionados": "Otros planes que te pueden servir",
     "mensajeWhatsapp": "Hola, quiero cotizar el plan de {titulo}",
-    "barraCta": "Cotizar"
+    "barraCta": "Cotizar",
+    "vencidaTitulo": "Esta tarifa ya no está vigente",
+    "vencidaTexto": "Estuvo vigente hasta el {fecha}. Te preparamos una actualizada con las mismas fechas o las que prefieras.",
+    "vencidaCta": "Pídenos una tarifa actualizada",
+    "vencidaMensajeWhatsapp": "Hola, vi el plan de {titulo} en la página y la tarifa ya venció. ¿Me pueden preparar una actualizada?",
+    "verOferta": "Ver oferta"
   },
   "formulario": {
     "nombre": "Nombre",
@@ -306,5 +321,29 @@
     "faq": "Preguntas frecuentes",
     "ctaFinal": "Cuéntanos y te armamos el plan",
     "tarifaVencida": "La tarifa de este anuncio ya no está vigente. Escríbenos y te preparamos una actualizada con las mismas fechas o las que prefieras."
+  },
+  "filtros": {
+    "etiqueta": "Filtrar por categoría",
+    "todos": "Todas",
+    "nacional": "Nacionales",
+    "internacional": "Internacionales",
+    "pueblos-de-antioquia": "Pueblos de Antioquia"
+  },
+  "playasYHoteles": {
+    "titulo": "Mejores Playas y Hoteles",
+    "intro": "Una selección nuestra, hecha a mano. No es un ranking ni un puntaje: son los hoteles y las playas que recomendaríamos a un amigo.",
+    "vacio": "Por ahora no tenemos una selección publicada. Escríbenos y te contamos qué hay disponible.",
+    "ctaTitulo": "¿Buscas algo con más categoría?",
+    "verTodas": "Ver todas las opciones"
+  },
+  "categorias": {
+    "tituloInternacional": "Destinos Internacionales",
+    "introInternacional": "A dónde llevamos gente fuera de Colombia. Cada destino tiene su página con lo que hay que saber antes de ir.",
+    "tituloNacional": "Destinos Nacionales",
+    "introNacional": "Colombia da para mucho más de lo que se suele ver. Estos son los destinos que conocemos bien.",
+    "tituloPueblosAntioquia": "Pueblos de Antioquia",
+    "introPueblosAntioquia": "Escapadas cerca de Medellín. Los pueblos que aparecen aquí cambian según las promociones disponibles, así que vale la pena volver a mirar.",
+    "vacio": "Ahora mismo no hay destinos publicados en esta categoría. Escríbenos y te contamos qué tenemos.",
+    "verOfertas": "Ver ofertas"
   }
 }

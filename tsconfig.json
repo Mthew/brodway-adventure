@@ -30,5 +30,13 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    // Scripts sueltos de Node, fuera del build de Next. Corren con
+    // `node --experimental-strip-types`, que EXIGE la extensión `.ts` en los
+    // imports — justo lo que este tsconfig prohíbe (TS5097). Habilitar
+    // `allowImportingTsExtensions` para toda la app sería relajar una regla del
+    // build por un script de mantenimiento.
+    "scripts/**/*.mts"
+  ]
 }

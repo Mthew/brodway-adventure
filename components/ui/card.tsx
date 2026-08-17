@@ -197,43 +197,97 @@ export async function DestinationCard({
 }
 
 /**
- * Tarjeta de paquete.
+ * Tarjeta de oferta.
  *
  * Recibe una `Offer` completa, no campos sueltos: así el precio nunca se muestra
  * sin su ciudad de origen y su ocupación base.
  */
-export async function PackageCard({ offer }: { offer: Offer }) {
+export async function PackageCard({
+  offer,
+  destacado = false,
+}: {
+  offer: Offer;
+  /**
+   * La tarjeta ocupa dos columnas.
+   *
+   * Cambia la proporción de la foto a 21:9, y no es cosmética. Medido en navegador
+   * a 1280px, con la tarjeta a 1088px de ancho:
+   *
+   *     4:3  -> foto 816px, tarjeta 1096px  (ocupa más de una pantalla entera)
+   *     16:9 -> foto 612px, tarjeta  892px
+   *     21:9 -> foto 466px, tarjeta  746px  (a la altura de las tarjetas vecinas)
+   *
+   * Una relación pensada para una tarjeta de ~530px no sirve al doble de ancho: el
+   * alto crece con el ancho y empuja el resto de la sección fuera del pliegue.
+   */
+  destacado?: boolean;
+}) {
   const t = await getTranslations("precio");
+  const to = await getTranslations("ofertas");
   const format = await getFormatter();
 
   return (
     /*
       Mismo tratamiento que `DestinationCard` (sin borde, sombra que sube al
-      hover): las dos conviven en `/destinos/[slug]` y en `/paquetes`, y dos
+      hover): las dos conviven en `/destinos/[slug]` y en `/ofertas`, y dos
       estilos de tarjeta distintos en la misma página se leen como un error.
 
       La relación se queda en 4:3 y no pasa a 4:5 como la de destino: la de
-      paquete es más ancha en su rejilla (dos columnas, no tres) y en vertical
+      oferta es más ancha en su rejilla (dos columnas, no tres) y en vertical
       quedaría desproporcionada.
     */
     <Card className="group flex h-full flex-col border-0 shadow-md motion-safe:transition-shadow motion-safe:duration-300 hover:shadow-xl">
-      <div className="zoom-foto reveal-curtain relative aspect-[4/3] w-full overflow-hidden bg-neutral-100">
+      <div
+        className={cn(
+          "zoom-foto reveal-curtain relative w-full overflow-hidden bg-neutral-100",
+          destacado ? "aspect-[21/9]" : "aspect-[4/3]",
+        )}
+      >
         {offer.imagenes[0] ? (
           <Image
             src={offer.imagenes[0]}
             alt=""
             fill
-            sizes="(max-width: 768px) 85vw, 45vw"
+            sizes={destacado ? "(max-width: 768px) 85vw, 90vw" : "(max-width: 768px) 85vw, 45vw"}
             className="object-cover"
           />
         ) : null}
       </div>
       <div className="flex flex-1 flex-col gap-2.5 p-5">
+        {/* El DESTINO va encima del título y no dentro: §5 y §16 lo listan como
+            campo propio de la tarjeta, y es lo primero que se compara al recorrer
+            una rejilla de ofertas de varios lugares. */}
+        <p className="text-caption text-brand-turquoise-text font-semibold">
+          {offer.destino}
+        </p>
         <h3 className="text-h3 text-brand-navy">{offer.titulo}</h3>
         <p className="text-body-sm line-clamp-2 text-neutral-600">
           {offer.beneficioCorto}
         </p>
-        <div className="mt-auto flex flex-col gap-1">
+
+        {/*
+          Ficha corta de §5: fecha o periodo · duración · hotel · alimentación.
+          Cada dato sólo aparece si la oferta lo trae ("cuando corresponda" en §16):
+          un tour sin hotel no debe mostrar un hueco ni un guion suelto.
+        */}
+        <ul className="text-caption flex flex-wrap items-center gap-x-2 gap-y-1 text-neutral-600">
+          {offer.fechaPeriodo ? <li>{offer.fechaPeriodo}</li> : null}
+          <li className="before:mr-2 before:text-neutral-300 not-first:before:content-['·']">
+            {t("noches", { noches: offer.noches })}
+          </li>
+          {offer.hotel ? (
+            <li className="before:mr-2 before:text-neutral-300 not-first:before:content-['·']">
+              {offer.hotel}
+            </li>
+          ) : null}
+          {offer.alimentacion ? (
+            <li className="before:mr-2 before:text-neutral-300 not-first:before:content-['·']">
+              {offer.alimentacion}
+            </li>
+          ) : null}
+        </ul>
+
+        <div className="mt-auto flex flex-col gap-1 pt-1">
           <p className="text-caption text-neutral-700">
             {t("desde")}{" "}
             <span className="text-body text-brand-navy font-semibold">
@@ -251,11 +305,91 @@ export async function PackageCard({ offer }: { offer: Offer }) {
           </p>
         </div>
         <Link
-          href={`/paquetes/${offer.slug}`}
+          href={`/ofertas/${offer.slug}`}
           /* `min-h-11` = 44px: mínimo táctil, que aplica también a enlaces de texto. */
           className="text-body text-brand-turquoise-text inline-flex min-h-11 items-center font-semibold underline-offset-4 group-hover:underline"
         >
-          Ver el plan completo
+          {to("verPlan")}
+        </Link>
+      </div>
+    </Card>
+  );
+}
+
+/**
+ * Tarjeta de hotel, para "Mejores Playas y Hoteles".
+ *
+ * Es otra tarjeta y no una variante de `PackageCard` porque habla a otro visitante:
+ * §7 la dirige a quien busca mejor experiencia y para quien **el precio no es el
+ * criterio principal**. Eso cambia la jerarquía, no sólo el estilo — aquí manda la
+ * fotografía y el nombre del hotel, y el precio baja al final como dato de cierre.
+ *
+ * Diferencias deliberadas frente a `PackageCard`:
+ *   - Relación 3:4 (vertical) en vez de 4:3. §8 pide privilegiar la fotografía, y en
+ *     vertical la foto ocupa cerca del doble de altura con el mismo ancho de rejilla.
+ *   - El nombre del HOTEL es el titular; el destino queda debajo, en menor jerarquía.
+ *   - La alimentación se muestra como etiqueta ("Todo incluido"), que en esta sección
+ *     es un diferenciador de producto y no una nota al pie.
+ */
+export async function HotelCard({ offer }: { offer: Offer }) {
+  const t = await getTranslations("precio");
+  const to = await getTranslations("ofertas");
+  const format = await getFormatter();
+
+  return (
+    <Card className="group flex h-full flex-col border-0 shadow-md motion-safe:transition-shadow motion-safe:duration-300 hover:shadow-xl">
+      <div className="zoom-foto reveal-curtain relative aspect-[3/4] w-full overflow-hidden bg-neutral-100">
+        {offer.imagenes[0] ? (
+          <Image
+            src={offer.imagenes[0]}
+            alt=""
+            fill
+            sizes="(max-width: 768px) 85vw, 30vw"
+            className="object-cover"
+          />
+        ) : null}
+
+        {/* La alimentación va SOBRE la foto y no debajo del título: en esta sección
+            es lo primero que se compara entre dos hoteles del mismo destino. */}
+        {offer.alimentacion ? (
+          <span className="text-caption absolute top-3 left-3 rounded-full bg-white/95 px-3 py-1 font-semibold text-neutral-800">
+            {offer.alimentacion}
+          </span>
+        ) : null}
+      </div>
+
+      <div className="flex flex-1 flex-col gap-2 p-5">
+        {/* El hotel es el titular. Si la oferta no lo trae, cae al título del plan
+            en vez de dejar un hueco: la tarjeta debe seguir siendo legible. */}
+        <h3 className="text-h3 text-brand-navy">{offer.hotel ?? offer.titulo}</h3>
+        <p className="text-body-sm text-neutral-600">{offer.destino}</p>
+        <p className="text-body-sm line-clamp-2 text-neutral-700">
+          {offer.beneficioCorto}
+        </p>
+
+        <div className="mt-auto flex flex-col gap-1 pt-2">
+          <p className="text-caption text-neutral-700">
+            {t("desde")}{" "}
+            <span className="text-body text-brand-navy font-semibold">
+              {format.number(offer.precioDesde, {
+                style: "currency",
+                currency: offer.moneda,
+                maximumFractionDigits: 0,
+              })}
+            </span>{" "}
+            {t("porPersona")}
+          </p>
+          <p className="text-caption text-neutral-600">
+            {t("saliendoDesde", { ciudad: offer.ciudadOrigen })} ·{" "}
+            {t("ocupacion", { ocupacion: offer.ocupacionBase })}
+          </p>
+        </div>
+
+        <Link
+          href={`/ofertas/${offer.slug}`}
+          className="text-body text-brand-turquoise-text inline-flex min-h-11 items-center font-semibold underline-offset-4 group-hover:underline"
+        >
+          {to("verOferta")}
         </Link>
       </div>
     </Card>
