@@ -17,7 +17,7 @@ import type { Offer } from "@/lib/types/offer";
  * contador que se reinicia. Los contadores siguen prohibidos por marca.
  */
 export async function TarifaVencida({ offer }: { offer: Offer }) {
-  const t = await getTranslations("oferta");
+  const t = await getTranslations("ofertas");
   const format = await getFormatter();
 
   const vigenciaHasta = format.dateTime(new Date(offer.vigenciaHasta), {

@@ -22,7 +22,11 @@ import { listOfferSlugs } from "@/lib/offers";
 const RUTAS_FIJAS = [
   "",
   "/destinos",
-  "/paquetes",
+  "/destinos/internacionales",
+  "/destinos/nacionales",
+  "/destinos/pueblos-de-antioquia",
+  "/ofertas",
+  "/playas-y-hoteles",
   "/nosotros",
   "/contacto",
   "/como-pagar",
@@ -49,7 +53,7 @@ function entrada(route: string): MetadataRoute.Sitemap[number] {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [destinos, paquetes] = await Promise.all([
+  const [destinos, ofertas] = await Promise.all([
     listDestinationSlugs(),
     listOfferSlugs(),
   ]);
@@ -63,6 +67,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
      * contradiría esa decisión. Los borradores sí quedan excluidos, porque no
      * deben ser visibles en ningún sitio.
      */
-    ...paquetes.map((slug) => entrada(`/paquetes/${slug}`)),
+    ...ofertas.map((slug) => entrada(`/ofertas/${slug}`)),
   ];
 }

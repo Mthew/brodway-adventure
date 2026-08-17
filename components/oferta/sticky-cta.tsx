@@ -27,7 +27,7 @@ import type { Offer } from "@/lib/types/offer";
  * y un observer no dispara en cada frame del scroll.
  */
 export function StickyCta({ offer }: { offer: Offer }) {
-  const t = useTranslations("paquetes");
+  const t = useTranslations("ofertas");
   const tp = useTranslations("precio");
   const locale = useLocale();
   const format = useFormatter();
@@ -112,7 +112,7 @@ export function StickyCta({ offer }: { offer: Offer }) {
             onClick={() =>
               trackWhatsAppClick({
                 offerId: offer.offerId,
-                page: `/paquetes/${offer.slug}`,
+                page: `/ofertas/${offer.slug}`,
                 locale,
               })
             }

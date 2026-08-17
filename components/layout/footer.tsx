@@ -36,13 +36,31 @@ export async function Footer() {
             <p className="text-body-sm text-white/70">{t("proposito")}</p>
           </div>
 
+          {/*
+            El pie lista las tres categorías PLANAS, sin el desplegable de la barra.
+            Aquí no compiten por ancho, y son las rutas que interesa que un buscador
+            recorra desde cualquier página.
+          */}
           <nav className="flex flex-col gap-3" aria-label={t("tituloDestinos")}>
             <p className="text-body-sm font-semibold">{t("tituloDestinos")}</p>
-            <Link href="/destinos" className={ENLACE_PIE}>
-              {tNav("destinos")}
+            <Link href="/destinos/internacionales" className={ENLACE_PIE}>
+              {tNav("destinosInternacionales")}
             </Link>
-            <Link href="/paquetes" className={ENLACE_PIE}>
-              {tNav("paquetes")}
+            <Link href="/destinos/nacionales" className={ENLACE_PIE}>
+              {tNav("destinosNacionales")}
+            </Link>
+            <Link href="/destinos/pueblos-de-antioquia" className={ENLACE_PIE}>
+              {tNav("pueblosAntioquia")}
+            </Link>
+          </nav>
+
+          <nav className="flex flex-col gap-3" aria-label={t("tituloOfertas")}>
+            <p className="text-body-sm font-semibold">{t("tituloOfertas")}</p>
+            <Link href="/ofertas" className={ENLACE_PIE}>
+              {tNav("mejoresOfertas")}
+            </Link>
+            <Link href="/playas-y-hoteles" className={ENLACE_PIE}>
+              {tNav("playasYHoteles")}
             </Link>
           </nav>
 

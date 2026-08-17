@@ -95,6 +95,21 @@ export async function getDestination(
   return data ? filaADestino(data) : null;
 }
 
+/**
+ * Categoría de cada destino, por slug.
+ *
+ * La necesitan los listados de ofertas para poder filtrar por categoría: una `Offer`
+ * conoce su `destinoSlug` pero no si ese destino es nacional, internacional o de
+ * Antioquia. Se resuelve con UNA consulta y un mapa, en vez de preguntar por cada
+ * oferta.
+ */
+export async function getCategoriasPorSlug(): Promise<
+  Map<string, DestinationCategory>
+> {
+  const destinos = await consultarDestinos();
+  return new Map(destinos.map((destino) => [destino.slug, destino.tipo]));
+}
+
 /** Ofertas publicables de un destino. Una vencida no se ofrece como catálogo. */
 export async function listOffersForDestination(
   destinoSlug: string,
