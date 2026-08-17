@@ -4,15 +4,10 @@ import type { Destination } from "@/lib/types/destination";
  * SEMILLA de la base de datos — ya NO es la fuente del sitio.
  *
  * Desde que existe Supabase, `lib/destinations` lee de la tabla `destinos`. Este
- * archivo sólo sirve para sembrar una base vacía. Cambiar algo aquí NO cambia el
- * sitio: hay que editarlo en la base.
- */
-
-/**
- * CONTENIDO EDITORIAL DE EJEMPLO.
- *
- * Nadie debe importar este archivo directamente: se accede por `lib/destinations`.
- * Cuando la edición pase a un CMS (Fase 2), sólo cambia el interior de esa capa.
+ * archivo sólo sirve para sembrar una base vacía (`scripts/generar-semilla.mts`).
+ * **Cambiar algo aquí NO cambia el sitio**: hay que editarlo en la base. Aun así se
+ * mantiene sincronizado a mano, para que levantar un entorno nuevo reproduzca la
+ * misma curaduría y no una home a medio llenar.
  *
  * El texto es plausible y verificable, pero NO está revisado por la agencia: no
  * contiene cifras inventadas, ni promesas, ni datos legales. Antes de publicar hay
@@ -285,7 +280,7 @@ export const MOCK_DESTINATIONS: Destination[] = [
           "Varía según el hotel. Por lo general alimentación y bebidas dentro del hotel; las excursiones fuera se pagan aparte. En cada plan lo dice con detalle.",
       },
     ],
-    destacadoEnHome: false,
+    destacadoEnHome: true,
     orden: 6,
     estado: "activo",
   },
@@ -443,7 +438,7 @@ export const MOCK_DESTINATIONS: Destination[] = [
           "Son 740 escalones con descansos y barandas. No requiere entrenamiento, pero sí ir con calma si tienes problemas de rodilla o de respiración.",
       },
     ],
-    destacadoEnHome: false,
+    destacadoEnHome: true,
     orden: 8,
     estado: "activo",
   },

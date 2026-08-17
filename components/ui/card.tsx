@@ -202,7 +202,26 @@ export async function DestinationCard({
  * Recibe una `Offer` completa, no campos sueltos: así el precio nunca se muestra
  * sin su ciudad de origen y su ocupación base.
  */
-export async function PackageCard({ offer }: { offer: Offer }) {
+export async function PackageCard({
+  offer,
+  destacado = false,
+}: {
+  offer: Offer;
+  /**
+   * La tarjeta ocupa dos columnas.
+   *
+   * Cambia la proporción de la foto a 21:9, y no es cosmética. Medido en navegador
+   * a 1280px, con la tarjeta a 1088px de ancho:
+   *
+   *     4:3  -> foto 816px, tarjeta 1096px  (ocupa más de una pantalla entera)
+   *     16:9 -> foto 612px, tarjeta  892px
+   *     21:9 -> foto 466px, tarjeta  746px  (a la altura de las tarjetas vecinas)
+   *
+   * Una relación pensada para una tarjeta de ~530px no sirve al doble de ancho: el
+   * alto crece con el ancho y empuja el resto de la sección fuera del pliegue.
+   */
+  destacado?: boolean;
+}) {
   const t = await getTranslations("precio");
   const to = await getTranslations("ofertas");
   const format = await getFormatter();
@@ -218,13 +237,18 @@ export async function PackageCard({ offer }: { offer: Offer }) {
       quedaría desproporcionada.
     */
     <Card className="group flex h-full flex-col border-0 shadow-md motion-safe:transition-shadow motion-safe:duration-300 hover:shadow-xl">
-      <div className="zoom-foto reveal-curtain relative aspect-[4/3] w-full overflow-hidden bg-neutral-100">
+      <div
+        className={cn(
+          "zoom-foto reveal-curtain relative w-full overflow-hidden bg-neutral-100",
+          destacado ? "aspect-[21/9]" : "aspect-[4/3]",
+        )}
+      >
         {offer.imagenes[0] ? (
           <Image
             src={offer.imagenes[0]}
             alt=""
             fill
-            sizes="(max-width: 768px) 85vw, 45vw"
+            sizes={destacado ? "(max-width: 768px) 85vw, 90vw" : "(max-width: 768px) 85vw, 45vw"}
             className="object-cover"
           />
         ) : null}
