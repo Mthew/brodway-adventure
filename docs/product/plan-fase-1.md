@@ -1,5 +1,29 @@
 # BroWay Adventures — Plan de ejecución de la Fase 1
 
+> ## ⚠️ SUPERADO EN PARTE desde el 2026-08-16
+>
+> Este documento planificó la Fase 1 tal como la definían `fases-entrega.md` y `mvp-features.md`.
+> Esa Fase 1 se entregó entera (PR #1-#17), pero **el cliente redefinió el alcance** con tres
+> documentos posteriores: su especificación funcional del sitio, sus requerimientos para el sistema
+> comercial y la propuesta de NextGen.
+>
+> **Lo que sigue vigente de aquí:** §1 (estado de la Fase 0 y sus bloqueos), §2 (instrucciones
+> obsoletas de `brief-v0.md`) y §5 (inventario de bloqueos externos).
+>
+> **Lo que quedó superado:** §3 y §4 —el orden de nueve pasos— y §6, cuyo criterio de "Fase 1
+> terminada" ya no describe lo que el cliente pide. El alcance vigente vive en:
+>
+> - [`estructura-funcional-cliente.md`](estructura-funcional-cliente.md) — qué construye el sitio.
+> - [`brecha-estructura-funcional.md`](brecha-estructura-funcional.md) — qué cambia respecto a esto.
+> - [`backoffice-features.md`](backoffice-features.md) — las features del panel administrativo.
+>
+> El plan de ejecución vigente son cinco entregables: **E1** arquitectura de información ·
+> **E2** Supabase · **E3** backoffice · **E4** integración con GoHighLevel · **E5** sync del Sheet.
+> E1 y E2 están construidos; el estado del día está en [`CURRENT.md`](../../CURRENT.md).
+>
+> §3.2 ("CMS: cuándo, y dónde vive el contenido de destinos") **está resuelto**: el contenido vive
+> en Supabase desde E2, y la base de tarifas es el Google Sheet de la agencia.
+
 Plan de trabajo para llevar el repositorio desde las fundaciones ya construidas hasta el MVP
 publicable descrito en [`fases-entrega.md`](fases-entrega.md) §Fase 1.
 
