@@ -19,6 +19,10 @@ export const config = {
    * Excluye rutas internas de Next, la API y cualquier archivo con extensión
    * (imágenes, fuentes, robots.txt). Sin esto el proxy intentaría prefijar
    * assets estáticos con el locale.
+   *
+   * `admin` también queda fuera: el backoffice es interno y sólo en español, así que
+   * no tiene par en `/en`. Si el proxy lo tocara, redirigiría `/admin` a `/es/admin` y
+   * cada vuelta desde el login perdería el destino.
    */
-  matcher: "/((?!api|_next|_vercel|.*\\..*).*)",
+  matcher: "/((?!api|admin|_next|_vercel|.*\\..*).*)",
 };
