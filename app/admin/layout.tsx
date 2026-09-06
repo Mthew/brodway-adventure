@@ -3,6 +3,9 @@ import { Lato, Montserrat } from "next/font/google";
 
 import "@/app/globals.css";
 
+import { MenuAdmin } from "@/app/admin/menu";
+import { getUsuarioAdmin } from "@/lib/supabase/admin";
+
 /*
 <!--
 THESIS: publicar una oferta es una secuencia, no un formulario; el panel refusa la
@@ -55,15 +58,23 @@ export const metadata: Metadata = {
  *
  * Vive fuera de `[locale]` porque es interno y sólo en español; ver la nota del
  * `matcher` en `proxy.ts`.
+ *
+ * `getUsuarioAdmin()` aquí decide si se muestra `MenuAdmin`, no si se entra al
+ * panel — eso lo sigue haciendo cada página con `exigirSesion()`/`redirect`. Sin
+ * sesión (login, olvidé mi clave, restablecer) no hay a dónde navegar todavía, así
+ * que el menú no aparece ahí.
  */
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const usuario = await getUsuarioAdmin();
+
   return (
     <html lang="es" className={`${montserrat.variable} ${lato.variable}`}>
       <body className="bg-surface-alt text-brand-navy min-h-svh antialiased">
+        {usuario ? <MenuAdmin correo={usuario.email ?? ""} /> : null}
         {children}
       </body>
     </html>

@@ -63,7 +63,7 @@ export async function publicar(
   const resultado = await publicarOferta({ supabase, id });
   if ("error" in resultado) return { error: resultado.error };
   revalidarOferta(resultado.slug, resultado.destinoSlug);
-  redirect(`/admin?publicada=${resultado.slug}`);
+  redirect(`/admin/ofertas?publicada=${resultado.slug}`);
 }
 
 /** Edita una oferta existente, sea borrador, vigente o vencida. */
@@ -80,7 +80,7 @@ export async function actualizarOferta(
   const actualizada = await actualizarOfertaExistente({ supabase, id, valores: resultado.valores });
   if ("error" in actualizada) return { error: actualizada.error };
   revalidarOferta(actualizada.slug, actualizada.destinoSlug);
-  redirect(`/admin?actualizada=${actualizada.slug}`);
+  redirect(`/admin/ofertas?actualizada=${actualizada.slug}`);
 }
 
 /** Saca la oferta del sitio de inmediato, sin esperar a que venza por fecha. */

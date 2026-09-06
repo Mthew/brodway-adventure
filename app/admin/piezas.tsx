@@ -18,6 +18,11 @@ export const PASOS = ["Editar", "Fotos", "Secciones", "Publicar"] as const;
  * Muestra el número Y el nombre del paso actual, no sólo un porcentaje: quien entra a
  * medias necesita saber en qué está, no cuánto le falta. Los pasos ya recorridos son
  * enlaces, porque volver a corregir una tilde no debería costar reiniciar el asistente.
+ *
+ * "Atrás" y "Cancelar" van explícitos arriba, en texto, y no sólo como los puntos del
+ * progreso: un objetivo táctil de 6px de alto no se lee como botón de "volver" aunque
+ * mida 44px por el padding. Cancelar no descarta nada — la oferta ya está guardada
+ * como borrador desde el paso 1 — sólo saca del asistente sin publicar.
  */
 export function Avance({
   paso,
@@ -29,9 +34,28 @@ export function Avance({
   ofertaId?: string;
 }) {
   const rutas = ["editar", "fotos", "secciones", "publicar"];
+  const anterior = paso > 1 && ofertaId ? `/admin/ofertas/${ofertaId}/${rutas[paso - 2]}` : null;
 
   return (
     <nav aria-label="Avance de la publicación" className="flex flex-col gap-2">
+      <div className="flex items-center justify-between">
+        {anterior ? (
+          <Link
+            href={anterior}
+            className="text-body-sm inline-flex min-h-11 items-center font-semibold text-neutral-700"
+          >
+            ← Atrás
+          </Link>
+        ) : (
+          <span />
+        )}
+        <Link
+          href="/admin"
+          className="text-body-sm inline-flex min-h-11 items-center font-semibold text-neutral-500"
+        >
+          Cancelar
+        </Link>
+      </div>
       <p className="text-caption font-display font-semibold text-neutral-600">
         Paso {paso} de 4 · {PASOS[paso - 1]}
       </p>
