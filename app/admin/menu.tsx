@@ -45,6 +45,13 @@ export function MenuAdmin({ correo }: { correo: string }) {
             Panel
           </Link>
           <Link
+            href="/admin/ofertas"
+            onClick={cerrar}
+            className="text-body-sm flex min-h-11 items-center rounded-md px-3 font-semibold hover:bg-surface-alt"
+          >
+            Ofertas
+          </Link>
+          <Link
             href="/admin/destinos"
             onClick={cerrar}
             className="text-body-sm flex min-h-11 items-center rounded-md px-3 font-semibold hover:bg-surface-alt"
