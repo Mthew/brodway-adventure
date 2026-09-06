@@ -126,7 +126,7 @@ export default async function AdminPage({
 
       {borradores.length > 0 ? (
         <section className="flex flex-col gap-3">
-          <h2 className="text-h3 font-display">Sin terminar</h2>
+          <h2 className="text-h3 font-display">Ofertas sin terminar</h2>
           {/* Los borradores van primero y separados: son trabajo empezado que alguien
               tiene que retomar, no catálogo. */}
           <ul className="flex flex-col gap-2">
@@ -150,19 +150,19 @@ export default async function AdminPage({
       ) : null}
 
       <ListaVigencia
-        titulo="Por vencer"
+        titulo="Ofertas por vencer"
         ayuda="15 días o menos."
         ofertas={porVencer}
         vacia={null}
       />
 
       <ListaVigencia
-        titulo="Vigentes"
+        titulo="Ofertas vigentes"
         ofertas={vigentes}
         vacia="Todavía no hay ninguna. La primera que publiques aparece aquí."
       />
 
-      <ListaVigencia titulo="Vencidas" ofertas={vencidas} vacia={null} />
+      <ListaVigencia titulo="Ofertas vencidas" ofertas={vencidas} vacia={null} />
     </main>
   );
 }
