@@ -45,7 +45,7 @@ export async function generateMetadata({
     description: lookup.campaign.subtitular,
     /**
      * Las landings de pauta NO se indexan: competirían con las páginas de destino
-     * y de paquete por las mismas búsquedas, y esas sí están hechas para
+     * y de oferta por las mismas búsquedas, y esas sí están hechas para
      * posicionar.
      */
     robots: { index: false, follow: false },

@@ -10,6 +10,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { PackageCard } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
+import { SLUGS_RESERVADOS } from "@/lib/destinations/categorias";
 import { buildWhatsAppUrl, SITE_URL } from "@/lib/config";
 import { Link } from "@/lib/i18n/navigation";
 import {
@@ -27,9 +28,21 @@ import type { Destination } from "@/lib/types/destination";
  * cards no posiciona y no cumple su función (brief-v0.md §8).
  */
 
+/**
+ * Excluye los tres segmentos de categoría (`internacionales`, `nacionales`,
+ * `pueblos-de-antioquia`).
+ *
+ * Son rutas estáticas hermanas de esta, y Next.js les da precedencia. Un destino
+ * llamado `internacionales` se prerenderizaría aquí y **nunca se serviría**: la URL
+ * mostraría siempre el listado de la categoría, sin ningún error que lo delate.
+ * Filtrarlo aquí convierte ese choque silencioso en un destino que simplemente no
+ * tiene página, y el aviso queda en `lib/destinations/categorias.ts`.
+ */
 export async function generateStaticParams() {
   const slugs = await listDestinationSlugs();
-  return slugs.map((slug) => ({ slug }));
+  return slugs
+    .filter((slug) => !SLUGS_RESERVADOS.includes(slug))
+    .map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({

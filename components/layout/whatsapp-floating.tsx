@@ -32,7 +32,7 @@ export function WhatsAppFloating({
   message?: string;
   offerId?: string;
   campaign?: string;
-  /** La ficha de paquete oculta el flotante cuando su barra fija está visible. */
+  /** La ficha de oferta oculta el flotante cuando su barra fija está visible. */
   hidden?: boolean;
 }) {
   const t = useTranslations("whatsapp");
@@ -54,7 +54,7 @@ export function WhatsAppFloating({
       rel="noopener noreferrer"
       aria-label={t("aria")}
       /* Lo usa `globals.css` para ocultarlo mientras la barra fija de la ficha de
-         paquete está visible. Ver `components/paquete/sticky-cta.tsx`. */
+         oferta está visible. Ver `components/oferta/sticky-cta.tsx`. */
       data-whatsapp-floating=""
       onClick={() =>
         trackWhatsAppClick({ offerId, campaign, page: pathname, locale })

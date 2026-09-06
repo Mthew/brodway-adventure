@@ -11,16 +11,16 @@ import { PriceDisclosure } from "@/components/ui/price-disclosure";
 import { Section } from "@/components/ui/section";
 import { LeadForm } from "@/components/forms/lead-form";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
-import { Galeria } from "@/components/paquete/galeria";
-import { StickyCta } from "@/components/paquete/sticky-cta";
-import { TarifaVencida } from "@/components/paquete/tarifa-vencida";
+import { Galeria } from "@/components/oferta/galeria";
+import { StickyCta } from "@/components/oferta/sticky-cta";
+import { TarifaVencida } from "@/components/oferta/tarifa-vencida";
 import { buildWhatsAppUrl, RNT_NUMBER, SITE_URL } from "@/lib/config";
 import { Link } from "@/lib/i18n/navigation";
 import { getOffer, listActiveOffers, listOfferSlugs } from "@/lib/offers";
 import type { Offer } from "@/lib/types/offer";
 
 /**
- * Ficha de paquete: la página de mayor impacto en conversión del sitio.
+ * Ficha de oferta: la página de mayor impacto en conversión del sitio.
  *
  * ALCANCE DE FASE 1 (plan-fase-1.md §3.1): el itinerario va RESUMIDO y las fechas
  * de salida con cupos NO se renderizan. `fases-entrega.md` las coloca en Fase 2 y
@@ -50,7 +50,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function PaquetePage({
+export default async function OfertaPage({
   params,
 }: {
   params: Promise<{ locale: string; slug: string }>;
@@ -67,7 +67,7 @@ export default async function PaquetePage({
   const { offer } = lookup;
   const vencida = lookup.status === "expired";
 
-  const t = await getTranslations("paquetes");
+  const t = await getTranslations("ofertas");
   const tc = await getTranslations("cta");
   const tm = await getTranslations("microcopy");
   const format = await getFormatter();
@@ -97,8 +97,8 @@ export default async function PaquetePage({
             </li>
             <li aria-hidden="true">/</li>
             <li>
-              <Link href="/paquetes" className="inline-flex min-h-11 items-center hover:underline">
-                {t("migaPaquetes")}
+              <Link href="/ofertas" className="inline-flex min-h-11 items-center hover:underline">
+                {t("migaOfertas")}
               </Link>
             </li>
             <li aria-hidden="true">/</li>
@@ -321,7 +321,7 @@ export default async function PaquetePage({
           <LeadForm
             offerId={offer.offerId}
             destino={offer.destino}
-            paginaOrigen={`/paquetes/${offer.slug}`}
+            paginaOrigen={`/ofertas/${offer.slug}`}
           />
         </div>
       </Section>
@@ -379,7 +379,7 @@ async function JsonLd({
               priceCurrency: offer.moneda,
               availability: "https://schema.org/InStock",
               priceValidUntil: offer.vigenciaHasta,
-              url: `${base}/paquetes/${offer.slug}`,
+              url: `${base}/ofertas/${offer.slug}`,
             },
           }),
     },
@@ -391,14 +391,14 @@ async function JsonLd({
         {
           "@type": "ListItem",
           position: 2,
-          name: "Paquetes",
-          item: `${base}/paquetes`,
+          name: "Ofertas",
+          item: `${base}/ofertas`,
         },
         {
           "@type": "ListItem",
           position: 3,
           name: offer.destino,
-          item: `${base}/paquetes/${offer.slug}`,
+          item: `${base}/ofertas/${offer.slug}`,
         },
       ],
     },

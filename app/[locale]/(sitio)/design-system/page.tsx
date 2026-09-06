@@ -369,7 +369,7 @@ export default async function DesignSystemPage({
           ) : null}
         </Block>
 
-        <Block title="Tarjetas de paquete">
+        <Block title="Tarjetas de oferta">
           <div className="grid gap-6 sm:grid-cols-2">
             {offers.slice(0, 2).map((offer) => (
               <PackageCard key={offer.offerId} offer={offer} />

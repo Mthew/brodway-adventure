@@ -5,7 +5,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { DestinationCard } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
-import { FiltroDestinos } from "@/components/destinos/filtro-destinos";
+import { FiltroCategoria } from "@/components/ui/filtro-categoria";
 import { buildWhatsAppUrl } from "@/lib/config";
 import { getDestinationFromPrice, listDestinations } from "@/lib/destinations";
 
@@ -30,6 +30,7 @@ export default async function DestinosPage({
 
   const t = await getTranslations("destinos");
   const tc = await getTranslations("cta");
+  const tf = await getTranslations("filtros");
 
   const destinos = await listDestinations();
 
@@ -42,8 +43,8 @@ export default async function DestinosPage({
     destinos.map(async (destino) => {
       const precio = await getDestinationFromPrice(destino.slug);
       return {
-        slug: destino.slug,
-        tipo: destino.tipo,
+        id: destino.slug,
+        categoria: destino.tipo,
         card: (
           <DestinationCard
             destino={destino}
@@ -65,7 +66,17 @@ export default async function DestinosPage({
       </Section>
 
       <Section spacing="compact">
-        <FiltroDestinos items={items} />
+        <FiltroCategoria
+          items={items}
+          etiquetaGrupo={tf("etiqueta")}
+          textoVacio={t("sinResultados")}
+          etiquetas={{
+            todos: tf("todos"),
+            nacional: tf("nacional"),
+            internacional: tf("internacional"),
+            "pueblos-de-antioquia": tf("pueblos-de-antioquia"),
+          }}
+        />
       </Section>
 
       <Section background="navy">

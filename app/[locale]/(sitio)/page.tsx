@@ -16,14 +16,18 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
-import { Card, DestinationCard } from "@/components/ui/card";
+import { Card, DestinationCard, HotelCard, PackageCard } from "@/components/ui/card";
 import { Hero } from "@/components/ui/hero";
 import { Section } from "@/components/ui/section";
 import { LeadForm } from "@/components/forms/lead-form";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
 import { buildWhatsAppUrl, CONTACT, RNT_NUMBER, SITE_URL } from "@/lib/config";
 import { Link } from "@/lib/i18n/navigation";
-import { getDestinationFromPrice, listDestinations } from "@/lib/destinations";
+import {
+  getDestinationFromPrice,
+  listFeaturedDestinations,
+} from "@/lib/destinations";
+import { listOffersByCollection } from "@/lib/offers";
 import { cn } from "@/lib/utils";
 
 /**
@@ -35,19 +39,34 @@ import { cn } from "@/lib/utils";
  * REGLAS CONTABLES DEL PRE-FLIGHT §11.B que esta página cumple a propósito, y que
  * hay que recontar si se añade o quita una sección:
  *
- *   - NUEVE secciones y NUEVE estructuras distintas. El mínimo exigido son 4. En
- *     concreto: hero a sangre · franja compacta · rejilla de tarjetas con
- *     scroll-snap · flujo de 3 pasos con conector · rejilla de 4 con ícono ·
- *     franja de color a ancho completo · destacado asimétrico 1+2 · dos columnas
- *     texto/lista · cierre en navy con formulario.
- *   - CERO eyebrows. El techo sería 3 (techo de 9/3), pero la regla dice que en la
+ *   - TRECE secciones. Las cinco comerciales que pide `estructura-funcional-cliente.md`
+ *     §3 (Mejores Ofertas · Playas y Hoteles · Internacionales · Nacionales ·
+ *     Pueblos de Antioquia) son todas listados de producto, así que apiladas serían
+ *     cinco rejillas seguidas: exactamente la plantilla que §11.B prohíbe. Se evita
+ *     de dos maneras, y las dos hay que mantenerlas al tocar esta página:
+ *
+ *       (a) Cada una usa una ESTRUCTURA distinta: rejilla asimétrica 1+resto ·
+ *           carril horizontal de tarjetas verticales 3:4 · rejilla asimétrica de 3 ·
+ *           carril horizontal compacto · lista editorial a dos columnas sin tarjeta.
+ *       (b) Se INTERCALAN con las secciones que no son listados. "Cómo funciona"
+ *           separa Ofertas de Hoteles, y la franja "Next Stop" separa Hoteles de las
+ *           tres de destino. Nunca hay dos rejillas de tarjetas seguidas.
+ *
+ *   - CERO eyebrows. El techo sería 4 (techo de 13/3), pero la regla dice que en la
  *     mayoría de los casos el titular solo basta.
  *   - Ninguna fila de 3 tarjetas idénticas. Los 3 pasos son un flujo conectado, no
- *     tarjetas; los testimonios son 1 destacado + 2, no 3 iguales.
+ *     tarjetas; los testimonios son 1 destacado + 2; Internacionales es 1 grande + 2.
  *   - Nunca 3 secciones seguidas con el patrón imagen-a-un-lado / texto-al-otro.
  *   - "Next Stop" aparece EXACTAMENTE una vez, en la franja turquesa.
  *   - Los sellos de confianza van en la sección 2, DEBAJO del hero, nunca dentro.
+ *
+ * Pendiente de verificar EN NAVEGADOR, no leyendo: que el ritmo aguante 13 secciones
+ * en móvil y que el LCP siga por debajo de 1s con más imágenes sobre el pliegue.
  */
+
+/** Enlace "ver todo" del encabezado de sección. `min-h-11` = mínimo táctil. */
+const ENLACE_SECCION =
+  "text-body text-brand-turquoise-text inline-flex min-h-11 items-center font-semibold underline-offset-4 hover:underline";
 
 export async function generateMetadata({
   params,
@@ -72,13 +91,34 @@ export default async function HomePage({
   const tc = await getTranslations("cta");
   const tm = await getTranslations("microcopy");
 
-  const destinos = await listDestinations();
-  const tarjetas = await Promise.all(
-    destinos.map(async (destino) => {
-      const precio = await getDestinationFromPrice(destino.slug);
-      return { destino, precio };
-    }),
-  );
+  /*
+   * Las cinco secciones comerciales de §3 leen de la CURADURÍA, no del catálogo:
+   * son las ofertas y los destinos que la agencia marcó, en el orden que ella fijó.
+   * Sin eso la home muestra "todo lo que hay", que es justo lo que §9 descarta.
+   */
+  const [ofertas, hoteles, internacionales, nacionales, pueblos] =
+    await Promise.all([
+      listOffersByCollection("mejores-ofertas"),
+      listOffersByCollection("playas-y-hoteles"),
+      listFeaturedDestinations("internacional"),
+      listFeaturedDestinations("nacional"),
+      listFeaturedDestinations("pueblos-de-antioquia"),
+    ]);
+
+  const conPrecio = async (lista: typeof internacionales) =>
+    Promise.all(
+      lista.map(async (destino) => ({
+        destino,
+        precio: await getDestinationFromPrice(destino.slug),
+      })),
+    );
+
+  const [tarjetasInternacionales, tarjetasNacionales, tarjetasPueblos] =
+    await Promise.all([
+      conPrecio(internacionales),
+      conPrecio(nacionales),
+      conPrecio(pueblos),
+    ]);
 
   const whatsappHref = buildWhatsAppUrl({ message: t("heroSubtitulo") });
 
@@ -179,73 +219,27 @@ export default async function HomePage({
         </div>
       </Section>
 
-      {/* 3. DESTINOS. Scroll-snap horizontal en móvil, rejilla 2 columnas en
-          tablet (md), rejilla ASIMÉTRICA en escritorio (lg, spec-home-v1.md
-          §5.1): la primera tarjeta ocupa un bloque de 2x2 y las dos
-          siguientes se apilan a su lado — nunca la fila de 6 tarjetas
-          idénticas que §2.bis prohíbe como recurso genérico. CSS puro, sin
-          librería de carrusel.
-
-          `lg:grid-rows-[26rem_26rem_auto]`: filas 1 y 2 con alto FIJO a
-          propósito. Con `auto` en las tres, la tarjeta destacada (que
-          ocupa las dos filas) y la pareja de tarjetas laterales (una por
-          fila) podrían terminar de alturas distintas, porque cada fila
-          `auto` se mide por su propio contenido. Con alto fijo, la
-          destacada mide exactamente `2×26rem + gap` y la pareja lateral
-          suma exactamente lo mismo: coinciden siempre, sea cual sea el
-          largo del texto de cada tarjeta.
-
-          26rem y no 18rem, y el número sale de una medición. En las
-          tarjetas laterales la foto es `flex-1`, así que se queda con lo
-          que sobra de la fila después del texto: con filas de 18rem
-          (288px) y un bloque de texto de 219px, a la foto le quedaban
-          **69px**, una franja. Era un fallo que ya venía de la rejilla
-          asimétrica original. Con 26rem (416px) la foto recupera ~197px y
-          la destacada llega a ~534px, que es la que sostiene la sección.
-
-          `reveal` sobre el <ul> entero y NO `reveal-stagger` sobre las tarjetas:
-          `overflow-x: auto` obliga al navegador a calcular `overflow-y` como
-          `auto` también, así que este <ul> ES un contenedor de scroll vertical
-          aunque nunca se desplace en vertical. Las tarjetas, al ser hijas suyas,
-          anclarían su `view(block)` a un scroll que no se mueve y no aparecerían
-          jamás. La fila entera sí se ancla al scroll de la página. */}
+      {/* 3. MEJORES OFERTAS (§5, §6). Rejilla ASIMÉTRICA: la primera ocupa las dos
+          columnas y el resto va emparejado. No es una fila de tarjetas iguales, que
+          es justo lo que prohíbe el Pre-Flight §11.B. */}
       <Section>
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <h2 className="reveal-strong text-h2 text-brand-navy max-w-[18ch]">
-            {t("destinosTitulo")}
+            {t("ofertasTitulo")}
           </h2>
-          <Link
-            href="/destinos"
-            className="text-body text-brand-turquoise-text inline-flex min-h-11 items-center font-semibold underline-offset-4 hover:underline"
-          >
-            {t("destinosVerTodos")}
+          <Link href="/ofertas" className={ENLACE_SECCION}>
+            {t("ofertasVerTodas")}
           </Link>
         </div>
-
-        <ul className="reveal carrusel-destinos -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 lg:grid-cols-3 lg:grid-rows-[26rem_26rem_auto] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {tarjetas.map(({ destino, precio }, i) => (
-            <li
-              key={destino.slug}
-              className={cn(
-                "w-[80vw] shrink-0 snap-start sm:w-[55vw] md:w-auto",
-                // La primera tarjeta es la destacada: ocupa 2 columnas y las
-                // 2 filas de alto fijo. Sin span explícito, la colocación
-                // automática de grid ya deja las tarjetas 2 y 3 apiladas a
-                // su lado (fila 1 y fila 2 de la 3ª columna) y las tarjetas
-                // 4-6 en la fila `auto` de abajo — no hace falta más CSS.
-                i === 0 && "lg:col-span-2 lg:row-span-2",
-              )}
-            >
-              <DestinationCard
-                destino={destino}
-                precioDesde={precio?.precioDesde}
-                moneda={precio?.moneda}
-                destacado={i === 0}
-                imagenExpandida={i === 1 || i === 2}
-              />
-            </li>
-          ))}
-        </ul>
+        {ofertas.length > 0 ? (
+          <ul className="reveal grid gap-5 md:grid-cols-2">
+            {ofertas.slice(0, 5).map((offer, i) => (
+              <li key={offer.slug} className={cn(i === 0 && "md:col-span-2")}>
+                <PackageCard offer={offer} destacado={i === 0} />
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </Section>
 
       {/* 4. CÓMO FUNCIONA.
@@ -309,7 +303,43 @@ export default async function HomePage({
         </div>
       </Section>
 
-      {/* 5. POR QUÉ BROWAY. Rejilla 2x2 de tarjetas con superficie propia
+      {/* 5. MEJORES PLAYAS Y HOTELES (§7, §8). Carril horizontal con scroll-snap y
+          tarjetas VERTICALES (3:4): §8 pide privilegiar la fotografía, y ninguna
+          otra sección de la página usa este formato.
+
+          Va DESPUÉS de "Cómo funciona" y no pegada a Mejores Ofertas, para que dos
+          rejillas de tarjetas nunca queden seguidas (§11.B).
+
+          `reveal` sobre el <ul> y no sobre las tarjetas: `overflow-x: auto` hace del
+          <ul> un contenedor de scroll, y sus hijas anclarían su `view()` a un scroll
+          que nunca se mueve, así que no aparecerían jamás. */}
+      <Section background="alt">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <div className="flex max-w-[46ch] flex-col gap-2">
+            <h2 className="reveal-strong text-h2 text-brand-navy">
+              {t("hotelesTitulo")}
+            </h2>
+            <p className="text-body text-neutral-700">{t("hotelesTexto")}</p>
+          </div>
+          <Link href="/playas-y-hoteles" className={ENLACE_SECCION}>
+            {t("hotelesVerTodas")}
+          </Link>
+        </div>
+        {hoteles.length > 0 ? (
+          <ul className="reveal -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 md:mx-0 md:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {hoteles.slice(0, 6).map((offer) => (
+              <li
+                key={offer.slug}
+                className="w-[70vw] shrink-0 snap-start sm:w-[45vw] lg:w-[22rem]"
+              >
+                <HotelCard offer={offer} />
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </Section>
+
+      {/* 6. POR QUÉ BROWAY. Rejilla 2x2 de tarjetas con superficie propia
           (spec-home-v1.md §7), no la lista de checks planos de antes: al
           lado de la rejilla de 6 beneficios de Apple Travel, los checks se
           veían menos sustanciosos que su competencia. Siguen siendo 4 y no
@@ -342,7 +372,7 @@ export default async function HomePage({
         </dl>
       </Section>
 
-      {/* 6. NEXT STOP. Única aparición de la firma verbal en toda la página. */}
+      {/* 7. NEXT STOP. Única aparición de la firma verbal en toda la página. */}
       <Section background="turquoise" spacing="compact">
         <div className="reveal-scale flex flex-col items-start gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-col gap-2">
@@ -362,7 +392,103 @@ export default async function HomePage({
         </div>
       </Section>
 
-      {/* 7. TESTIMONIOS. Uno destacado y dos apilados: asimétrico a propósito,
+      {/* 8. DESTINOS INTERNACIONALES (§9, §10). Rejilla asimétrica: el primero
+          manda y los otros dos lo acompañan. */}
+      <Section>
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <h2 className="reveal-strong text-h2 text-brand-navy max-w-[18ch]">
+            {t("internacionalesTitulo")}
+          </h2>
+          <Link href="/destinos/internacionales" className={ENLACE_SECCION}>
+            {t("internacionalesVerTodos")}
+          </Link>
+        </div>
+        {tarjetasInternacionales.length > 0 ? (
+          <ul className="reveal grid gap-5 md:grid-cols-3 lg:grid-rows-[24rem]">
+            {tarjetasInternacionales.slice(0, 3).map(({ destino, precio }, i) => (
+              <li key={destino.slug} className={cn(i === 0 && "md:col-span-2")}>
+                <DestinationCard
+                  destino={destino}
+                  precioDesde={precio?.precioDesde}
+                  moneda={precio?.moneda}
+                  destacado={i === 0}
+                />
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </Section>
+
+      {/* 9. DESTINOS NACIONALES (§11, §12). Carril horizontal compacto: mismo
+          contenido que la sección anterior con OTRA densidad, para no repetir
+          rejilla dos veces seguidas (§11.B). */}
+      <Section background="alt">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <h2 className="reveal-strong text-h2 text-brand-navy max-w-[18ch]">
+            {t("nacionalesTitulo")}
+          </h2>
+          <Link href="/destinos/nacionales" className={ENLACE_SECCION}>
+            {t("nacionalesVerTodos")}
+          </Link>
+        </div>
+        {tarjetasNacionales.length > 0 ? (
+          <ul className="reveal -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 md:mx-0 md:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {tarjetasNacionales.slice(0, 6).map(({ destino, precio }) => (
+              <li
+                key={destino.slug}
+                className="w-[70vw] shrink-0 snap-start sm:w-[42vw] lg:w-[20rem]"
+              >
+                <DestinationCard
+                  destino={destino}
+                  precioDesde={precio?.precioDesde}
+                  moneda={precio?.moneda}
+                />
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </Section>
+
+      {/* 10. PUEBLOS DE ANTIOQUIA (§13, §14). Lista editorial en dos columnas, SIN
+          tarjetas: es la única categoría dirigida por inventario —los pueblos
+          aparecen y desaparecen con la oferta del proveedor—, así que casi siempre
+          tendrá dos o tres entradas. Tres tarjetas grandes ahí se verían vacías, y
+          serían la tercera rejilla seguida. */}
+      <Section>
+        <div className="grid gap-8 lg:grid-cols-[1fr_1.4fr] lg:gap-16">
+          <div className="flex flex-col items-start gap-3">
+            <h2 className="reveal-strong text-h2 text-brand-navy">
+              {t("pueblosTitulo")}
+            </h2>
+            <p className="text-body text-neutral-700">{t("pueblosTexto")}</p>
+            <Link href="/destinos/pueblos-de-antioquia" className={ENLACE_SECCION}>
+              {t("pueblosVerTodos")}
+            </Link>
+          </div>
+
+          {tarjetasPueblos.length > 0 ? (
+            <ul className="reveal grid gap-x-10 gap-y-6 sm:grid-cols-2">
+              {tarjetasPueblos.slice(0, 4).map(({ destino }) => (
+                <li
+                  key={destino.slug}
+                  className="border-brand-turquoise/40 border-l-2 pl-5"
+                >
+                  <Link href={`/destinos/${destino.slug}`} className="group">
+                    <h3 className="text-h3 text-brand-navy group-hover:underline">
+                      {destino.nombre}
+                    </h3>
+                    <p className="text-body-sm mt-1 text-neutral-700">
+                      {destino.resumen}
+                    </p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
+      </Section>
+
+      {/* 11. TESTIMONIOS. Uno destacado y dos apilados: asimétrico a propósito,
           para no caer en la fila de tres iguales. */}
       <Section background="alt">
         <h2 className="reveal text-h2 text-brand-navy mb-3 max-w-[20ch]">
@@ -394,7 +520,7 @@ export default async function HomePage({
         </div>
       </Section>
 
-      {/* 8. CONFIANZA / ANTI-FRAUDE. Dos columnas: explicación y lista de
+      {/* 12. CONFIANZA / ANTI-FRAUDE. Dos columnas: explicación y lista de
           comprobación. Tono sereno: informa, no asusta. */}
       <Section>
         <div className="reveal-stagger grid gap-10 lg:grid-cols-2 lg:gap-16">
@@ -437,7 +563,7 @@ export default async function HomePage({
         </div>
       </Section>
 
-      {/* 9. CIERRE. WhatsApp como vía principal y el formulario como alternativa
+      {/* 13. CIERRE. WhatsApp como vía principal y el formulario como alternativa
           real, no como enlace escondido. */}
       <Section background="navy">
         <div className="reveal-stagger grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:gap-16">

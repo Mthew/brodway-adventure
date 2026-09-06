@@ -12,7 +12,7 @@ import { capturarUtm, leerUtm } from "@/lib/tracking/utm";
  * Formulario corto de captación.
  *
  * Es la alternativa a WhatsApp para quien no quiere chatear, no el canal principal.
- * Lo usan la ficha de paquete, /contacto y las landings de campaña: por eso vive en
+ * Lo usan la ficha de oferta, /contacto y las landings de campaña: por eso vive en
  * un solo sitio y recibe el contexto por props.
  *
  * LOS CUATRO CAMPOS NO SON NEGOCIABLES (brief-v0-producto.md §9.9). Son exactamente

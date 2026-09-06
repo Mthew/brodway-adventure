@@ -12,10 +12,30 @@ import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "./language-switcher";
 import { WhatsAppIcon } from "./whatsapp-floating";
 
+/**
+ * Los tres destinos del menú del cliente, agrupados bajo "Destinos".
+ *
+ * `estructura-funcional-cliente.md` §2 pide siete entradas planas: Mejores Ofertas ·
+ * Mejores Playas y Hoteles · Destinos Internacionales · Destinos Nacionales · Pueblos
+ * de Antioquia · Nosotros · Contacto. Sus etiquetas suman unos 119 caracteres y no
+ * caben en la barra de escritorio junto al logo, el selector de idioma y el botón de
+ * WhatsApp: a 1280px se desbordan.
+ *
+ * Se agrupan las tres de destino, que es lo que el propio menú del cliente ya trata
+ * como familia. Cada una CONSERVA su URL propia y enlazable —requisito para poder
+ * apuntar un anuncio a una categoría— y en móvil se listan planas, sin desplegable.
+ */
+const DESTINOS_LINKS = [
+  { href: "/destinos/internacionales", key: "destinosInternacionales" },
+  { href: "/destinos/nacionales", key: "destinosNacionales" },
+  { href: "/destinos/pueblos-de-antioquia", key: "pueblosAntioquia" },
+  { href: "/destinos", key: "verTodosDestinos" },
+] as const;
+
+/** Entradas planas de la barra, a la derecha del desplegable de destinos. */
 const NAV_LINKS = [
-  { href: "/destinos", key: "destinos" },
-  { href: "/paquetes", key: "paquetes" },
-  { href: "/como-pagar", key: "comoPagar" },
+  { href: "/ofertas", key: "mejoresOfertas" },
+  { href: "/playas-y-hoteles", key: "playasYHoteles" },
   { href: "/nosotros", key: "nosotros" },
   { href: "/contacto", key: "contacto" },
 ] as const;
@@ -25,7 +45,35 @@ export function Navbar() {
   const tCta = useTranslations("cta");
   const tWa = useTranslations("whatsapp");
   const [open, setOpen] = useState(false);
+  const [destinosOpen, setDestinosOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
+  const destinosRef = useRef<HTMLLIElement>(null);
+
+  /*
+   * Cierra el desplegable de destinos al hacer clic fuera o al pulsar Escape.
+   *
+   * Sin el clic fuera, el menú queda abierto mientras el visitante interactúa con
+   * el resto de la página y tapa el contenido: es el fallo clásico de estos menús.
+   */
+  useEffect(() => {
+    if (!destinosOpen) return;
+
+    function onPointerDown(event: MouseEvent | TouchEvent) {
+      if (!destinosRef.current?.contains(event.target as Node)) {
+        setDestinosOpen(false);
+      }
+    }
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setDestinosOpen(false);
+    }
+
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [destinosOpen]);
 
   // Cierra con Escape y atrapa el foco mientras el panel móvil está abierto.
   useEffect(() => {
@@ -94,6 +142,52 @@ export function Navbar() {
         </Link>
 
         <ul className="ml-auto hidden items-center gap-6 lg:flex">
+          {/*
+            Desplegable por CLIC, no por hover. §31 del documento del cliente lo
+            exige: "la información importante nunca deberá depender exclusivamente de
+            pasar el cursor sobre un elemento". Con hover, además, el menú es
+            inalcanzable en pantallas táctiles de escritorio.
+          */}
+          <li ref={destinosRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setDestinosOpen((v) => !v)}
+              aria-expanded={destinosOpen}
+              aria-controls="menu-destinos"
+              className="text-body-sm hover:text-brand-navy font-display inline-flex min-h-11 items-center gap-1.5 font-semibold text-neutral-700"
+            >
+              {t("destinos")}
+              <span
+                aria-hidden="true"
+                className={cn(
+                  "text-[0.7em] leading-none transition-transform",
+                  destinosOpen && "rotate-180",
+                )}
+              >
+                ▾
+              </span>
+            </button>
+
+            {destinosOpen ? (
+              <ul
+                id="menu-destinos"
+                className="bg-surface-base absolute top-full left-0 z-50 mt-1 min-w-[16rem] rounded-lg border border-neutral-200 py-2 shadow-lg"
+              >
+                {DESTINOS_LINKS.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      onClick={() => setDestinosOpen(false)}
+                      className="text-body-sm hover:bg-surface-alt hover:text-brand-navy flex min-h-11 items-center px-4 font-semibold text-neutral-700"
+                    >
+                      {t(link.key)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </li>
+
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
               <Link
@@ -144,7 +238,12 @@ export function Navbar() {
             "flex flex-col gap-2 overflow-y-auto px-6 py-6",
           )}
         >
-          {NAV_LINKS.map((link) => (
+          {/*
+            En móvil las siete entradas van PLANAS, sin desplegable: el panel ya
+            ocupa la pantalla completa y tiene scroll, así que esconder tres enlaces
+            detrás de otro toque sólo añade fricción. Es la lista literal de §2.
+          */}
+          {[...DESTINOS_LINKS, ...NAV_LINKS].map((link) => (
             <Link
               key={link.href}
               href={link.href}

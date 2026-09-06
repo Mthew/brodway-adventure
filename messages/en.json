@@ -6,13 +6,19 @@
   },
   "nav": {
     "destinos": "Destinations",
-    "paquetes": "Packages",
+    "mejoresOfertas": "Best Offers",
+    "playasYHoteles": "Best Beaches and Hotels",
+    "destinosInternacionales": "International Destinations",
+    "destinosNacionales": "Domestic Destinations",
+    "pueblosAntioquia": "Towns of Antioquia",
+    "verTodosDestinos": "See all destinations",
     "comoPagar": "How to pay",
     "nosotros": "About us",
     "contacto": "Contact",
     "abrirMenu": "Open menu",
     "cerrarMenu": "Close menu",
-    "irAlInicio": "Go to homepage"
+    "irAlInicio": "Go to homepage",
+    "abrirDestinos": "See destination categories"
   },
   "cta": {
     "cotizaWhatsapp": "Get a quote on WhatsApp",
@@ -42,7 +48,7 @@
   "footer": {
     "proposito": "Making travel feel clearer, closer and more possible.",
     "tituloDestinos": "Destinations",
-    "tituloPaquetes": "Packages",
+    "tituloOfertas": "Offers",
     "tituloEmpresa": "Company",
     "tituloLegal": "Legal and contact",
     "blog": "Blog",
@@ -76,6 +82,18 @@
     "franjaRespuesta": "A real person replies, within minutes",
     "destinosTitulo": "Where the people who write to us go",
     "destinosVerTodos": "See all destinations",
+    "ofertasTitulo": "The offers people ask us for most",
+    "ofertasVerTodas": "See all offers",
+    "hotelesTitulo": "Hotels and beaches we recommend",
+    "hotelesTexto": "Our own selection, not a ranking: these are the places we'd send a friend to.",
+    "hotelesVerTodas": "See all the options",
+    "internacionalesTitulo": "International destinations",
+    "internacionalesVerTodos": "See all international destinations",
+    "nacionalesTitulo": "Domestic destinations",
+    "nacionalesVerTodos": "See all domestic destinations",
+    "pueblosTitulo": "Towns of Antioquia",
+    "pueblosTexto": "Short trips near Medellín. Which towns appear depends on the promotions we get, so this list moves.",
+    "pueblosVerTodos": "See the available towns",
     "comoFuncionaTitulo": "How it works",
     "paso1Titulo": "Tell us how you want to travel",
     "paso1Texto": "Who you're going with, on what dates, from which city. That's enough to start.",
@@ -201,14 +219,12 @@
   },
   "destinos": {
     "tituloListado": "Where we can take you",
-    "introListado": "Six destinations we know well. If yours isn't here, message us: we also build trips to order.",
+    "introListado": "Destinations we know well. If yours isn't here, message us: we also build trips to order.",
     "nacional": "Domestic",
     "internacional": "International",
+    "pueblos-de-antioquia": "Towns of Antioquia",
+    "pueblosAntioquia": "Towns of Antioquia",
     "verOpciones": "See options",
-    "filtroTodos": "All",
-    "filtroNacionales": "Domestic",
-    "filtroInternacionales": "International",
-    "filtroEtiqueta": "Filter destinations by type",
     "sinResultados": "No destinations of that type right now.",
     "migaInicio": "Home",
     "migaDestinos": "Destinations",
@@ -220,12 +236,12 @@
     "ctaTitulo": "Does this destination sound right?",
     "mensajeWhatsapp": "Hi, I'd like information about travelling to {destino}"
   },
-  "paquetes": {
-    "tituloListado": "Trips already put together and ready to go",
-    "introListado": "Every trip comes with its price explained, what's included and what isn't. If you want other dates or another departure city, we adjust it.",
+  "ofertas": {
+    "tituloListado": "Best Offers",
+    "introListado": "The promotions we highlight on price. Each one comes with its price explained, the departure city and what's included.",
     "vacio": "No trips published right now. Message us and we'll put one together with you.",
     "migaInicio": "Home",
-    "migaPaquetes": "Trips",
+    "migaOfertas": "Offers",
     "duracion": "{noches, plural, one {# night} other {# nights}}",
     "verPlan": "See the full trip",
     "loMejor": "The best of this trip",
@@ -242,13 +258,12 @@
     "formularioTexto": "Leave us your details and an advisor replies with the options for this trip.",
     "relacionados": "Other trips that might suit you",
     "mensajeWhatsapp": "Hi, I'd like a quote for the {titulo} trip",
-    "barraCta": "Get a quote"
-  },
-  "oferta": {
+    "barraCta": "Get a quote",
     "vencidaTitulo": "This rate is no longer valid",
     "vencidaTexto": "It was valid until {fecha}. We'll put together an updated one, for the same dates or whichever you prefer.",
     "vencidaCta": "Ask us for an updated rate",
-    "vencidaMensajeWhatsapp": "Hi, I saw the {titulo} trip on the website and the rate has expired. Could you put together an updated one?"
+    "vencidaMensajeWhatsapp": "Hi, I saw the {titulo} trip on the website and the rate has expired. Could you put together an updated one?",
+    "verOferta": "See offer"
   },
   "formulario": {
     "nombre": "Name",
@@ -306,5 +321,29 @@
     "faq": "Frequently asked questions",
     "ctaFinal": "Tell us and we'll build the trip",
     "tarifaVencida": "The rate in this ad is no longer valid. Message us and we'll put together an updated one, for the same dates or whichever you prefer."
+  },
+  "filtros": {
+    "etiqueta": "Filter by category",
+    "todos": "All",
+    "nacional": "Domestic",
+    "internacional": "International",
+    "pueblos-de-antioquia": "Towns of Antioquia"
+  },
+  "playasYHoteles": {
+    "titulo": "Best Beaches and Hotels",
+    "intro": "A selection of our own, made by hand. Not a ranking or a score: these are the hotels and beaches we'd recommend to a friend.",
+    "vacio": "No selection published right now. Message us and we'll tell you what's available.",
+    "ctaTitulo": "Looking for something higher-end?",
+    "verTodas": "See all the options"
+  },
+  "categorias": {
+    "tituloInternacional": "International Destinations",
+    "introInternacional": "Where we take people outside Colombia. Each destination has its own page with what you need to know before you go.",
+    "tituloNacional": "Domestic Destinations",
+    "introNacional": "Colombia has far more to it than what usually gets seen. These are the destinations we know well.",
+    "tituloPueblosAntioquia": "Towns of Antioquia",
+    "introPueblosAntioquia": "Short trips near Medellín. The towns listed here change with the promotions available, so it's worth checking back.",
+    "vacio": "No destinations published in this category right now. Message us and we'll tell you what we have.",
+    "verOfertas": "See offers"
   }
 }
