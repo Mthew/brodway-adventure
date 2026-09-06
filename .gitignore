@@ -41,3 +41,11 @@ yarn-error.log*
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# Skills y agentes de Claude Code: locales a cada máquina, no se versionan.
+.agents/
+.claude/
+.codex/
+.impeccable/
+.playwright-mcp/
+skills-lock.json

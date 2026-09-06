@@ -45,6 +45,6 @@ GA4/Meta/TikTok · hex oficiales y logo SVG · **fotografía propia** · **RNT s
 
 ## Decisiones abiertas
 
-- `.agents/`, `.claude/`, `.codex/` (8.5 MB de skills) sin trackear: falta decidir si entran.
+- Tooling de skills (`.agents/`, `.claude/`, `.codex/`, `.impeccable/`, `.playwright-mcp/`, `skills-lock.json`): decidido, gitignorados.
 - Pendientes con marca: el precio va como "1.290.000 COP" sin el `$` del brief, y `--text-hero`
   (hasta 72px) supera el H1 48/56 del manual.
