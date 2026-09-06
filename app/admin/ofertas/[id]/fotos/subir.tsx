@@ -7,6 +7,8 @@ import { useState } from "react";
 import { BotonPrincipal, Error as ErrorFormulario } from "@/app/admin/piezas";
 import type { Database } from "@/lib/supabase/database.types";
 
+import { comprimirImagen } from "./comprimir";
+
 /**
  * Subida de fotos.
  *
@@ -16,8 +18,11 @@ import type { Database } from "@/lib/supabase/database.types";
  * lo revientan. Subiendo desde el cliente el archivo nunca pasa por nuestro servidor y
  * el límite es el del bucket (10 MB por archivo).
  *
- * El nombre del archivo se construye descriptivo (`punta-cana-1.jpg`) porque el sitio
- * lo hereda como URL pública, y `IMG_5821.HEIC` en una URL es lo que pide §30 evitar.
+ * Antes de subir se COMPRIME (`comprimir.ts`): redimensiona al lado mayor a ~2000px y
+ * recodifica a WebP. El nombre y el `contentType` se derivan del archivo que la
+ * compresión REALMENTE devuelve (normalmente `.webp`, salvo el fallback raro en que
+ * devuelve el original sin tocar) — nunca se fijan a ciegas, porque etiquetar bytes de
+ * otro formato como WebP rompe la decodificación en vez de solo perder la optimización.
  */
 export function SubirFotos({
   ofertaId,
@@ -44,13 +49,14 @@ export function SubirFotos({
 
     try {
       for (const [i, archivo] of Array.from(archivos).entries()) {
-        const extension = archivo.name.split(".").pop()?.toLowerCase() ?? "jpg";
+        const comprimido = await comprimirImagen(archivo);
+        const extension = comprimido.name.split(".").pop()?.toLowerCase() ?? "jpg";
         const nombre = `${slug}-${desde + i + 1}.${extension}`;
         const ruta = `ofertas/${ofertaId}/${nombre}`;
 
         const { error: errorSubida } = await supabase.storage
           .from("catalogo")
-          .upload(ruta, archivo, { upsert: true, contentType: archivo.type });
+          .upload(ruta, comprimido, { upsert: true, contentType: comprimido.type });
 
         if (errorSubida) throw new Error(errorSubida.message);
 
@@ -83,7 +89,7 @@ export function SubirFotos({
 
       <label className="text-body-sm flex min-h-28 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-neutral-300 bg-white px-4 text-center text-neutral-600">
         <span className="font-display font-semibold text-neutral-800">
-          {subiendo ? "Subiendo…" : "Añadir fotos"}
+          {subiendo ? "Comprimiendo y subiendo…" : "Añadir fotos"}
         </span>
         <span>Puedes elegir varias a la vez.</span>
         <input

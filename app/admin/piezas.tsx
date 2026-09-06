@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
  * que nadie usa. Los tokens y las tipografías sí son los mismos.
  */
 
-export const PASOS = ["Transcribir", "Fotos", "Secciones", "Publicar"] as const;
+export const PASOS = ["Editar", "Fotos", "Secciones", "Publicar"] as const;
 
 /**
  * Barra de avance de cuatro pasos.
@@ -28,7 +28,7 @@ export function Avance({
   /** Existe desde el paso 2 en adelante. */
   ofertaId?: string;
 }) {
-  const rutas = ["", "fotos", "secciones", "publicar"];
+  const rutas = ["editar", "fotos", "secciones", "publicar"];
 
   return (
     <nav aria-label="Avance de la publicación" className="flex flex-col gap-2">

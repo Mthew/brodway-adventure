@@ -285,6 +285,52 @@ export default async function OfertaPage({
         </div>
       </Section>
 
+      {offer.informacionImportante?.length || offer.requisitos?.length || offer.documentacion?.length ? (
+        <Section>
+          <h2 className="text-h2 text-brand-navy mb-8">{t("informacionAdicional")}</h2>
+          <div className="grid gap-10 md:grid-cols-3">
+            {offer.informacionImportante && offer.informacionImportante.length > 0 ? (
+              <div className="flex flex-col gap-4">
+                <h3 className="text-h3 text-brand-navy">{t("tenEnCuenta")}</h3>
+                <ul className="flex flex-col gap-2">
+                  {offer.informacionImportante.map((item) => (
+                    <li key={item} className="text-body text-neutral-700">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+
+            {offer.requisitos && offer.requisitos.length > 0 ? (
+              <div className="flex flex-col gap-4">
+                <h3 className="text-h3 text-brand-navy">{t("requisitos")}</h3>
+                <ul className="flex flex-col gap-2">
+                  {offer.requisitos.map((item) => (
+                    <li key={item} className="text-body text-neutral-700">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+
+            {offer.documentacion && offer.documentacion.length > 0 ? (
+              <div className="flex flex-col gap-4">
+                <h3 className="text-h3 text-brand-navy">{t("documentacionNecesaria")}</h3>
+                <ul className="flex flex-col gap-2">
+                  {offer.documentacion.map((item) => (
+                    <li key={item} className="text-body text-neutral-700">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </div>
+        </Section>
+      ) : null}
+
       {offer.faq.length > 0 ? (
         <Section background="alt">
           <h2 className="text-h2 text-brand-navy mb-8">{t("faq")}</h2>

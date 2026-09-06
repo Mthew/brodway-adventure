@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 
-import { guardarSecciones } from "@/app/admin/acciones";
+import { guardarSecciones } from "@/app/admin/acciones/ofertas";
 import {
   Avance,
   BarraAccion,

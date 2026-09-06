@@ -245,8 +245,8 @@ export async function PackageCard({
       >
         {offer.imagenes[0] ? (
           <Image
-            src={offer.imagenes[0]}
-            alt=""
+            src={offer.imagenes[0].url}
+            alt={offer.imagenes[0].alt ?? ""}
             fill
             sizes={destacado ? "(max-width: 768px) 85vw, 90vw" : "(max-width: 768px) 85vw, 45vw"}
             className="object-cover"
@@ -341,8 +341,8 @@ export async function HotelCard({ offer }: { offer: Offer }) {
       <div className="zoom-foto reveal-curtain relative aspect-[3/4] w-full overflow-hidden bg-neutral-100">
         {offer.imagenes[0] ? (
           <Image
-            src={offer.imagenes[0]}
-            alt=""
+            src={offer.imagenes[0].url}
+            alt={offer.imagenes[0].alt ?? ""}
             fill
             sizes="(max-width: 768px) 85vw, 30vw"
             className="object-cover"

@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 
-import { publicar } from "@/app/admin/acciones";
+import { publicar } from "@/app/admin/acciones/ofertas";
 import {
   BarraAccion,
   BotonPrincipal,

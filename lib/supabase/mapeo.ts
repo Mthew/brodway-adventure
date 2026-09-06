@@ -2,6 +2,7 @@ import type { Tables } from "@/lib/supabase/database.types";
 import type { Destination } from "@/lib/types/destination";
 import type {
   FechaSalida,
+  ImagenOferta,
   ItinerarioDia,
   Offer,
   PreguntaFrecuente,
@@ -16,13 +17,13 @@ import type {
  * `lib/offers` y `lib/destinations`.
  */
 
-/** Las imágenes llegan con su orden; la galería es ese campo, no el de inserción. */
-type FilaImagen = { url: string; orden: number };
+/** Las imágenes llegan con su orden y su ALT; la galería es ese campo, no el de inserción. */
+type FilaImagen = { url: string; orden: number; alt: string | null };
 
-function urlsOrdenadas(imagenes: FilaImagen[] | null | undefined): string[] {
+function imagenesOrdenadas(imagenes: FilaImagen[] | null | undefined): ImagenOferta[] {
   return [...(imagenes ?? [])]
     .sort((a, b) => a.orden - b.orden)
-    .map((imagen) => imagen.url);
+    .map((imagen) => ({ url: imagen.url, alt: imagen.alt }));
 }
 
 export type FilaDestinoConImagenes = Tables<"destinos">;
@@ -79,7 +80,7 @@ export function filaAOferta(fila: FilaOferta): Offer {
 
     titulo: fila.titulo,
     beneficioCorto: fila.beneficio_corto,
-    imagenes: urlsOrdenadas(fila.imagenes),
+    imagenes: imagenesOrdenadas(fila.imagenes),
     highlights: fila.highlights,
     incluye: fila.incluye,
     noIncluye: fila.no_incluye,

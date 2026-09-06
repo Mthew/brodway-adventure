@@ -1,24 +1,22 @@
-"use client";
-
-import { useActionState } from "react";
-
-import { entrar } from "@/app/admin/acciones";
-import {
-  BotonPrincipal,
-  Campo,
-  ENTRADA,
-  Error as ErrorFormulario,
-} from "@/app/admin/piezas";
+import { FormularioEntrar } from "./formulario";
 
 /**
  * Entrada al panel.
  *
- * Sin recuperación de contraseña todavía: con diez personas y correo/contraseña, quien
- * administra la cuenta de Supabase restablece desde el panel de Supabase. Añadirla es
- * de las primeras cosas que pedirá el equipo.
+ * Ahora tiene recuperación de contraseña (`/admin/olvide`), pero esta página sigue
+ * siendo la parada obligatoria de cualquier enlace de recuperación vencido o ya usado:
+ * el Route Handler de `/admin/auth/confirmar` redirige aquí con `?error=enlace_invalido`.
  */
-export default function EntrarPage() {
-  const [estado, accion, enviando] = useActionState(entrar, null);
+export default async function EntrarPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error } = await searchParams;
+  const errorEnlace =
+    error === "enlace_invalido"
+      ? "Ese enlace ya no es válido. Pide uno nuevo."
+      : undefined;
 
   return (
     <main className="mx-auto flex min-h-svh max-w-md flex-col justify-center px-5 py-10">
@@ -30,39 +28,7 @@ export default function EntrarPage() {
           </p>
         </div>
 
-        <form action={accion} className="flex flex-col gap-4">
-          <ErrorFormulario mensaje={estado?.error} />
-
-          <Campo etiqueta="Correo">
-            <input
-              name="correo"
-              type="email"
-              required
-              autoComplete="username"
-              /* Sin autocapitalize ni autocorrect: en móvil convierten un correo en
-                 "Juan@Agencia.Com" y el login falla sin decir por qué. */
-              autoCapitalize="none"
-              autoCorrect="off"
-              spellCheck={false}
-              inputMode="email"
-              className={ENTRADA}
-            />
-          </Campo>
-
-          <Campo etiqueta="Contraseña">
-            <input
-              name="clave"
-              type="password"
-              required
-              autoComplete="current-password"
-              className={ENTRADA}
-            />
-          </Campo>
-
-          <BotonPrincipal type="submit" disabled={enviando}>
-            {enviando ? "Entrando…" : "Entrar"}
-          </BotonPrincipal>
-        </form>
+        <FormularioEntrar errorEnlace={errorEnlace} />
       </div>
     </main>
   );
