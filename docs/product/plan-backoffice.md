@@ -337,8 +337,7 @@ documentado, no son un olvido.
 Una rama y un PR por fase, según `CLAUDE.md`. Nombre: `fase-1/e3-<n>-<slug>`
 (ej. `fase-1/e3-1-editar-oferta`).
 
-La rama actual `fase-1/e3-backoffice` (asistente de publicación + recuperación de contraseña +
-reorden de galería) está **apilada sobre `fase-1/e1-arquitectura-informacion`**, no sobre `main`,
-porque importa `lib/supabase/`. Mientras E1 no esté mergeado, las fases de este plan ramifican
-desde `fase-1/e3-backoffice` y no desde `main`; en cuanto E1 entre a `main`, vuelven a la regla
-normal. Decirlo en el PR es obligatorio: una rama apilada sin avisar es la que nadie sabe revisar.
+**Actualizado el 6 de septiembre de 2026**: `fase-1/e1-arquitectura-informacion` (PR #18) se
+mergeó a `main`. La rama `fase-1/e3-backoffice` (PR #19, todo lo de §4) ya no está apilada — al
+borrarse la rama de E1, GitHub retargeteó el PR #19 solo a `main` automáticamente. La regla normal
+rige de nuevo: las fases nuevas de este documento ramifican desde `main`.
