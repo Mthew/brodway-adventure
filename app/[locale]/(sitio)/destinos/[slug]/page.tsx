@@ -84,14 +84,23 @@ export default async function DestinoPage({
 
       {/* Cabecera a sangre: imagen del destino con el nombre encima. */}
       <section className="relative isolate flex min-h-[62svh] flex-col justify-end">
-        <Image
-          src={destino.imagenHero}
-          alt={destino.nombre}
-          fill
-          priority
-          sizes="100vw"
-          className="-z-10 object-cover"
-        />
+        {/*
+          Un destino creado desde el panel nace sin `imagenHero` (el asistente rápido
+          no la pide) y `generateStaticParams` incluye también los inactivos — sin este
+          guard, `next/image` con `src=""` tumba el build entero, no solo esta página.
+        */}
+        {destino.imagenHero ? (
+          <Image
+            src={destino.imagenHero}
+            alt={destino.nombre}
+            fill
+            priority
+            sizes="100vw"
+            className="-z-10 object-cover"
+          />
+        ) : (
+          <div className="bg-brand-navy absolute inset-0 -z-10" />
+        )}
         {/* Mismo degradado que el Hero, y por la misma razón: el velo plano al
             70% cumplía contraste pero aplanaba la foto del destino, que es
             justamente lo que el visitante vino a ver. Ver la nota de `.hero-scrim`

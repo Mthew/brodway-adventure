@@ -31,7 +31,7 @@ export const MOCK_OFFERS: Offer[] = [
       "/destinos/eje-cafetero-hero.webp",
       "/destinos/eje-cafetero-2.webp",
       "/destinos/eje-cafetero-3.webp",
-    ],
+    ].map((url) => ({ url, alt: null as string | null })),
     highlights: [
       "Recorrido guiado por una finca cafetera tradicional",
       "Día completo en el Valle de Cocora",
@@ -123,7 +123,7 @@ export const MOCK_OFFERS: Offer[] = [
       "/destinos/cartagena-hero.webp",
       "/destinos/cartagena-2.webp",
       "/destinos/cartagena-3.webp",
-    ],
+    ].map((url) => ({ url, alt: null as string | null })),
     highlights: [
       "Hotel a poca distancia de la ciudad amurallada",
       "Día de playa en las islas del Rosario",
@@ -218,7 +218,7 @@ export const MOCK_OFFERS: Offer[] = [
     imagenes: [
       "/destinos/cancun-hero.webp",
       "/destinos/cancun-2.webp",
-    ],
+    ].map((url) => ({ url, alt: null as string | null })),
     highlights: [
       "Hotel todo incluido en la zona hotelera",
       "Vuelos directos desde Bogotá",
@@ -360,7 +360,7 @@ export const MOCK_OFFERS: Offer[] = [
       "/destinos/santa-marta-hero.webp",
       "/destinos/santa-marta-2.webp",
       "/destinos/santa-marta-3.webp",
-    ],
+    ].map((url) => ({ url, alt: null as string | null })),
     highlights: [
       "Día completo en el Parque Tayrona con entrada incluida",
       "Atardecer en Taganga",
@@ -443,7 +443,7 @@ export const MOCK_OFFERS: Offer[] = [
       "/destinos/punta-cana-hero.webp",
       "/destinos/punta-cana-2.webp",
       "/destinos/punta-cana-3.webp",
-    ],
+    ].map((url) => ({ url, alt: null as string | null })),
     highlights: [
       "Resort frente a Playa Bávaro",
       "Todo incluido: comidas, bebidas y snacks",
@@ -527,7 +527,7 @@ export const MOCK_OFFERS: Offer[] = [
     imagenes: [
       "/destinos/eje-cafetero-hero.webp",
       "/destinos/eje-cafetero-2.webp",
-    ],
+    ].map((url) => ({ url, alt: null as string | null })),
     highlights: [
       "Cable aéreo con vista al valle",
       "Visita a finca cafetera con catación",

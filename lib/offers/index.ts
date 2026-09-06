@@ -18,7 +18,7 @@ import { isExpired, isPublishable, type Offer } from "@/lib/types/offer";
  * Resolverlos aparte convertiría un listado de seis ofertas en trece viajes a la
  * base. PostgREST los trae en uno solo siguiendo las claves foráneas.
  */
-const SELECT = `${COLUMNAS_OFERTA},destinos(slug,nombre),imagenes(url,orden)`;
+const SELECT = `${COLUMNAS_OFERTA},destinos(slug,nombre),imagenes(url,orden,alt)`;
 
 /**
  * El filtro de publicable se aplica en el SERVIDOR, sobre el resultado, y no como

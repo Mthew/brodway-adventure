@@ -31,6 +31,18 @@ export type PreguntaFrecuente = {
   respuesta: string;
 };
 
+/**
+ * Una foto de la galería, con su ALT (§29).
+ *
+ * `alt: null` cuando la foto no tiene texto guardado (fotos viejas, o nuevas sin editar
+ * todavía) — el fallback (título de la oferta, o vacío/decorativo) lo decide cada
+ * consumidor según el contexto, no este tipo.
+ */
+export type ImagenOferta = {
+  url: string;
+  alt: string | null;
+};
+
 export type Offer = {
   /** Identificador único. Viaja al CRM en el payload del lead para que el asesor tenga contexto. */
   offerId: string;
@@ -73,7 +85,7 @@ export type Offer = {
 
   titulo: string;
   beneficioCorto: string;
-  imagenes: string[];
+  imagenes: ImagenOferta[];
   highlights: string[];
   incluye: string[];
   noIncluye: string[];
@@ -125,6 +137,8 @@ export type Offer = {
 
   /** Mayorista fuente. Uso interno: NUNCA se muestra en el sitio ni en la publicidad. */
   mayorista?: string;
+  /** Notas del equipo sobre esta tarifa. Uso interno: NUNCA se muestra en el sitio. */
+  notasInternas?: string;
 
   /*
    * Campos de CURADURÍA (`estructura-funcional-cliente.md` §26).
