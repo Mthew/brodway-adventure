@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0D3B66" />
+  <meta name="description" content="Manual de identidad visual de BroWay Adventures" />
+  <title>BroWay Adventures — Sistema de identidad</title>
+  <link rel="icon" href="assets/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+  <header class="topbar">
+    <a class="brand-mark" href="#inicio" aria-label="Volver al inicio">
+      <img src="assets/favicon.png" alt="" />
+      <span>Brand system <b>01.1</b></span>
+    </a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="manualNav">Índice</button>
+    <nav id="manualNav" aria-label="Índice del manual">
+      <a href="#logo">Logo</a><a href="#color">Color</a><a href="#tipo">Tipografía</a>
+      <a href="#iconos">Iconos</a><a href="#fotografia">Fotografía</a><a href="#composicion">Composición</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="hero-copy reveal">
+        <p class="eyebrow">BroWay Adventures · Identidad visual</p>
+        <h1>Viajar con<br><span>dirección.</span></h1>
+        <p class="hero-intro">Un sistema que convierte la paloma, la ruta y el contraste en una identidad reconocible, flexible y fácil de aplicar.</p>
+        <a class="text-link" href="#logo">Explorar el sistema <span>↘</span></a>
+      </div>
+      <div class="hero-stage reveal">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="logo-card"><img src="assets/logo-principal.png" alt="BroWay Adventures" /></div>
+        <div class="hero-note note-a"><b>01</b><span>Guía</span></div>
+        <div class="hero-note note-b"><b>02</b><span>Movimiento</span></div>
+        <svg class="hero-route" viewBox="0 0 800 460" aria-hidden="true"><path d="M16 382C189 418 202 175 377 207S595 115 784 36"/><circle cx="16" cy="382" r="8"/><circle cx="377" cy="207" r="8"/><circle cx="784" cy="36" r="8"/></svg>
+      </div>
+      <div class="hero-footer"><span>Manual vivo</span><span>2026</span><span>Desplaza para recorrer</span></div>
+    </section>
+
+    <section class="manifesto section-pad">
+      <p class="section-index">00 — Concepto</p>
+      <div class="manifesto-grid">
+        <h2 class="reveal">La paloma encuentra el camino.<br>La ruta lo hace visible.</h2>
+        <div class="manifesto-copy reveal">
+          <p>La paloma representa viaje seguro, guía y paz. La curva naranja traduce ese significado en movimiento: una trayectoria que conecta el origen con la próxima parada.</p>
+          <div class="principles"><span>Claridad</span><span>Cercanía</span><span>Confianza</span><span>Movimiento</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dark-section section-pad" id="logo">
+      <div class="section-head reveal"><p class="section-index">01 — Firma</p><h2>El logo conduce<br>la mirada.</h2></div>
+      <div class="logo-showcase reveal">
+        <div class="variant-tabs" role="tablist" aria-label="Variantes del logo">
+          <button class="active" data-logo="principal" role="tab">Principal</button>
+          <button data-logo="alternativo" role="tab">Alternativo</button>
+          <button data-logo="simbolo" role="tab">Símbolo</button>
+        </div>
+        <div class="logo-canvas" id="logoCanvas">
+          <img id="logoPreview" src="assets/logo-principal.png" alt="Logo principal BroWay Adventures" />
+          <div class="measure measure-x">X</div><div class="measure measure-y">X</div>
+        </div>
+        <div class="logo-caption"><span id="logoName">Principal · Bro azul / Way naranja</span><span>Zona libre mínima: 1× altura de B</span></div>
+      </div>
+      <div class="rules-grid">
+        <article><b>Siempre</b><p>Conservar proporciones, contraste y espacio de protección.</p></article>
+        <article><b>Nunca</b><p>Rotar, comprimir, añadir sombras o recolorear por pieza.</p></article>
+        <article><b>Mínimo digital</b><p>180 px para la firma horizontal y 32 px para el favicon.</p></article>
+      </div>
+    </section>
+
+    <section class="color-section section-pad" id="color">
+      <div class="section-head split reveal"><div><p class="section-index">02 — Color</p><h2>Contraste con<br>energía.</h2></div><p>El azul construye confianza. El naranja marca acción y ruta. El turquesa abre aire y frescura.</p></div>
+      <div class="palette">
+        <button class="swatch navy" data-copy="#0D3B66"><span>Azul rumbo</span><strong>#0D3B66</strong><small>RGB 13, 59, 102 · CMYK 87, 42, 0, 60</small></button>
+        <button class="swatch orange" data-copy="#FF8A00"><span>Naranja trayecto</span><strong>#FF8A00</strong><small>RGB 255, 138, 0 · CMYK 0, 46, 100, 0</small></button>
+        <button class="swatch aqua" data-copy="#16B4C6"><span>Turquesa horizonte</span><strong>#16B4C6</strong><small>RGB 22, 180, 198 · CMYK 89, 9, 0, 22</small></button>
+        <button class="swatch sand" data-copy="#F6E7BE"><span>Arena editorial</span><strong>#F6E7BE</strong><small>RGB 246, 231, 190 · CMYK 0, 6, 23, 4</small></button>
+      </div>
+      <p class="copy-hint" id="copyHint" aria-live="polite">Selecciona un color para copiar su HEX.</p>
+    </section>
+
+    <section class="type-section section-pad" id="tipo">
+      <p class="section-index">03 — Tipografía</p>
+      <div class="type-display reveal"><span>Aa</span><div><h2>Manrope</h2><p>Una familia contemporánea y disponible para mantener consistencia en todos los equipos.</p></div></div>
+      <div class="type-specimen reveal">
+        <div class="type-scale"><span>Display / 800</span><strong>Próxima<br>parada.</strong></div>
+        <div class="type-columns"><div><span>Titulares / 700</span><h3>El viaje empieza con una decisión clara.</h3></div><div><span>Texto / 400–500</span><p>Usa frases directas, información organizada y un siguiente paso concreto. La lectura debe sentirse ligera incluso cuando el contenido sea detallado.</p></div></div>
+      </div>
+      <div class="system-fonts">Alternativas de sistema: <b>Arial</b> · <b>Helvetica</b> · <b>sans-serif</b></div>
+    </section>
+
+    <section class="asset-section section-pad" id="iconos">
+      <div class="section-head split reveal"><div><p class="section-index">04 — Iconografía</p><h2>Señales para<br>orientar.</h2></div><p>Biblioteca vectorial creada en Magnific para representar momentos reales del viaje con un mismo trazo y una misma lógica.</p></div>
+      <figure class="asset-board reveal"><img src="assets/iconos-magnific.svg" alt="Biblioteca de iconos vectoriales de BroWay Adventures creada en Magnific" /><figcaption><span>10 símbolos base</span><span>Trazo redondeado 2.5 px</span><span>SVG editable</span></figcaption></figure>
+      <div class="usage-strip"><div>Destino</div><div>Itinerario</div><div>Alojamiento</div><div>Documentos</div><div>Asistencia</div></div>
+    </section>
+
+    <section class="photo-section section-pad" id="fotografia">
+      <div class="photo-grid">
+        <div class="photo-copy reveal"><p class="section-index">05 — Fotografía</p><h2>Personas dentro<br>del viaje.</h2><p>Momentos creíbles, luz natural y acción reconocible. La fotografía debe ayudar a imaginar la experiencia, no decorar un espacio.</p><ul><li>Gesto espontáneo y escala humana.</li><li>Destino específico cuando sea relevante.</li><li>Espacio negativo pensado para titulares.</li><li>Color natural, sin filtros intensos.</li></ul></div>
+        <figure class="photo-frame reveal"><img src="assets/fotografia-editorial-magnific.png" alt="Ejemplo de estilo fotográfico editorial para BroWay Adventures creado en Magnific" /><figcaption>Dirección visual creada con Magnific · Uso referencial</figcaption></figure>
+      </div>
+      <div class="photo-do-dont"><article><span>SÍ</span><p>Escenas que muestran una decisión, un encuentro o una experiencia.</p></article><article><span>EVITAR</span><p>Poses genéricas, saturación excesiva y fotografías sin relación con la oferta.</p></article></div>
+    </section>
+
+    <section class="route-section section-pad" id="composicion">
+      <div class="section-head reveal"><p class="section-index">06 — Recursos gráficos</p><h2>Una ruta nunca<br>es un adorno.</h2></div>
+      <figure class="asset-board dark-board reveal"><img src="assets/recursos-magnific.svg" alt="Rutas, marcos y recursos vectoriales creados en Magnific" /><figcaption><span>Rutas</span><span>Marcos editoriales</span><span>Tarjetas y divisores</span></figcaption></figure>
+      <div class="resource-rules"><article><b>01</b><h3>Un recorrido</h3><p>Usar una sola ruta dominante por composición.</p></article><article><b>02</b><h3>Puntos con sentido</h3><p>Los nodos marcan origen, decisión o destino.</p></article><article><b>03</b><h3>Marcos abiertos</h3><p>El encuadre acompaña la imagen sin encerrarla.</p></article><article><b>04</b><h3>Aire primero</h3><p>La información conserva espacio para ser entendida.</p></article></div>
+    </section>
+
+    <section class="composition-section section-pad">
+      <div class="section-head split reveal"><div><p class="section-index">07 — Composición</p><h2>Jerarquía que se<br>reconoce.</h2></div><p>Cada pieza tiene un foco, una ruta visual y una acción. La identidad aparece en la estructura antes que en la decoración.</p></div>
+      <figure class="asset-board reveal"><img src="assets/composiciones-magnific.svg" alt="Sistema de composiciones visuales creado en Magnific" /><figcaption><span>Publicación</span><span>Historia</span><span>Ficha de viaje</span><span>Portada editorial</span></figcaption></figure>
+      <div class="composition-demo">
+        <article class="demo-card navy-card"><span>BRO WAY</span><h3>Cartagena<br>en 4 días</h3><button type="button">Ver itinerario</button><i></i></article>
+        <article class="demo-card editorial-card"><small>PRÓXIMA PARADA</small><h3>Viaja con una ruta más clara.</h3><p>Fechas, opciones y acompañamiento en un mismo lugar.</p><b>→</b></article>
+        <article class="demo-card ticket-card"><div><small>DESTINO</small><h3>Caribe</h3></div><div><small>DURACIÓN</small><h3>5 noches</h3></div><span class="ticket-route"></span></article>
+      </div>
+    </section>
+
+    <section class="master-section section-pad">
+      <p class="section-index">08 — Archivos maestros</p>
+      <div class="master-grid reveal">
+        <div><h2>Un sistema listo<br>para crecer.</h2><p>Los archivos se organizan por función para evitar versiones improvisadas.</p></div>
+        <div class="file-list"><span><b>01</b> Logo principal horizontal</span><span><b>02</b> Logo vertical</span><span><b>03</b> Símbolo y favicon</span><span><b>04</b> Variación turquesa</span><span><b>05</b> Biblioteca de iconos</span><span><b>06</b> Rutas, marcos y recursos</span></div>
+      </div>
+      <div class="formats"><span>SVG</span><span>PDF</span><span>PNG</span><span>JPG</span></div>
+    </section>
+
+    <footer>
+      <img src="assets/logo-principal.png" alt="BroWay Adventures" />
+      <p>La claridad también forma parte del viaje.</p>
+      <a href="#inicio">Volver arriba ↑</a>
+    </footer>
+  </main>
+  <script src="script.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a393d9225ad0171c',t:'MTc4OTEwMDA5Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
