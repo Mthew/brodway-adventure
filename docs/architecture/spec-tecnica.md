@@ -249,6 +249,13 @@ No agregar infraestructura de design system (Storybook, tokens sync, testing vis
 
 ## 5. Estructura de carpetas propuesta (Fase 0)
 
+> **Superado en el eje de organización** por [`arquitectura-modular.md`](arquitectura-modular.md)
+> (2026-09-15, `ADR-0001`/`ADR-0002`): esta sección organiza por tipo de archivo
+> (`app`/`components`/`lib`); el diseño vigente organiza por capacidad de negocio bajo `src/`. Lo
+> que sigue vigente de aquí: el propio contenido de `app/` (rutas), `messages/` y el resto de esta
+> especificación (stack, i18n, sistema de diseño, contrato de datos §8) — solo el eje de carpetas
+> cambia, no lo que hay que construir.
+
 ```
 app/
   globals.css                   → @import "tailwindcss" + @theme con los design tokens
