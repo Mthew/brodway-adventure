@@ -26,7 +26,7 @@ Estado: **ratificadas por dirección de marca el 2026-09-11.**
 |---|---|---|---|---|
 | **D-A** | Familia tipográfica | **Manrope**, una sola familia, pesos 400 · 500 · 600 · 700 · 800. Sustituye a Montserrat + Lato + Caveat del manual v2.0. La escala, los pesos por nivel, el mínimo de 14 px y el interlineado 1,45 **no cambian**: valen con cualquier familia | 2026-09-11 | [Fase 6](specs/fase-6-tipografia.md), rama A |
 | **D-B** | «Next Stop» en cursiva | **No.** La firma narrativa deja de escribirse en cursiva, y **Caveat sale del sistema**. Coste nulo: hoy tiene cero usos en componentes. «Next Stop» conserva todas sus reglas: una vez por pieza, sin traducir, sin combinarse con otras frases manuscritas | 2026-09-11 | [Fase 6](specs/fase-6-tipografia.md) |
-| **D-C** | Archivos maestros | **Se ejecuta con provisionales marcados**, sin esperar al SVG: favicon e iconos desde el símbolo PNG 1254×1254, firma horizontal recortada del PNG del manual para superficies claras, y previsualización social. El pie y el panel esperan a la monocromática blanca, que no existe. El paquete maestro se pide en paralelo | 2026-09-11 | [Fase 2](specs/fase-2-la-firma.md) |
+| **D-C** | Archivos maestros | **Se ejecuta con provisionales marcados**, sin esperar al SVG: favicon e iconos desde el símbolo PNG 1254×1254, firma horizontal recortada del PNG del manual para superficies claras, y previsualización social. El pie y el panel esperan a la monocromática blanca, que no existe. El paquete maestro se pide en paralelo. **Actualización 2026-09-15:** llegó `Kit_Marca_BroWay_Adventures/` (firma oficial, favicons, perfiles sociales y `logo.png` con canal alfa) — deja de ser un provisional derivado, aunque sigue sin SVG, vertical ni monocromática. El pie y el panel siguen bloqueados por esta última | 2026-09-11 | [Fase 2](specs/fase-2-la-firma.md) |
 | **D-D** | Fotografía propia | **La Fase 5 se ejecuta sin material nuevo**: veredicto imagen por imagen, recortes, `alt` corregidos y guía de carga en el panel. Lo que haya que reemplazar se marca como provisional y se pide al cliente en lista priorizada, empezando por el hero de la home | 2026-09-11 | [Fase 5](specs/fase-5-fotografia.md) |
 | **D-E** | El verde de WhatsApp | **Es color de canal, no de marca.** `#25D366` se mantiene y se documenta en un grupo aparte de la paleta. Identifica al canal, no a BroWay, y no se cambia el CTA dominante del negocio sin analítica que lo respalde. Navy encima mide 5,77:1 | 2026-09-11 | [Fase 1](specs/fase-1-paleta-y-superficies.md) |
 | **D-F** | Zona de seguridad en la navegación | **La zona de seguridad protege la firma de otros elementos, no del borde del contenedor.** Firma a 180 px de ancho, ≥31 px libres hasta el siguiente elemento, y el aire vertical que deje la barra de 80 px. La navegación conserva su techo de altura y muestra el wordmark completo | 2026-09-11 | [Fase 2](specs/fase-2-la-firma.md) §3.1 |
@@ -48,8 +48,11 @@ se pueden revocar, y mientras no se revoquen, mandan.
 
 No se cierran aquí porque no dependen de un criterio sino de que alguien entregue material:
 
-- **El paquete de archivos maestros**: SVG de la firma horizontal, versión vertical, símbolo aislado
-  y monocromáticas en azul, negro y blanco. Bloquea la firma sobre fondo oscuro (pie y panel).
+- **El paquete de archivos maestros**: recibido parcialmente el 2026-09-15
+  (`docs/brand/Kit_Marca_BroWay_Adventures/`: firma horizontal, símbolo aislado, favicons, perfiles
+  sociales, `logo.png` con transparencia). **Sigue faltando** el SVG, la versión vertical y las
+  monocromáticas en negro y blanco — esta última es la que de verdad bloquea la firma sobre fondo
+  oscuro (pie y panel), porque la transparencia por sí sola no alcanza si la tinta sigue siendo navy.
 - **Fotografía propia**, con la lista priorizada que produce la Fase 5.
 - **RNT verificado, testimonios reales, horario, medios de pago y afiliaciones**, que son datos del
   negocio y no de la identidad.

@@ -40,8 +40,7 @@
 - **Con fecha límite:** enviar a NextGen las columnas que le faltan al Google Sheet **antes** de su
   sesión de levantamiento ([`brecha`](docs/product/brecha-estructura-funcional.md)).
 - **Abiertos:** contrato de `/api/lead` con NextGen · texto legal sin abogado · titularidad de
-  GA4/Meta/TikTok · **archivos maestros de marca** (no hay SVG; faltan vertical, símbolo aislado,
-  monocromáticas) · **fotografía propia** · **RNT** · **testimonios** · horario · pagos · correo.
+  GA4/Meta/TikTok · **archivos maestros de marca** (kit recibido 2026-09-15, falta SVG/vertical/mono, [Fase 2](docs/brand/specs/fase-2-la-firma.md) §2) · **fotografía propia** · **RNT** · **testimonios** · horario · pagos · correo.
 
 ## Decisiones abiertas
 

@@ -30,22 +30,38 @@ no muestra marca alguna. Es la brecha más visible del proyecto y la más barata
 
 ## 2. Archivos: lo que hay y lo que falta
 
+**Actualización 2026-09-15 — llegó el kit oficial.** El cliente entregó
+[`docs/brand/Kit_Marca_BroWay_Adventures/`](../Kit_Marca_BroWay_Adventures/) (`LEEME.txt` incluido).
+Es 100 % raster —JPG, PNG e ICO, nada de vector— pero **resuelve la firma y el favicon con archivo
+oficial**, no con un recorte provisional del manual vivo. Verificado por medición, no por confianza:
+el arte de `01_Logo_Principal` mide exactamente **1444×464 en un lienzo de 1759×894**, la misma caja
+que ya se había medido sobre el manual vivo (§3) — es el mismo diseño, ahora entregado como archivo.
+
 | Archivo | Qué es | Sirve para |
 |---|---|---|
 | `public/logo-broway.png` | Sello circular de la identidad **anterior**, 1254×1254 | Nada. Se retira |
-| `public/logo.jpeg` | El arte nuevo en lienzo **cuadrado** 1080×1080, **JPEG sin transparencia** | Nada tal cual: no es la firma horizontal y no se puede poner sobre color |
-| `docs/brand/manual-vivo/` | El manual vivo archivado: HTML, CSS y los tres SVG de recursos | Referencia, no assets de producto |
-| Firma horizontal del manual vivo | PNG 1759×894 con **lienzo blanco**; el arte ocupa 1444×464 | Provisional sobre superficies claras, recortado a su caja y con el fondo hecho transparente |
-| Símbolo del manual vivo | PNG **1254×1254**: paloma blanca con estela naranja sobre placa navy | **Favicon e iconos de app: alcanza de sobra** |
-| Vertical · monocromáticas (azul/negro/blanco) · SVG de todo | **No existen** | Bloquea la firma sobre navy (pie, hero oscuro) |
+| `public/logo.jpeg` | El arte nuevo en lienzo **cuadrado** 1080×1080, **JPEG sin transparencia** | Nada tal cual: no es la firma horizontal. Supersedido por el kit (fila siguiente) |
+| `docs/brand/manual-vivo/` | El manual vivo archivado: HTML, CSS y los tres SVG de recursos | Referencia, no assets de producto. Sus `<img src="assets/logo-principal.png">` y `assets/favicon.png` nunca existieron en el repo — se veían solo en la página viva |
+| `Kit_Marca_BroWay_Adventures/01_Logo_Principal/BroWay_Logo_Principal_Azul_Naranja.{png,jpg}` | **Firma horizontal oficial.** Lienzo 1759×894, arte 1444×464 (3,11:1). Navy medido `#0F3962` / naranja `#FE8201` — a un par de puntos del oficial `#0D3B66`/`#FF8A00`, variación de exportación, no de token. Lienzo blanco, **sin canal alfa** | Fuente real de §3 y §4.1-4.2. Ya no se recorta a mano del manual vivo |
+| `Kit_Marca_BroWay_Adventures/02_Variacion_Turquesa/BroWay_Logo_Variacion_Azul_Turquesa.{png,jpg}` | Misma geometría, «Way» en turquesa (`#0EB0C8`, ≈ oficial `#16B4C6`) en vez de naranja | Variante **autorizada, no por defecto** (`LEEME.txt`: «usar únicamente como alternativa autorizada»). No sustituye a la azul/naranja sin pedido explícito |
+| `Kit_Marca_BroWay_Adventures/03_Favicons/BroWay_Favicon_Fondo_Blanco_{512,1024}.png` | **Símbolo aislado** (arte 701×611, sin wordmark), navy `#0D3B66` y naranja `#FF8A00` **exactos** al oficial, sobre blanco opaco | Fuente de `app/icon.png` y `app/apple-icon.png` (§4.3) |
+| `Kit_Marca_BroWay_Adventures/03_Favicons/BroWay_Favicon_Fondo_Azul_1024.png` · `BroWay_Favicon.ico` | Mismo símbolo sobre navy opaco. El fondo azul mide `#073B6E` — **no coincide** con el navy oficial `#0D3B66`, verificar antes de usarlo como superficie de sección | `.ico` (256 px, multi-resolución) es la fuente directa de `app/favicon.ico` |
+| `Kit_Marca_BroWay_Adventures/04_Perfiles_Sociales/BroWay_Perfil_Instagram_Facebook_2048.{png,jpg}` · `…_Simbolo_WhatsApp_1080.png` | Foto de perfil **cuadrada** para redes (logo dentro del área segura circular) y símbolo para WhatsApp Business | Assets de redes sociales, **no de este repo**: no sirven como `opengraph-image` (§4.4 pide 1200×630) ni se suben a `public/`. Se entregan a quien administra los perfiles |
+| **`Kit_Marca_BroWay_Adventures/logo.png`** *(añadido 2026-09-15, después del resto del kit)* | La firma horizontal, ya recortada a su caja de tinta (1200×441, arte 1119×358, ratio 3,13:1) y **con canal alfa real** — verificado: esquina en `alpha=0`, tinta en `alpha≈253`. Mismo navy/naranja que `01_Logo_Principal`, no monocromático | **Resuelve la transparencia** para superficies claras, arena, gris y foto (con placa si hace falta). **No resuelve navy**: el trazo «Bro» sigue en navy y se funde con un fondo navy |
+| Vertical · monocromática blanca (para navy) · SVG de todo | **Siguen sin existir.** El kit no las trae | Sigue bloqueando la firma en el pie y el panel (fondo navy) — es lo único que la transparencia de `logo.png` no arregla, porque el problema ahí es de color, no de canal alfa |
 
-**Consecuencia de alcance:** el favicon y la previsualización social **no están bloqueados**; la
-firma sobre fondo oscuro **sí**. La fase entrega lo primero y declara lo segundo, no lo improvisa
-recoloreando la firma — eso es exactamente lo que el manual prohíbe (P-2).
+**Consecuencia de alcance:** el favicon, la firma sobre superficie clara (incluida foto, gracias a
+`logo.png`) y la previsualización social **ya no están bloqueados por falta de archivo** —el kit los
+resuelve—; la firma sobre **fondo navy** (pie, panel) **sigue bloqueada**, porque la pieza que falta
+no es transparencia sino una tinta que no sea navy: la monocromática blanca. La fase usa el archivo
+oficial donde lo hay y declara lo segundo, sin improvisar recoloreando la firma — eso es exactamente
+lo que el manual prohíbe (P-2).
 
 ## 3. Geometría de la firma
 
-Medido sobre el archivo real del manual vivo, no estimado:
+Medido sobre `Kit_Marca_BroWay_Adventures/01_Logo_Principal/BroWay_Logo_Principal_Azul_Naranja.png`,
+el archivo oficial del kit (§2) — coincide exacto con lo que ya se había medido sobre el manual vivo,
+así que esta geometría no cambia, solo deja de depender de un recorte manual:
 
 | Magnitud | Valor |
 |---|---|
@@ -134,24 +150,50 @@ Fase 5.
 superficies de color; poner ahí la firma exige la **versión monocromática blanca**, que no existe.
 Recolorear la firma a mano está prohibido (P-2). Queda declarado como bloqueado por **D-C**.
 
-## 5. Archivos maestros: qué se pide y qué es provisional
+## 5. Archivos maestros: recibidos el 2026-09-15, y lo que sigue faltando
 
 **Documentación que arrastra el archivo anterior:** `docs/design/brief-v0.md:422` instruye
 literalmente «usa `/logo-broway.png` como src, ratio horizontal» — describe un archivo que ni es
 horizontal ni es la marca. Se corrige en esta fase.
 
-**Decidido el 2026-09-11 (D-C):** la fase **no espera al SVG**. Se pide el paquete maestro en
-paralelo —SVG de la firma horizontal, versión vertical, símbolo aislado y monocromáticas en azul,
-negro y blanco— y mientras tanto se publican assets provisionales derivados del manual vivo, con
-tres condiciones que el plan debe cumplir:
+**Decidido el 2026-09-11 (D-C):** la fase **no esperaría al SVG**, y pedía el paquete maestro en
+paralelo mientras se publicaban provisionales derivados del manual vivo. **Eso ya no aplica tal
+cual**: el 2026-09-15 llegó `docs/brand/Kit_Marca_BroWay_Adventures/` con la firma horizontal, el
+símbolo aislado, favicons, perfiles sociales y, después, `logo.png` con canal alfa real (§2). No es
+el paquete maestro completo que pedía D-C —sigue sin haber SVG, vertical ni monocromática—, pero
+resuelve la parte que D-C trataba como provisional para superficies claras.
 
-1. **Recorte, no reconstrucción.** La firma se recorta a su caja (1444×464) y se le hace
-   transparente el fondo. No se redibuja, no se cambia ni un color, no se separa «Bro» de «Way».
-2. **Se marcan como provisionales** en un `README` junto a los archivos, con la fecha y qué falta.
-   Un PNG sin nota se vuelve definitivo por inercia.
-3. **Peso controlado.** El origen pesa 758 KB para la firma y 1 MB para el símbolo: se redimensionan
-   a lo que la página usa de verdad (la firma no necesita más de ~3× su tamaño de pantalla). El
-   presupuesto de rendimiento de `spec-home-v1.md` no se toca a la baja, y la firma es LCP en móvil.
+**Lo que el kit ya resuelve, con archivo oficial y no con recorte manual:**
+
+1. **Firma horizontal.** `01_Logo_Principal` para el lienzo completo y `logo.png` ya recortado a su
+   caja y con transparencia real — se usa tal cual, sin reconstruir ni recortar a mano.
+2. **Favicon e iconos de app.** `03_Favicons/BroWay_Favicon.ico` y los `Fondo_Blanco_{512,1024}.png`
+   son el símbolo aislado, listos para §4.3.
+3. **Perfiles de redes.** `04_Perfiles_Sociales/` cubre la foto de perfil de Instagram/Facebook y el
+   símbolo de WhatsApp Business — fuera del alcance de cualquier spec anterior, se entrega a quien
+   administra esos perfiles; no es un asset que este repo sirva.
+
+**Lo que el kit no trae, y sigue bloqueado exactamente como antes:**
+
+- **Vector.** Los diez archivos del kit son JPG, PNG o ICO. Escalar la firma a un tamaño grande
+  (una portada, una lona) sigue dependiendo de un raster.
+- **Vertical.** No existe ninguna versión vertical del lockup.
+- **Monocromática blanca (o negra).** `logo.png` resuelve la transparencia, pero su tinta sigue
+  siendo navy/naranja — sobre un fondo navy el «Bro» se funde con el fondo. El pie
+  (`components/layout/footer.tsx`) y el panel (D-C, sin cambios) siguen esperando esta pieza, que es
+  la única que de verdad bloquea algo hoy.
+
+**Condiciones que siguen aplicando al usar los archivos del kit:**
+
+1. **Peso controlado.** `01_Logo_Principal/…png` pesa 744 KB para un arte que en pantalla no pasa de
+   unos cientos de píxeles de ancho; `logo.png`, ya recortado, es la base más liviana. Se redimensiona
+   al uso real (§3: la firma no necesita más de ~3× su tamaño de pantalla). El presupuesto de
+   rendimiento de `spec-home-v1.md` no se toca a la baja, y la firma es LCP en móvil.
+2. **No se recolorea ni se reconstruye (R-1).** El kit ya es el arte final: la única operación
+   permitida sobre él es recortar y redimensionar, nunca repintar ni separar «Bro» de «Way».
+3. **La variante turquesa (`02_Variacion_Turquesa/`) no es la opción por defecto.** El propio
+   `LEEME.txt` la marca como «alternativa autorizada»: se reserva para cuando dirección de marca la
+   pida para una pieza puntual, no para alternar con la azul/naranja sin motivo.
 
 ## 6. Reglas que el código debe cumplir
 
@@ -180,7 +222,7 @@ tagline de campaña pegada debajo (P-3).
 | **B-5** | Una oferta y un destino comparten su propia foto, no la imagen genérica | Depurador de OG y pegado real |
 | **B-6** | `themeColor` es el navy oficial y está en `export const viewport`, no en `metadata` | Inspección del HTML generado |
 | **B-7** | Ningún archivo de la identidad anterior queda en `public/`, y ninguna referencia apunta a él | `grep -rn "logo-broway"` → cero resultados en código y en `docs/design`. Se conserva `docs/brand/logo-broway-adventures.png` como registro histórico, y `docs/README.md` lo nombra así |
-| **B-8** | Los assets provisionales están marcados como tales, con fecha y con lo que falta | `public/**/README` |
+| **B-8** | Los assets copiados del kit declaran su procedencia y fecha, y lo que sigue sin resolver (SVG, vertical, monocromática) consta como pendiente, no como asset fantasma | `public/**/README` |
 | **B-9** | El LCP móvil del home no empeora respecto a la medición previa | Lighthouse antes y después, en el PR |
 | **B-10** | `pnpm build` pasa, incluido el `check:marca` de la Fase 1 | CI local |
 
@@ -211,8 +253,10 @@ piezas impresas y plantillas de documento: no existen en el repo.
 
 ## 11. Entregables del PR
 
-1. Los assets de la firma y del símbolo en `public/` y en `app/`, con su `README` de provisionalidad,
-   y el archivo de la identidad anterior retirado de `public/`.
+1. Los assets de la firma y del símbolo en `public/` y en `app/`, copiados desde
+   `docs/brand/Kit_Marca_BroWay_Adventures/` con un `README` que declara su procedencia (kit oficial,
+   recibido 2026-09-15) y lo que sigue sin resolver (SVG, vertical, monocromática blanca), y el
+   archivo de la identidad anterior retirado de `public/`.
 2. Navegación y landing de campaña publicando la firma real, con la geometría de §3.
 3. `favicon.ico`, `icon.png` y `apple-icon.png` desde el símbolo.
 4. `metadataBase`, `openGraph`, `twitter`, `viewport.themeColor` y la imagen social por defecto con
