@@ -4,6 +4,9 @@
 > [`../sistema-de-identidad.md`](../sistema-de-identidad.md) §4.6 y §4.7
 > **Decidido y ratificado el 2026-09-11** (D-A y D-B, [`../aprobaciones.md`](../aprobaciones.md)):
 > **Manrope, una sola familia**, y **Caveat sale del sistema**
+> **Arquitectura:** [`../intent.md`](../intent.md) §0.bis — esta fase **no abre PR de migración
+> propio**: `app/globals.css` y los dos `layout.tsx` son convención de Next.js y se quedan donde
+> están hasta el paso atómico final
 > **Rama:** `fase-1/marca-6-tipografia` · **PR:** a `main`, con `CURRENT.md` en el mismo PR
 > **Escrito:** 2026-09-11 · **Estado:** listo para plan
 

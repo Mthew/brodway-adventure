@@ -4,7 +4,10 @@
 > [`../sistema-de-identidad.md`](../sistema-de-identidad.md) §3 (voz, tono, léxico, mensaje, CTAs,
 > «Next Stop») y §2.2 (reglas del nombre)
 > **No depende de ninguna otra fase.** Puede ir en paralelo a la Fase 1 y a la Fase 2
-> **Rama:** `fase-1/marca-3-verbal` · **PR:** a `main`, con `CURRENT.md` en el mismo PR
+> **Arquitectura:** [`../intent.md`](../intent.md) §0.bis · mapeo de esta fase en §1.bis
+> **PR de migración (primero, si hay CTAs que tocar en `components/forms/`):** rama
+> `arq/identidad-verbal`, desde `main`, sin cambio de comportamiento
+> **PR de marca (segundo):** rama `fase-1/marca-3-verbal` · a `main`, con `CURRENT.md` en el mismo PR
 > **Escrito:** 2026-09-11 · **Estado:** listo para plan
 
 ## 0. Objetivo
@@ -41,6 +44,17 @@ mismas en los dos) y sobre `app/admin/`.
 La home ya resuelve bien lo difícil: «Elige tu viaje con claridad», «Las ofertas que más nos piden»
 —en vez de «las mejores»—, «Selección nuestra, no un ranking: son los sitios que le mandaríamos a
 un amigo». Ese es el tono objetivo; el trabajo es llevarlo a donde todavía no llegó.
+
+## 1.bis Migración de arquitectura
+
+Un solo movimiento pendiente, que ninguna fase anterior cubrió: `components/forms/*` (`LeadForm`,
+`TrackLead`) → `src/modules/leads/presentation/components/` (`arquitectura-modular.md` §2). Es la
+única pieza de `components/` que esta fase toca y que todavía no migró la Fase 1. `messages/*.json`
+**no se mueve** — es contenido de `next-intl`, no código, y ADR-0001 lo deja explícitamente en la
+raíz. El copy del panel que esta fase también audita ya vive en `src/modules/*/presentation/admin/`
+y `src/platform/admin/` si la Fase 1 ya corrió su propia migración (§1.bis de esa fase); si esta
+fase se ejecuta antes que la 1 (son paralelizables, `intent.md` §6), audita el copy donde esté hoy
+y dirección de marca revisa que la ubicación no cambió el texto en el PR de migración de la Fase 1.
 
 ## 2. Alcance
 
@@ -196,6 +210,7 @@ manuscrita.
 
 ## 8. Entregables del PR
 
+0. Si `components/forms/*` seguía sin migrar (§1.bis), el PR `arq/identidad-verbal` ya mergeado.
 1. `messages/es.json` y `messages/en.json` con los cambios de CTA, la decisión D-G aplicada y las
    correcciones de estructura.
 2. El copy del panel revisado, con foco en errores, vacíos y confirmaciones.

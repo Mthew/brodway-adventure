@@ -3,6 +3,8 @@
 > **Intent:** [`../intent.md`](../intent.md) §Fase 2 · **Fuente de marca:**
 > [`../sistema-de-identidad.md`](../sistema-de-identidad.md) §4.2, §4.3 y §4.4
 > **Depende de:** Fase 1 (el navy oficial: la placa del símbolo y el `themeColor` lo usan)
+> **Arquitectura:** [`../intent.md`](../intent.md) §0.bis — esta fase **no abre PR de migración
+> propio** (§1.bis)
 > **Rama:** `fase-1/marca-2-firma` · **PR:** a `main`, con `CURRENT.md` en el mismo PR
 > **Escrito:** 2026-09-11 · **Estado:** listo para plan
 
@@ -27,6 +29,16 @@ Hoy fallan las cuatro. No es una cuestión de matiz: **son piezas de otra identi
 
 **El canal de conversión dominante de este negocio es WhatsApp**, y hoy un enlace pegado en un chat
 no muestra marca alguna. Es la brecha más visible del proyecto y la más barata de cerrar.
+
+## 1.bis Migración de arquitectura: ninguna nueva en esta fase
+
+Todo lo que §1 y §4 tocan es, o bien un archivo de convención de Next.js dentro de `app/`
+(`app/favicon.ico`, `app/icon.png`, `app/apple-icon.png`, `app/[locale]/layout.tsx`,
+`app/[locale]/lp/[campana]/layout.tsx`) que se queda donde está hasta el paso atómico final
+(`intent.md` §0.bis), o bien `components/layout/navbar.tsx`, que la Fase 1 ya migró a
+`src/shared/layout/navbar.tsx` — esta fase asume que su PR de migración ya se mergeó. `public/`
+tampoco se mueve nunca (Next.js lo exige en la raíz). Por eso esta fase no abre rama `arq/*`: no
+tiene ningún archivo con destino distinto al que ya tiene o al que otra fase ya le dio.
 
 ## 2. Archivos: lo que hay y lo que falta
 

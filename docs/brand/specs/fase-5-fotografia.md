@@ -4,6 +4,8 @@
 > [`../sistema-de-identidad.md`](../sistema-de-identidad.md) §4.9
 > **Depende de:** Fase 2 (la placa de protección de la firma sobre foto)
 > **Decidido (D-D, 2026-09-11):** la fase se ejecuta **sin esperar** a la fotografía propia
+> **Arquitectura:** [`../intent.md`](../intent.md) §0.bis — esta fase **no abre PR de migración
+> propio** (§1.bis)
 > **Rama:** `fase-1/marca-5-fotografia` · **PR:** a `main`, con `CURRENT.md` en el mismo PR
 > **Escrito:** 2026-09-11 · **Estado:** listo para plan
 
@@ -60,6 +62,13 @@ página. El `alt` se escribió para la foto que se quería, no para la que hay.
 
 El segundo slide dice «Calles amuralladas de Cartagena **al atardecer**» sobre una foto de luz
 plana y cielo nublado. Mismo problema, menor gravedad.
+
+## 1.bis Migración de arquitectura: ninguna nueva en esta fase
+
+Todo lo que esta fase toca es, o bien contenido que nunca se mueve (`public/destinos/**` — Next.js
+exige `public/` en la raíz; `messages/*.json` — ADR-0001 lo deja en la raíz), o bien pantallas de
+carga bajo `app/admin/**` cuyo contenido no-ruta ya migró con la Fase 1 (`offers/presentation/admin/`,
+`destinations/presentation/admin/`, §1.bis de esa fase). No hay rama `arq/*` para esta fase.
 
 ## 2. Alcance
 

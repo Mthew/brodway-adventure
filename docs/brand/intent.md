@@ -20,12 +20,89 @@ intent.md          ← este archivo: QUÉ se busca, POR QUÉ, en qué ORDEN, cu�
 spec y del plan. Lo que este documento fija y los otros dos no pueden cambiar: el alcance de cada
 fase, su criterio de terminado y la razón por la que va donde va.
 
-Cada fase es **una rama y un PR** (`CLAUDE.md` §Flujo de trabajo), sale de `main`, y actualiza
+Cada fase con cambio de código es **dos ramas y dos PRs** — uno de migración de arquitectura y uno
+de marca, en ese orden, ver §0.bis — o **una** si la fase no toca código que la migración reorganice
+(caso de la Fase 7). Ambos salen de `main` (`CLAUDE.md` §Flujo de trabajo) y el de marca actualiza
 `CURRENT.md` en el mismo PR.
 
 > **Nota de lectura.** En `sistema-de-identidad.md`, «F1» y «F2» son las dos **fuentes** (manual
 > vivo y manual v2.0). Aquí «Fase 1»…«Fase 7» son **fases de trabajo** y nunca se abrevian como
 > F1/F2; a las fuentes se las llama por su nombre.
+
+## 0.bis Esta migración también reorganiza el código (arquitectura module-first)
+
+**Fuente de verdad de esto:** [`../architecture/arquitectura-modular.md`](../architecture/arquitectura-modular.md)
+y los ADR de [`../architecture/README.md`](../architecture/README.md) (`ADR-0001`…`ADR-0005`,
+aceptados el 2026-09-15). Este documento no repite esas reglas: declara cómo se cruzan con las
+siete fases de marca.
+
+El repo tiene un diseño objetivo de arquitectura (`src/`, module-first, capas
+`domain/application/infrastructure/presentation`) todavía sin ejecutar: `src/` no existe. Las siete
+fases de este documento tocan buena parte del árbol de archivos que ese diseño reorganiza — el
+color toca `components/ui/*` y `app/admin/**`, la firma toca `components/layout/navbar.tsx`, la voz
+toca `components/forms/*`. Tocar cada uno de esos archivos por su color o su copy y dejarlo
+exactamente donde ya se sabe que no va a quedarse es trabajo que se repite dos veces.
+
+**Regla.** `ADR-0005` ya definía "código que se toca, se migra" como oportunidad, no obligación
+(regla 3). Para estas siete fases se eleva a **obligación, acotada al archivo que la fase ya iba a
+tocar** — nunca al módulo completo. Si la Fase 1 solo cambia el color de
+`components/ui/button.tsx`, migra ese archivo a `src/shared/ui/button.tsx`; no arrastra el resto de
+`offers/` con él, porque el color no lo toca.
+
+**Por qué dos PRs y no uno.** `ADR-0005` regla 1 es categórica: "ningún PR mezcla migración de
+arquitectura con funcionalidad nueva". Mover un archivo y cambiarle el color en el mismo diff hace
+imposible distinguir, en revisión, "esto se movió" de "esto cambió de verdad". Cada una de las
+fases con cambio de código queda entonces en **dos PRs, no uno**:
+
+1. **PR de migración** (rama `arq/<slug-de-la-fase>`, desde `main`): mueve, sin editar contenido,
+   los archivos que la fase va a tocar, a su ubicación en `arquitectura-modular.md` §2, y actualiza
+   sus imports. Criterio de cierre: el de `ADR-0005` §5 — `pnpm build` en `EXIT=0` y recorrido en
+   navegador **sin ninguna diferencia visual o de comportamiento**. Si algo cambia, el PR está mal
+   planteado.
+2. **PR de marca** (rama `fase-1/marca-N-<slug>`, desde `main`, **después** de que el PR de
+   migración ya se mergeó — nunca en paralelo sobre la misma base, para no resolver el mismo
+   conflicto dos veces): el cambio de color/firma/copy/etc. que describe el spec de la fase, ya
+   sobre la ubicación nueva.
+
+Si un archivo no tiene destino claro todavía en `arquitectura-modular.md` (pasa con alguna pieza del
+panel — ver la nota en el spec de la Fase 1 §1.bis), el PR de migración también decide ese destino,
+con el mismo criterio de la tabla `arquitectura-modular.md` §4, y lo dice explícitamente en su
+descripción — no lo deja "por ahora" en su sitio actual.
+
+**Límite duro que ninguna fase puede saltarse (`ADR-0001`/`ADR-0005` regla 6): `app/` no se mueve
+archivo por archivo.** Next.js no permite `app/` y `src/app/` a la vez, así que todo archivo que sea
+**convención de Next.js** — `page.tsx`, `layout.tsx`, `route.ts`, `loading/error/not-found.tsx`,
+`favicon.ico`, `icon.png`, `apple-icon.png`, `sitemap.ts`, `robots.ts`, `globals.css`, `proxy.ts` —
+se queda exactamente donde está hasta el paso atómico final, que no es parte de ninguna fase de
+marca y se hace aparte, cuando todos los módulos ya existan en `src/`. Lo que **sí** puede migrar ya,
+aunque hoy viva físicamente dentro de `app/`, es cualquier componente que **no** sea uno de esos
+archivos de convención — por ejemplo `app/admin/piezas.tsx` (un componente normal que hoy está mal
+ubicado, no una ruta) o la lógica que hoy vive *dentro* de un `page.tsx` de `app/admin/ofertas/**` y
+que `arquitectura-modular.md` §2 ya asigna a `modules/offers/presentation/admin/`. En ese segundo
+caso, el PR de migración **extrae** el contenido al módulo y deja el `page.tsx` como un envoltorio
+delgado que solo importa y renderiza desde la nueva ubicación — el archivo de ruta no se mueve, lo
+que hace es dejar de contener nada más que ese import. Cuál de los archivos de una carpeta es
+"de ruta" y cuál es "extraíble" se decide mirando el árbol real en el momento de migrar, no
+copiando una tabla fija: los specs de fase señalan el principio y el módulo destino, no un mapa
+archivo-por-archivo que se desactualizaría solo.
+
+**Qué no cambia por esto.** El criterio de terminado de cada fase (§5 más abajo) sigue siendo el
+mismo: la migración es una condición previa, no parte del objetivo de marca. Un PR de migración que
+además cambiara un hex no cumple ninguno de los dos criterios de cierre, y un PR de marca que además
+moviera archivos tampoco.
+
+**Mapa rápido — qué zona de `arquitectura-modular.md` toca cada fase** (el mapeo exacto, archivo por
+archivo, vive en el §1.bis de cada spec):
+
+| Fase | Zonas de `src/` que toca |
+|---|---|
+| 1 · Paleta y superficies | `shared/ui/`, `shared/layout/` (sombras), `offers/presentation/`, `destinations/presentation/`, el panel (`platform/` o su hueco, ver Fase 1 §1.bis) |
+| 2 · La firma | `shared/layout/` (navbar), `campaigns/presentation/` (landing), el layout público (metadatos) |
+| 3 · Identidad verbal | `leads/presentation/` (formularios); `messages/*.json` no se mueve (ADR-0001, se queda en la raíz) |
+| 4 · Sistema gráfico | `shared/ui/` (iconos, radios), `src/app/[locale]/(sitio)/page.tsx` (la ruta) |
+| 5 · Fotografía | `offers/presentation/`, `destinations/presentation/` (fichas), el panel (carga de fotos) |
+| 6 · Tipografía | `src/app/globals.css` y los dos layouts (público y panel) |
+| 7 · Gobierno | Ninguna: `scripts/check-marca.mjs` se queda en la raíz (como los otros `check:*`) y sus patrones de búsqueda cubren `src/**` desde que se escribe, no se reescriben después |
 
 ## 1. El resultado que se busca
 
@@ -374,9 +451,10 @@ Tres niveles, del más barato al más caro, y ninguno sustituye a los otros:
 |---|---|---|
 | Spec de la fase | `docs/brand/specs/fase-N-<slug>.md` — escritos: [`fase-1`](specs/fase-1-paleta-y-superficies.md) · [`fase-2`](specs/fase-2-la-firma.md) · [`fase-3`](specs/fase-3-identidad-verbal.md) · [`fase-4`](specs/fase-4-sistema-grafico.md) · [`fase-5`](specs/fase-5-fotografia.md) · [`fase-6`](specs/fase-6-tipografia.md) · [`fase-7`](specs/fase-7-gobierno.md) | antes de tocar código |
 | Plan de ejecución | según el spec, con sus pasos verificables | después del spec |
-| Rama | `fase-1/marca-N-<slug>`, desde `main` | una por fase |
-| PR | a `main`, con `CURRENT.md` actualizado en el mismo PR | al cerrar la fase |
-| Evidencia | la medición de contraste o la captura que demuestre el criterio de terminado | dentro del PR |
+| PR de migración | rama `arq/<slug>`, desde `main`, sin cambio de comportamiento (§0.bis) | antes del PR de marca, cuando la fase toca código reorganizado por `arquitectura-modular.md` |
+| Rama de marca | `fase-1/marca-N-<slug>`, desde `main`, sobre la ubicación ya migrada | una por fase |
+| PR de marca | a `main`, con `CURRENT.md` actualizado en el mismo PR | al cerrar la fase |
+| Evidencia | la medición de contraste o la captura que demuestre el criterio de terminado, más el recorrido de "sin diferencia visual" del PR de migración | dentro de cada PR |
 
 Ninguna fase se da por cerrada con «se ve bien». Se cierra con su criterio de terminado, y el
 criterio está escrito arriba antes de empezar, no después.

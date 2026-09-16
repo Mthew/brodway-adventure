@@ -3,6 +3,8 @@
 > **Intent:** [`../intent.md`](../intent.md) §Fase 7 · **Fuente de marca:**
 > [`../sistema-de-identidad.md`](../sistema-de-identidad.md) §7
 > **Depende de:** nada para arrancar; **cierra** sobre lo que entregan las fases 1 a 6
+> **Arquitectura:** [`../intent.md`](../intent.md) §0.bis — esta fase no migra código propio, pero
+> **escribe `check:marca` para que funcione con la migración en cualquier estado de avance** (§3.bis)
 > **Rama:** `fase-1/marca-7-gobierno` · **PR:** a `main`, con `CURRENT.md` en el mismo PR
 > **Escrito:** 2026-09-11 · **Estado:** listo para plan
 
@@ -65,6 +67,19 @@ el código, no análisis semántico— y todas nacen de un defecto real que este
 cabecera que explica **por qué existe cada regla y qué fallo real evita** —no qué hace—, un fallo
 por regla con el archivo y la línea, y salida con código 1. Las listas blancas van **escritas en el
 script**, no descubiertas por quien lo ejecuta.
+
+## 3.bis Patrones de búsqueda: `app/`/`components/`/`lib/` y `src/**` a la vez
+
+Esta fase es la última en ejecutarse, pero `scripts/check-marca.mjs` **no puede asumir que la
+migración de arquitectura (`../intent.md` §0.bis) ya terminó** para todos los módulos cuando se
+escribe: dos fases pueden ir en paralelo (`intent.md` §6) y sus PRs de migración pueden mergear en
+cualquier orden. La solución es la misma que ya usan las reglas de `dependency-cruiser` y ESLint de
+`ADR-0002` para lo mismo: **los patrones de cada regla cubren las dos ubicaciones posibles a la
+vez** (`app/**`, `components/**`, `lib/**` y `src/**`), en vez de asumir una. Un archivo que ya
+migró no aparece en la ruta antigua y uno que no ha migrado no aparece en `src/`, así que no hay
+falso positivo por buscar en las dos: la regla encuentra el archivo esté donde esté. Si algún día
+`app/`, `components/` y `lib/` dejan de existir (paso atómico final), esos patrones simplemente
+dejan de matchear nada — no hace falta volver a este script para retirarlos.
 
 ## 4. Lo que no se mecaniza, y qué lo cubre
 
