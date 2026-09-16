@@ -1,0 +1,862 @@
+{
+  "nombre": "marca-y-arquitectura",
+  "fuentes": [
+    "docs/brand/intent.md (2026-09-11, con §0.bis del 2026-09-16)",
+    "docs/brand/specs/fase-1-paleta-y-superficies.md",
+    "docs/brand/specs/fase-2-la-firma.md",
+    "docs/brand/specs/fase-3-identidad-verbal.md",
+    "docs/brand/specs/fase-4-sistema-grafico.md",
+    "docs/brand/specs/fase-5-fotografia.md",
+    "docs/brand/specs/fase-6-tipografia.md",
+    "docs/brand/specs/fase-7-gobierno.md",
+    "docs/brand/aprobaciones.md",
+    "docs/architecture/arquitectura-modular.md y ADR-0001..0005",
+    "Estado real del repo verificado el 2026-09-16: src/ no existe, scripts/check-marca.mjs no existe, components/forms/{lead-form,track-lead}.tsx existen, los 4 botones de §6.1 están exactamente en las líneas que cita el spec, messages/es.json tiene los 8 CTAs, docs/design/brief-v0.md §11 (Pre-Flight) existe en línea 844, docs/brand/sistema-de-identidad.md §7 existe en línea 729, docs/brand/aprobaciones.md ya tiene las 7 filas D-A..D-G"
+  ],
+  "topologia": {
+    "forma": "espina-con-satelites",
+    "justificacion": "Validado con scripts/validar_grafo.py: camino critico de 5 nodos sobre 33 (N-01.0b -> N-01.1 -> N-02.4 -> N-02.5 -> N-02.V, esfuerzo 10), con 12 nodos que arrancan el dia 1 (36%). El validador confirma cimiento_compartido vacio: ningun nodo individual supera el 50% de dependientes directos, asi que no hay un cimiento unico en el sentido estricto de abanico — la densidad de 1.06 es moderada-alta pero se concentra en un puñado de superficies compartidas (globals.css, design-system/page.tsx), no en dependencias funcionales cruzadas. Las fases 3 (verbal), 5 (fotografia) y 6 (tipografia) son satelites de bajo acoplamiento: su unico vinculo con el resto es de verificacion (H-4 de N-07.1) o de contabilidad (N-07.3), nunca de construccion — 3 de sus nodos arrancan el dia 1 (N-03.0, N-03.1, N-03.4, N-06.1). Hay un bolson de abanico al cierre: N-07.1 y N-07.3 convergen sobre casi todo el grafo para el guardian final y el registro de aprobaciones — se documenta como bolson, no se fuerza la forma dominante a abanico. El validador tambien reporta 52 avisos de colision (ver §5 del markdown): casi todos originados por el patron amplio de N-04.3 (un search-and-replace legitimo sobre app/**, components/**, src/**) o por dos nodos poblando el mismo directorio con archivos distintos (limite del detector, no colision real) — triados en la seccion de colisiones, no ignorados.",
+    "medidas": {
+      "nodos": 33,
+      "aristas_duras": 35,
+      "aristas_totales": 43,
+      "densidad": 1.06,
+      "camino_critico_nodos": 5,
+      "camino_critico_esfuerzo": 10,
+      "camino_critico_ruta": ["N-01.0b", "N-01.1", "N-02.4", "N-02.5", "N-02.V"],
+      "cimiento_compartido": [],
+      "arrancan_dia_1": ["N-01.0a", "N-01.0b", "N-01.2", "N-02.1", "N-03.0", "N-03.1", "N-03.4", "N-04.0", "N-04.3", "N-05.1", "N-06.1", "N-07.2"]
+    }
+  },
+  "nodos": [
+    {
+      "id": "N-01.0a",
+      "titulo": "Migracion limpia: componentes compartidos (shared/ui, shared/layout, tracking, offers)",
+      "objetivo": "components/ui/{button,badge,section}.tsx, components/layout/navbar.tsx, components/layout/cookie-banner.tsx y components/oferta/sticky-cta.tsx viven en su destino de arquitectura-modular.md §2 (src/shared/ui, src/shared/layout, src/modules/tracking/presentation/components, src/modules/offers/presentation/components), con los imports que los usan ya actualizados, y pnpm build sigue en EXIT=0 sin ningun cambio visual.",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "pnpm build && recorrido de las 18 rutas publicas comparando captura antes/despues",
+        "salida_esperada": "EXIT=0, cero diferencias visuales, cero imports rotos hacia components/ui/{button,badge,section}.tsx ni components/layout/{navbar,cookie-banner}.tsx ni components/oferta/sticky-cta.tsx",
+        "puede_correrse_ahora": true
+      },
+      "falso_verde": "pnpm build pasa igual si alguien mueve el archivo pero deja un import viejo que todavia resuelve por casualidad (ej. un re-export residual en la ruta antigua) — hay que confirmar con grep que no queda ningun 'components/ui/button' ni 'components/layout/navbar' en el codigo, no solo que el build compile.",
+      "prueba_por_mutacion": "Borrar el archivo movido de su destino nuevo sin tocar los imports: el build tiene que fallar con 'Module not found'. Si no falla, algun import todavia apunta a la ruta vieja y el movimiento no fue real.",
+      "depende_de": [],
+      "artefactos": [
+        "src/shared/ui/button.tsx",
+        "src/shared/ui/badge.tsx",
+        "src/shared/ui/section.tsx",
+        "src/shared/layout/navbar.tsx",
+        "src/modules/tracking/presentation/components/cookie-banner.tsx",
+        "src/modules/offers/presentation/components/sticky-cta.tsx"
+      ],
+      "toca": [
+        "components/ui/button.tsx",
+        "components/ui/badge.tsx",
+        "components/ui/section.tsx",
+        "components/layout/navbar.tsx",
+        "components/layout/cookie-banner.tsx",
+        "components/oferta/sticky-cta.tsx",
+        "src/shared/ui/**",
+        "src/shared/layout/**",
+        "src/modules/tracking/presentation/components/**",
+        "src/modules/offers/presentation/components/**"
+      ],
+      "fuente": "fase-1 §1.bis (movimientos limpios) · intent.md §0.bis",
+      "no_entra": "El resto de components/oferta/* (galeria, tarifa-vencida) y components/destinos/* — esos migran en N-04.0 porque ninguna fase anterior a la 4 tenia motivo para tocarlos.",
+      "esfuerzo": "S"
+    },
+    {
+      "id": "N-01.0b",
+      "titulo": "Extraccion del panel admin: ofertas, destinos, piezas.tsx y el shell de layout.tsx",
+      "objetivo": "app/admin/ofertas/** y app/admin/destinos/** quedan separados en archivos de ruta delgados (que se quedan bajo app/, sin logica mas alla del import) y componentes extraidos en src/modules/{offers,destinations}/presentation/admin/; app/admin/piezas.tsx migra completo a src/modules/offers/presentation/admin/piezas.tsx; app/admin/layout.tsx queda como envoltorio de un componente de shell en src/platform/admin/. pnpm build en EXIT=0, sin cambio visual en las 13 rutas del panel.",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "pnpm build && recorrido de las 13 rutas del panel comparando captura antes/despues",
+        "salida_esperada": "EXIT=0, las 13 rutas se ven identicas, ningun page.tsx del panel contiene mas logica que el import+render del componente extraido",
+        "puede_correrse_ahora": true
+      },
+      "falso_verde": "El build pasa aunque el 'envoltorio delgado' siga teniendo la mitad de la logica vieja adentro (una extraccion parcial) — verificar leyendo cada page.tsx resultante, no solo que compile y se vea igual.",
+      "prueba_por_mutacion": "Cambiar un texto dentro de src/modules/offers/presentation/admin/piezas.tsx y confirmar que se refleja en /admin/ofertas, /admin/destinos, /admin (dashboard) y /admin/ofertas/[id]/publicar sin tocar ningun page.tsx — si alguna pantalla no lo refleja, esa pantalla todavia tiene su propia copia sin extraer.",
+      "depende_de": [],
+      "artefactos": [
+        "src/modules/offers/presentation/admin/**",
+        "src/modules/destinations/presentation/admin/**",
+        "src/modules/offers/presentation/admin/piezas.tsx",
+        "src/platform/admin/admin-shell.tsx"
+      ],
+      "toca": [
+        "app/admin/ofertas/**",
+        "app/admin/destinos/**",
+        "app/admin/piezas.tsx",
+        "app/admin/layout.tsx",
+        "src/modules/offers/presentation/admin/**",
+        "src/modules/destinations/presentation/admin/**",
+        "src/platform/admin/**"
+      ],
+      "fuente": "fase-1 §1.bis (extraccion, no movimiento) · intent.md §0.bis",
+      "no_entra": "Los page.tsx en si no se mueven de app/admin/** — esperan el paso atomico final (ADR-0005 regla 6). Este nodo extrae contenido, no reubica rutas.",
+      "esfuerzo": "M"
+    },
+    {
+      "id": "N-01.1",
+      "titulo": "Paleta oficial: tokens de color, sombras, overlay y de-propagacion en docs",
+      "objetivo": "Los cinco hex del manual (#0D3B66, #16B4C6, #FF8A00, #F6E7C3, #F2F4F7) son los unicos valores de color de marca del repo; el overlay del hero de campana mide navy/75; los cuatro botones del panel pintan text-brand-navy en vez de text-white; brief-v0.md, brief-v0-producto.md, spec-tecnica.md, CLAUDE.md, docs/README.md y CURRENT.md ya no publican los hex desviados como oficiales.",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "grep -rniE \"003062|00aac3|ff6a03\" (codigo + docs, excluyendo history/ y docs/brand/**) y medicion en navegador de la matriz de fase-1 §4",
+        "salida_esperada": "cero resultados fuera de la lista blanca; cada combinacion medida en DevTools coincide con fase-1 §4 o el spec se corrige con la medicion",
+        "puede_correrse_ahora": false,
+        "bloqueada_por": "N-01.0a y N-01.0b: los archivos que este nodo edita (section.tsx, navbar.tsx, cookie-banner.tsx, sticky-cta.tsx, piezas.tsx, el shell del panel) tienen que existir ya en su destino de src/ antes de poder tocarlos ahi."
+      },
+      "falso_verde": "El grep de hex puede dar cero simplemente porque el reemplazo se hizo con un valor 'parecido' pero no exacto (ej. #0D3B67 en vez de #0D3B66) — hay que comparar valor por valor contra el manual, no solo confirmar la ausencia de los tres antiguos. Tambien: CURRENT.md y CLAUDE.md hoy mencionan los hex viejos de forma legitima (avisando del defecto) y NO estan en la lista blanca de A-1 (solo history/ y docs/brand/**) — un grep ingenuo los marcaria como violacion aunque el aviso sea correcto; hay que retirar esos avisos en el mismo PR o el criterio A-1 nunca cierra en verde.",
+      "prueba_por_mutacion": "Escribir #003062 a mano en un componente cualquiera bajo src/ y confirmar que scripts/check-marca.mjs (N-01.2) lo detecta.",
+      "depende_de": [
+        { "id": "N-01.0a", "tipo": "artefacto" },
+        { "id": "N-01.0b", "tipo": "artefacto" }
+      ],
+      "artefactos": [
+        "app/globals.css (tokens actualizados)",
+        "src/shared/ui/section.tsx (variante sand)",
+        "src/shared/layout/navbar.tsx",
+        "src/modules/tracking/presentation/components/cookie-banner.tsx",
+        "src/modules/offers/presentation/components/sticky-cta.tsx",
+        "src/modules/offers/presentation/admin/piezas.tsx",
+        "app/[locale]/lp/[campana]/page.tsx"
+      ],
+      "toca": [
+        "app/globals.css",
+        "src/shared/ui/section.tsx",
+        "src/shared/layout/navbar.tsx",
+        "src/modules/tracking/presentation/components/cookie-banner.tsx",
+        "src/modules/offers/presentation/components/sticky-cta.tsx",
+        "src/modules/offers/presentation/admin/piezas.tsx",
+        "app/[locale]/lp/[campana]/page.tsx",
+        "app/[locale]/(sitio)/design-system/page.tsx",
+        "docs/design/brief-v0.md",
+        "docs/design/brief-v0-producto.md",
+        "docs/architecture/spec-tecnica.md",
+        "CLAUDE.md",
+        "docs/README.md",
+        "CURRENT.md"
+      ],
+      "fuente": "fase-1 §2-§7",
+      "no_entra": "CURRENT.md no esta en la lista de fase-1 §5 'Cambios por archivo' (solo lista CLAUDE.md y docs/README.md) pero SI menciona los hex viejos hoy — ver falso_verde. Se anota tambien como hallazgo H-1 en §8.",
+      "esfuerzo": "L"
+    },
+    {
+      "id": "N-01.2",
+      "titulo": "scripts/check-marca.mjs — reglas R-1/R-2 (hex)",
+      "objetivo": "pnpm check falla si los tres hex antiguos reaparecen fuera de history/ y docs/brand/**, y falla si cualquiera de los cinco hex oficiales aparece fuera de app/globals.css (con la unica excepcion declarada de design-system/page.tsx).",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "pnpm check:marca",
+        "salida_esperada": "0 violaciones sobre el repo limpio; introduciendo #003062 en un archivo cualquiera bajo src/ o components/, el comando sale con codigo 1 y senala archivo y linea",
+        "puede_correrse_ahora": true
+      },
+      "falso_verde": "El script puede pasar en verde simplemente porque sus patrones de busqueda solo cubren app/ y components/ y el repo ya migro esos archivos a src/ — sin cubrir src/** el check deja de mirar donde esta el codigo real. Igual que Fase 7 §3.bis: los patrones tienen que cubrir app/**, components/**, lib/** y src/** a la vez desde que se escribe.",
+      "prueba_por_mutacion": "Insertar #00aac3 en un archivo de docs/brand/aprobaciones.md (fuera de su whitelist real, que es solo docs/brand/**... ojo: aprobaciones.md SI esta dentro de docs/brand/**, asi que no deberia fallar ahi — probar en cambio en docs/architecture/README.md, que no esta en ninguna whitelist) y confirmar que si falla.",
+      "depende_de": [
+        { "id": "N-01.0a", "tipo": "verificacion" },
+        { "id": "N-01.0b", "tipo": "verificacion" }
+      ],
+      "artefactos": ["scripts/check-marca.mjs", "package.json (script check:marca)"],
+      "toca": ["scripts/check-marca.mjs", "package.json"],
+      "fuente": "fase-1 §9, entregable 2 · fase-7 §3, R-1/R-2",
+      "esfuerzo": "S",
+      "nota": "Se construye el dia 1: las reglas de patron no necesitan que N-01.0a/b ya esten mergeados. Solo su verificacion de 'cero falsos positivos sobre el repo real' espera a que esos dos nodos existan."
+    },
+    {
+      "id": "N-02.1",
+      "titulo": "Assets de la firma copiados del kit oficial + retiro del logo anterior",
+      "objetivo": "Los archivos del kit (firma horizontal, simbolo, favicons) estan copiados a public/ y app/ con un README que declara procedencia (kit oficial, 2026-09-15) y lo que sigue sin resolver (SVG, vertical, monocromatica); public/logo-broway.png ya no existe.",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "ls public/ app/*.png app/*.ico && grep -rn \"logo-broway\" . --include=*.ts --include=*.tsx",
+        "salida_esperada": "los assets del kit presentes con su README; cero referencias a logo-broway.png en codigo (docs/brand/logo-broway-adventures.png se conserva como registro historico, con esa excepcion declarada)",
+        "puede_correrse_ahora": true
+      },
+      "falso_verde": "El grep de 'logo-broway' puede dar cero simplemente porque el archivo se renombro sin que nada lo referenciara todavia — verificar tambien que public/logo-broway.png fue eliminado del filesystem, no solo que nadie lo importe.",
+      "prueba_por_mutacion": "Reintroducir una referencia a /logo-broway.png en un archivo cualquiera y confirmar que R-7 de check-marca (N-07.1) la detecta.",
+      "depende_de": [],
+      "artefactos": ["public/README", "public/logo-broway.png (eliminado)"],
+      "toca": ["public/**", "app/icon.png", "app/apple-icon.png", "docs/design/brief-v0.md (linea 422)"],
+      "fuente": "fase-2 §2, §5, entregable 1",
+      "esfuerzo": "S"
+    },
+    {
+      "id": "N-02.2",
+      "titulo": "Navegacion y landing de campana con la firma real",
+      "objetivo": "components/layout/navbar.tsx (ya en src/shared/layout/) y app/[locale]/lp/[campana]/layout.tsx publican la firma horizontal real, dimensionada por ancho, a >=180px, con >=31px hasta el siguiente elemento, y la barra sigue en <=80px.",
+      "verificacion": {
+        "tipo": "escenario",
+        "como": "DevTools sobre / y sobre una landing de campana, movil y escritorio",
+        "salida_esperada": "ancho de la firma >=180px, separacion hasta el menu/selector >=31px, altura de barra <=80px",
+        "puede_correrse_ahora": false,
+        "bloqueada_por": "N-02.1 (los assets tienen que existir) y N-01.0a (navbar.tsx tiene que estar ya en src/shared/layout/ para editarlo ahi)."
+      },
+      "falso_verde": "La firma puede medir 180px de ancho declarado en el <Image> y aun asi renderizar mas chica si el contenedor padre la comprime — medir el elemento renderizado en DevTools, no el atributo width del componente.",
+      "depende_de": [
+        { "id": "N-02.1", "tipo": "artefacto" },
+        { "id": "N-01.0a", "tipo": "artefacto" }
+      ],
+      "artefactos": ["src/shared/layout/navbar.tsx", "app/[locale]/lp/[campana]/layout.tsx"],
+      "toca": ["src/shared/layout/navbar.tsx", "app/[locale]/lp/[campana]/layout.tsx"],
+      "fuente": "fase-2 §3, §4.1, §4.2",
+      "esfuerzo": "M"
+    },
+    {
+      "id": "N-02.3",
+      "titulo": "Favicon e iconos de app desde el simbolo",
+      "objetivo": "app/favicon.ico, app/icon.png y app/apple-icon.png muestran el simbolo de BroWay (nunca el logo completo reducido), en 16/32/48px, 512px y 180px respectivamente.",
+      "verificacion": {
+        "tipo": "escenario",
+        "como": "Abrir el sitio en Chrome y Safari, inspeccionar la pestana",
+        "salida_esperada": "simbolo de BroWay visible en la pestana, no el triangulo de Vercel",
+        "puede_correrse_ahora": false,
+        "bloqueada_por": "N-02.1 (los archivos de favicon del kit tienen que existir)."
+      },
+      "falso_verde": "El favicon.ico puede 'verse bien' en Chrome pero fallar en Safari si el .ico no trae las tres resoluciones multi-tamano — probar en los dos navegadores, no solo en uno.",
+      "depende_de": [{ "id": "N-02.1", "tipo": "artefacto" }],
+      "artefactos": ["app/favicon.ico", "app/icon.png", "app/apple-icon.png"],
+      "toca": ["app/favicon.ico", "app/icon.png", "app/apple-icon.png"],
+      "fuente": "fase-2 §4.3",
+      "esfuerzo": "S"
+    },
+    {
+      "id": "N-02.4",
+      "titulo": "Metadatos sociales: metadataBase, openGraph, twitter, themeColor",
+      "objetivo": "app/[locale]/layout.tsx declara metadataBase, openGraph (type/siteName/locale/title/description/url), twitter card summary_large_image, una opengraph-image.png de 1200x630 con la firma sobre el navy oficial, y themeColor en export const viewport (no en metadata).",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "Inspeccionar el HTML generado de una pagina publica (view-source o curl) y buscar las etiquetas og:*, twitter:card y theme-color",
+        "salida_esperada": "las etiquetas presentes con los valores declarados, theme-color con el hex del navy oficial",
+        "puede_correrse_ahora": false,
+        "bloqueada_por": "N-01.1 (necesita el navy oficial para pintar el fondo de la imagen social) y N-02.1 (necesita la firma para componer esa imagen)."
+      },
+      "falso_verde": "Las etiquetas pueden estar presentes en el HTML y aun asi no resolver la imagen si metadataBase falta o apunta mal — las rutas relativas de imagen se resuelven silenciosamente a la URL incorrecta sin que el HTML lo delate a simple vista; hay que probar el link real en un scraper (WhatsApp/Slack), no solo leer el <head>.",
+      "prueba_por_mutacion": "Quitar metadataBase y confirmar que la imagen social deja de resolver en un pegado real de WhatsApp — si sigue funcionando, algo mas la esta resolviendo (ej. una URL absoluta hardcodeada) y el spec esta describiendo un mecanismo que no es el real.",
+      "depende_de": [
+        { "id": "N-01.1", "tipo": "artefacto" },
+        { "id": "N-02.1", "tipo": "artefacto" }
+      ],
+      "artefactos": ["app/[locale]/layout.tsx", "app/opengraph-image.png", "app/opengraph-image.alt.txt"],
+      "toca": ["app/[locale]/layout.tsx", "app/opengraph-image.png", "app/opengraph-image.alt.txt"],
+      "fuente": "fase-2 §4.4",
+      "esfuerzo": "M"
+    },
+    {
+      "id": "N-02.5",
+      "titulo": "openGraph.images por pagina en oferta, destino y campana",
+      "objetivo": "Las paginas de oferta, destino y landing de campana declaran su propia imagen en openGraph.images reutilizando la fotografia que ya publican, en vez de la imagen social generica.",
+      "verificacion": {
+        "tipo": "escenario",
+        "como": "Pegar la URL de una oferta, un destino y una campana en un depurador de OG (o en WhatsApp) y comparar la imagen mostrada contra la foto de la pagina",
+        "salida_esperada": "cada tipo de pagina muestra su propia foto, no la imagen social por defecto",
+        "puede_correrse_ahora": false,
+        "bloqueada_por": "N-02.4 (necesita metadataBase y el patron de generateMetadata ya establecido)."
+      },
+      "falso_verde": "Puede parecer que funciona si se prueba solo con la primera oferta de la lista (que puede tener una foto bien formada) mientras otra oferta con foto faltante cae de vuelta silenciosamente a la imagen generica sin que nadie lo note — probar con al menos una oferta, un destino y una campana que no sean los primeros del listado.",
+      "depende_de": [{ "id": "N-02.4", "tipo": "artefacto" }],
+      "artefactos": ["app/[locale]/ofertas/[slug]/page.tsx", "app/[locale]/destinos/[slug]/page.tsx", "app/[locale]/lp/[campana]/page.tsx"],
+      "toca": ["app/[locale]/ofertas/[slug]/page.tsx", "app/[locale]/destinos/[slug]/page.tsx", "app/[locale]/lp/[campana]/page.tsx"],
+      "fuente": "fase-2 §4.4, entregable 5",
+      "esfuerzo": "S"
+    },
+    {
+      "id": "N-02.V",
+      "titulo": "Verificacion real de Fase 2: WhatsApp, Slack, Lighthouse",
+      "objetivo": "Un enlace del sitio pegado en WhatsApp y en un segundo cliente (Slack o Telegram) muestra tarjeta con imagen, titulo y descripcion de marca; el LCP movil del home no empeora respecto a la medicion previa.",
+      "verificacion": {
+        "tipo": "escenario",
+        "como": "Pegar una URL de preview/produccion en WhatsApp y en Slack; correr Lighthouse movil antes/despues",
+        "salida_esperada": "tarjeta de marca visible en los dos clientes; LCP igual o mejor que la medicion previa",
+        "puede_correrse_ahora": false,
+        "bloqueada_por": "N-02.2, N-02.3, N-02.4, N-02.5."
+      },
+      "falso_verde": "WhatsApp cachea el scraper de OG: una URL ya visitada antes de terminar la fase puede seguir mostrando la tarjeta vieja (o ninguna) aunque el codigo ya este correcto — hay que probar con un parametro nuevo en la URL, no con la misma URL que se probo al principio.",
+      "depende_de": [
+        { "id": "N-02.2", "tipo": "artefacto" },
+        { "id": "N-02.3", "tipo": "artefacto" },
+        { "id": "N-02.4", "tipo": "artefacto" },
+        { "id": "N-02.5", "tipo": "artefacto" }
+      ],
+      "artefactos": ["captura de la tarjeta de WhatsApp en el PR", "tabla de medidas de fase-2 §8"],
+      "toca": ["evidencia en el cuerpo del PR de Fase 2 (sin archivo de codigo propio)"],
+      "fuente": "fase-2 §7 (B-4, B-8, B-9), §8",
+      "bloqueo_externo": "Cache del scraper de WhatsApp: no es una espera humana, pero un reintento con la misma URL puede dar falso negativo. Se resuelve agregando un parametro nuevo, no esperando.",
+      "esfuerzo": "S"
+    },
+    {
+      "id": "N-03.0",
+      "titulo": "Migracion de components/forms/* a leads/presentation",
+      "objetivo": "components/forms/lead-form.tsx y components/forms/track-lead.tsx viven en src/modules/leads/presentation/components/, con sus imports actualizados, sin cambio de comportamiento.",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "pnpm build && recorrido del formulario de contacto en dos paginas que lo usan",
+        "salida_esperada": "EXIT=0, el formulario se ve y funciona igual que antes",
+        "puede_correrse_ahora": true
+      },
+      "falso_verde": "El build puede pasar si queda un segundo LeadForm duplicado en la ruta vieja que nadie importa ya, dando la falsa sensacion de que 'no rompio nada' — confirmar que components/forms/ quedo vacio o eliminado, no solo que el nuevo funcione.",
+      "prueba_por_mutacion": "Borrar components/forms/lead-form.tsx (la ruta vieja) despues de migrar: si el build sigue en EXIT=0, la migracion fue real; si falla, algun import todavia apunta ahi.",
+      "depende_de": [],
+      "artefactos": ["src/modules/leads/presentation/components/lead-form.tsx", "src/modules/leads/presentation/components/track-lead.tsx"],
+      "toca": ["components/forms/**", "src/modules/leads/presentation/components/**"],
+      "fuente": "fase-3 §1.bis",
+      "esfuerzo": "S"
+    },
+    {
+      "id": "N-03.1",
+      "titulo": "CTAs corregidos y D-G aplicada en messages/*.json",
+      "objetivo": "hablaConAsesor ya no existe (sustituido por uno de los cinco aprobados); cotizaWhatsapp queda documentado como variante que nombra el canal; nav.mejoresOfertas/nav.playasYHoteles/ofertas.tituloListado/playasYHoteles.titulo se mantienen (D-G) y los dos listados abren con su aclaracion de que es una seleccion, no un ranking.",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "grep -rn \"hablaConAsesor\" messages/ app/ components/ y lectura de los dos listados en es/en",
+        "salida_esperada": "cero resultados de hablaConAsesor; los dos listados (ofertas y playasYHoteles) muestran su aclaracion de seleccion",
+        "puede_correrse_ahora": true
+      },
+      "falso_verde": "El grep de hablaConAsesor puede dar cero porque la clave se borro de messages/ pero el texto quedo hardcodeado literalmente en algun componente (fase-3 ya midio 5 literales hardcodeados en el sitio publico) — revisar tambien esos literales, no solo las claves de i18n.",
+      "depende_de": [],
+      "artefactos": ["messages/es.json", "messages/en.json"],
+      "toca": ["messages/es.json", "messages/en.json"],
+      "fuente": "fase-3 §3.1, §3.2",
+      "esfuerzo": "M"
+    },
+    {
+      "id": "N-03.2",
+      "titulo": "Copy del panel revisado contra la voz",
+      "objetivo": "Errores, estados vacios, confirmaciones destructivas y etiquetas del backoffice cumplen los seis atributos de la voz (V-1): explican que hacer, ofrecen el siguiente paso, son serenos sobre lo que se pierde.",
+      "verificacion": {
+        "tipo": "escenario",
+        "como": "Recorrido de las 13 rutas del panel, lectura en voz alta de cada mensaje de error/vacio/confirmacion",
+        "salida_esperada": "ningun mensaje suena a folleto ni culpabiliza; las confirmaciones destructivas explicitan que se pierde",
+        "puede_correrse_ahora": false,
+        "bloqueada_por": "N-01.0b: el copy que se revisa vive hoy en app/admin/** y, si N-01.0b ya corrio, vive en src/modules/*/presentation/admin/ y src/platform/admin/ — hay que editarlo donde este de verdad al momento de ejecutar."
+      },
+      "falso_verde": "Puede 'sonar bien' leido en voz alta y aun asi violar V-2 (tuteo) en una sola linea perdida entre 13 rutas — hacer tambien un grep de 'usted'/'su' formal en el JSX del panel, no confiar solo en el oido.",
+      "depende_de": [{ "id": "N-01.0b", "tipo": "artefacto" }],
+      "artefactos": ["copy revisado en src/modules/*/presentation/admin/** y src/platform/admin/**"],
+      "toca": ["src/modules/offers/presentation/admin/**", "src/modules/destinations/presentation/admin/**", "src/platform/admin/**"],
+      "fuente": "fase-3 §3.3",
+      "esfuerzo": "M"
+    },
+    {
+      "id": "N-03.3",
+      "titulo": "Auditoria de estructura del mensaje en los seis bloques de conversion",
+      "objetivo": "El hero de la home, el hero de campana, la ficha de oferta, la ficha de destino, el formulario y la pagina de gracias recorren los cuatro pasos del manual (necesidad -> beneficio -> informacion que reduce incertidumbre -> invitacion), sin saltarse el paso 3.",
+      "verificacion": {
+        "tipo": "escenario",
+        "como": "Leer cada bloque en el orden en que se ve y anotar en una tabla si cumple los cuatro pasos",
+        "salida_esperada": "tabla de seis filas en el cuerpo del PR, cada una marcando los cuatro pasos",
+        "puede_correrse_ahora": false,
+        "bloqueada_por": "N-03.1: la auditoria tiene que hacerse sobre el texto ya corregido (post-CTA), no sobre el texto viejo."
+      },
+      "falso_verde": "Un bloque puede 'marcar' los cuatro pasos en la tabla aunque el paso 3 este ahi solo de forma nominal (una frase generica que no reduce incertidumbre de verdad) — la auditoria tiene que citar la frase concreta de cada paso, no solo tildar una casilla.",
+      "depende_de": [{ "id": "N-03.1", "tipo": "artefacto" }],
+      "artefactos": ["tabla de auditoria de 6 bloques en el cuerpo del PR"],
+      "toca": ["messages/es.json", "messages/en.json"],
+      "fuente": "fase-3 §3.5, criterio C-3",
+      "esfuerzo": "M"
+    },
+    {
+      "id": "N-03.4",
+      "titulo": "Variante de ingles declarada como britanica",
+      "objetivo": "/design-system declara explicitamente que la variante de ingles del sitio es britanica (travellers, authorise, personalised, organise), y no hay mezcla con marcadores americanos.",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "grep -riE \"traveler|authorize|personalized|organize\" messages/en.json",
+        "salida_esperada": "cero resultados americanos mezclados con los 15 marcadores britanicos ya existentes",
+        "puede_correrse_ahora": true
+      },
+      "falso_verde": "El grep puede dar cero simplemente porque las 303 claves nunca tocaron una palabra con esa raiz, no porque alguien haya decidido y declarado britanico a proposito — la parte que de verdad hace falta (declararlo en /design-system) es documental y no la detecta ningun grep.",
+      "depende_de": [],
+      "artefactos": ["seccion de idioma en /design-system"],
+      "toca": ["app/[locale]/(sitio)/design-system/page.tsx", "messages/en.json"],
+      "fuente": "fase-3 §3.4",
+      "esfuerzo": "S"
+    },
+    {
+      "id": "N-03.5",
+      "titulo": "scripts/check-marca.mjs — reglas R-3/R-4/R-5 (texto)",
+      "objetivo": "pnpm check falla ante cualquiera de las ocho promesas prohibidas, cualquier grafia incorrecta del nombre BroWay Adventures, o 'Next Stop' repetido en la misma pagina.",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "pnpm check:marca",
+        "salida_esperada": "0 violaciones sobre el repo limpio; introduciendo 'la mejor oferta' o 'Bro Way' o un segundo 'Next Stop' en la misma pagina, sale con codigo 1",
+        "puede_correrse_ahora": true
+      },
+      "falso_verde": "Puede pasar en verde sobre `app/` y `components/` mientras el codigo ya vive en `src/` (si N-01.0a/b/N-03.0 ya corrieron) — mismos patrones duales que N-01.2.",
+      "prueba_por_mutacion": "Escribir 'BroWay' como 'Bro Way' en una pagina cualquiera y confirmar que R-4 lo detecta.",
+      "depende_de": [{ "id": "N-01.2", "tipo": "artefacto" }],
+      "artefactos": ["scripts/check-marca.mjs (ampliado)"],
+      "toca": ["scripts/check-marca.mjs"],
+      "fuente": "fase-3 §6, entregable 3 · fase-7 §3, R-3/R-4/R-5",
+      "esfuerzo": "S"
+    },
+    {
+      "id": "N-04.0",
+      "titulo": "Migracion: componentes de destinations y offers restantes",
+      "objetivo": "components/destinos/listado-categoria.tsx, components/ui/filtro-categoria.tsx, components/oferta/galeria.tsx, components/oferta/tarifa-vencida.tsx y components/ui/price-disclosure.tsx viven en src/modules/{destinations,offers}/presentation/components/, sin cambio de comportamiento.",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "pnpm build && recorrido de una pagina de listado de destinos y una ficha de oferta",
+        "salida_esperada": "EXIT=0, sin cambio visual",
+        "puede_correrse_ahora": true
+      },
+      "falso_verde": "Igual que N-01.0a: el build puede pasar con un import viejo que resuelve por casualidad. Confirmar con grep que no queda ningun import hacia components/destinos/ ni components/oferta/ salvo lo que N-01.0a ya movio.",
+      "prueba_por_mutacion": "Borrar los archivos de la ruta vieja tras migrar: el build tiene que fallar si algo todavia los referencia ahi.",
+      "depende_de": [],
+      "artefactos": [
+        "src/modules/destinations/presentation/components/category-list.tsx",
+        "src/modules/destinations/presentation/components/category-filter.tsx",
+        "src/modules/offers/presentation/components/galeria.tsx",
+        "src/modules/offers/presentation/components/tarifa-vencida.tsx",
+        "src/modules/offers/presentation/components/price-disclosure.tsx"
+      ],
+      "toca": [
+        "components/destinos/listado-categoria.tsx",
+        "components/ui/filtro-categoria.tsx",
+        "components/oferta/galeria.tsx",
+        "components/oferta/tarifa-vencida.tsx",
+        "components/ui/price-disclosure.tsx",
+        "src/modules/destinations/presentation/components/**",
+        "src/modules/offers/presentation/components/**"
+      ],
+      "fuente": "fase-4 §1.bis",
+      "esfuerzo": "S"
+    },
+    {
+      "id": "N-04.1",
+      "titulo": "Ruta de marca declarada como utilidad, vocabulario de linea a dos tratamientos",
+      "objetivo": "Los cinco tratamientos de linea existentes se reducen a dos (ruta y borde de lista); la ruta queda declarada en app/globals.css y documentada en /design-system con sus dos colores segun superficie (G-1..G-5).",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "grep de border-l-*, border-t-*, line-draw* sobre las 18 rutas",
+        "salida_esperada": "solo quedan .line-draw/.line-draw-y (ruta) y un unico border-l declarado como variante de lista",
+        "puede_correrse_ahora": false,
+        "bloqueada_por": "N-01.1: la ruta se pinta con los colores oficiales, asi que necesita el token de color ya migrado."
+      },
+      "falso_verde": "El grep puede dar 'dos tratamientos' porque alguien renombro las clases sin unificar el criterio de cuando usar cada una — revisar tambien que ninguna composicion tenga los dos a la vez (G-1), no solo contar clases distintas.",
+      "depende_de": [
+        { "id": "N-01.1", "tipo": "artefacto" },
+        { "id": "N-02.2", "tipo": "conocimiento" }
+      ],
+      "artefactos": ["app/globals.css (utilidad de ruta)", "seccion de ruta en /design-system"],
+      "toca": ["app/globals.css", "app/[locale]/**"],
+      "fuente": "fase-4 §3",
+      "esfuerzo": "M"
+    },
+    {
+      "id": "N-04.2",
+      "titulo": "Racionalizacion de iconos: un concepto, un icono",
+      "objetivo": "Cada concepto (verificado, respaldo, conversacion) tiene un maximo de dos iconos con criterio escrito; Compass se retira; la tabla concepto->icono vive en /design-system.",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "grep de imports de @phosphor-icons/react sobre los 9 archivos con iconos",
+        "salida_esperada": "Check/CheckCircle/SealCheck/ShieldCheck reducidos a maximo 2; ChatText/ChatCircleText/ChatCircleDots reducidos a 1; cero imports de Compass",
+        "puede_correrse_ahora": false,
+        "bloqueada_por": "N-04.0: los archivos con iconos de offers/destinations ya tienen que estar en su ubicacion nueva para editarlos ahi."
+      },
+      "falso_verde": "El grep puede dar 'Compass retirado' porque se borro el import pero el JSX todavia referencia el componente sin importar (rompe el build, asi que en la practica no pasa desapercibido) — mas sutil: dos iconos de 'verificado' pueden coexistir legitimamente segun G-4.2 (incluido vs respaldo institucional), asi que un grep que exija exactamente 1 dará falso rojo; el check tiene que permitir 2 con criterio escrito, no forzar 1.",
+      "depende_de": [{ "id": "N-04.0", "tipo": "artefacto" }],
+      "artefactos": ["tabla concepto->icono en /design-system"],
+      "toca": ["src/modules/destinations/presentation/components/**", "src/modules/offers/presentation/components/**", "app/[locale]/(sitio)/page.tsx", "app/[locale]/(sitio)/design-system/page.tsx"],
+      "fuente": "fase-4 §4",
+      "esfuerzo": "M"
+    },
+    {
+      "id": "N-04.3",
+      "titulo": "Radios normalizados a los tres del sistema",
+      "objetivo": "El unico rounded-xl suelto se normaliza a sm/md/lg/full; ningun otro radio fuera de esos cuatro valores.",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "grep -rn \"rounded-\" sobre app/ components/ src/",
+        "salida_esperada": "solo rounded-sm, rounded-md, rounded-lg, rounded-full",
+        "puede_correrse_ahora": true
+      },
+      "falso_verde": "El grep puede dar cero 'rounded-xl' porque se reemplazo por un valor arbitrario en Tailwind (rounded-[14px]) que tampoco es de los cuatro declarados — el patron tiene que capturar tambien los valores arbitrarios, no solo el nombre de la clase que se sabia que sobraba.",
+      "depende_de": [],
+      "artefactos": ["diff de clases rounded- normalizadas (sin archivo nuevo propio)"],
+      "toca": ["app/**", "components/**", "src/**"],
+      "fuente": "fase-4 §5, G-9",
+      "esfuerzo": "S"
+    },
+    {
+      "id": "N-04.4",
+      "titulo": "Recorrido de composicion: foco, ruta y accion por seccion",
+      "objetivo": "Cada una de las 18 rutas tiene un foco, una ruta visual dominante y como mucho una accion (G-6, G-1).",
+      "verificacion": {
+        "tipo": "escenario",
+        "como": "Recorrer las 18 rutas anotando foco/ruta/accion en una tabla",
+        "salida_esperada": "tabla completa en el PR, ninguna fila con dos focos o dos rutas compitiendo",
+        "puede_correrse_ahora": false,
+        "bloqueada_por": "N-04.1, N-04.2, N-04.3: la auditoria tiene que hacerse sobre el estado final de ruta, iconos y radios, no sobre el estado a medio corregir."
+      },
+      "falso_verde": "Una seccion puede 'anotarse' con un solo foco en la tabla aunque tenga dos CTAs visualmente compitiendo, si quien audita solo mira el titular y no cuenta los botones — contar CTAs de verdad, no inferir el foco por el titular.",
+      "depende_de": [
+        { "id": "N-04.1", "tipo": "artefacto" },
+        { "id": "N-04.2", "tipo": "artefacto" },
+        { "id": "N-04.3", "tipo": "artefacto" }
+      ],
+      "artefactos": ["tabla de composicion en el cuerpo del PR"],
+      "toca": ["evidencia en el cuerpo del PR de Fase 4 (sin archivo de codigo propio)"],
+      "fuente": "fase-4 §6, criterio G-H",
+      "esfuerzo": "M"
+    },
+    {
+      "id": "N-05.1",
+      "titulo": "Inventario, veredicto, recortes y alt de las 22 imagenes",
+      "objetivo": "Cada una de las 22 imagenes de public/destinos/ tiene un veredicto escrito (se queda / se re-encuadra / se reemplaza); las que se re-encuadran estan recortadas segun fase-5 §4; ningun alt describe algo que no esta en la foto.",
+      "verificacion": {
+        "tipo": "escenario",
+        "como": "Revision imagen por imagen contra los seis criterios, con el titular puesto, en movil primero",
+        "salida_esperada": "inventario de 22 filas con veredicto en el PR; cero alt que describan personas/momentos ausentes de la foto",
+        "puede_correrse_ahora": true
+      },
+      "falso_verde": "El alt puede 'corregirse' quitando la mencion a personas que no estan, pero seguir siendo generico ('Foto de un paisaje') sin describir lo que si hay — eso pasa F-2 (no describe algo ausente) pero no cumple el espiritu de que el alt sea informativo. F-2 tal como esta escrito no lo atrapa: anotar como limite del criterio.",
+      "depende_de": [],
+      "artefactos": ["inventario de 22 imagenes con veredicto", "public/destinos/** (recortadas)", "messages/es.json y en.json (alt corregidos)"],
+      "toca": ["public/destinos/**", "messages/es.json", "messages/en.json"],
+      "fuente": "fase-5 §1, §5, entregable 1-2",
+      "esfuerzo": "L"
+    },
+    {
+      "id": "N-05.2",
+      "titulo": "README de fotos provisionales y lista priorizada de reemplazo",
+      "objetivo": "public/destinos/README declara que fotos quedan provisionales (D-D) y la lista priorizada de reemplazo pedida al cliente, empezando por el hero de la home.",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "cat public/destinos/README",
+        "salida_esperada": "lista de fotos provisionales con su prioridad de reemplazo, coincidente con el inventario de N-05.1",
+        "puede_correrse_ahora": false,
+        "bloqueada_por": "N-05.1: no hay veredicto que priorizar sin el inventario."
+      },
+      "falso_verde": "El README puede existir con una lista generica de 'fotos por mejorar' que no coincide 1 a 1 con las marcadas 'se reemplaza' en N-05.1 — cruzar ambos documentos, no asumir que se escribieron a la vez de forma consistente.",
+      "depende_de": [{ "id": "N-05.1", "tipo": "artefacto" }],
+      "artefactos": ["public/destinos/README"],
+      "toca": ["public/destinos/README"],
+      "fuente": "fase-5 §5, criterio F-4",
+      "esfuerzo": "S"
+    },
+    {
+      "id": "N-05.3",
+      "titulo": "Ayuda de direccion fotografica en el punto de carga del panel",
+      "objetivo": "Las dos pantallas de carga de fotos del panel (ofertas y destinos) muestran que se pide, que se rechaza y que ratio se va a usar, junto al campo de carga.",
+      "verificacion": {
+        "tipo": "escenario",
+        "como": "Recorrido de las dos pantallas de carga en el panel",
+        "salida_esperada": "ayuda visible junto al campo, en la voz de la marca, explicando el porque en una linea",
+        "puede_correrse_ahora": false,
+        "bloqueada_por": "N-01.0b: las pantallas de carga viven hoy en app/admin/** y, si N-01.0b ya corrio, en src/modules/{offers,destinations}/presentation/admin/."
+      },
+      "falso_verde": "La ayuda puede estar presente pero redactada como regla burocratica ('Las fotos deben cumplir los criterios de marca') en vez de explicar el porque en una linea — eso tecnicamente 'muestra que se pide' pero no en el tono que pide la fase (voz, Fase 3): revisar el tono, no solo la presencia del texto.",
+      "depende_de": [{ "id": "N-01.0b", "tipo": "artefacto" }],
+      "artefactos": ["ayuda de carga en src/modules/offers/presentation/admin/** y src/modules/destinations/presentation/admin/**"],
+      "toca": ["src/modules/offers/presentation/admin/**", "src/modules/destinations/presentation/admin/**"],
+      "fuente": "fase-5 §6, criterio F-5",
+      "esfuerzo": "M"
+    },
+    {
+      "id": "N-05.4",
+      "titulo": "Seccion de fotografia en /design-system",
+      "objetivo": "/design-system publica los seis criterios, los ratios por uso y ejemplos de si/no de fotografia.",
+      "verificacion": {
+        "tipo": "escenario",
+        "como": "Abrir /design-system",
+        "salida_esperada": "seccion de fotografia visible con los seis criterios, los ratios de §4 y ejemplos",
+        "puede_correrse_ahora": false,
+        "bloqueada_por": "N-05.1: los ejemplos de si/no necesitan imagenes reales ya evaluadas."
+      },
+      "depende_de": [{ "id": "N-05.1", "tipo": "artefacto" }],
+      "falso_verde": "La seccion puede publicar los criterios en texto sin ningun ejemplo real de la propia auditoria — eso cumple 'los criterios' pero no 'los ejemplos de si/no' que pide F-6 literalmente.",
+      "artefactos": ["seccion de fotografia en /design-system"],
+      "toca": ["app/[locale]/(sitio)/design-system/page.tsx"],
+      "fuente": "fase-5 §7, criterio F-6",
+      "esfuerzo": "S"
+    },
+    {
+      "id": "N-05.V",
+      "titulo": "Medicion de peso y LCP antes/despues de fotografia",
+      "objetivo": "El peso total de public/destinos/ no sube y el LCP movil del home no empeora tras los recortes.",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "Lighthouse movil antes y despues + du -sh public/destinos/",
+        "salida_esperada": "LCP igual o mejor; peso total igual o menor",
+        "puede_correrse_ahora": false,
+        "bloqueada_por": "N-05.1: necesita las imagenes ya recortadas/reemplazadas."
+      },
+      "falso_verde": "Lighthouse puede dar buen LCP en un entorno de laboratorio con cache tibia — correrlo con throttling movil real y cache fria, que es la condicion que de verdad importa para el 83% de trafico movil que cita la propia fase.",
+      "depende_de": [{ "id": "N-05.1", "tipo": "artefacto" }],
+      "artefactos": ["tabla de Lighthouse antes/despues en el PR"],
+      "toca": ["evidencia en el cuerpo del PR de Fase 5 (sin archivo de codigo propio)"],
+      "fuente": "fase-5 §7-8, criterio F-7",
+      "esfuerzo": "S"
+    },
+    {
+      "id": "N-06.1",
+      "titulo": "Manrope en los dos layouts + tres correcciones independientes",
+      "objetivo": "app/[locale]/layout.tsx y app/admin/layout.tsx cargan solo Manrope (400/500/600/700/800); Caveat se retira por completo (carga, --font-accent, fallback); el panel no descarga pesos sin usar; las variables de next/font del panel no colisionan con los tokens del sistema; la cadena de respaldo es Manrope, Arial, Helvetica, sans-serif.",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "Inspeccionar el CSS servido (no el JSX): contar @font-face generados y el valor real de --font-display",
+        "salida_esperada": "solo @font-face de Manrope, cero referencias a Caveat/font-accent, --font-display resuelve a Manrope en los dos layouts",
+        "puede_correrse_ahora": true
+      },
+      "falso_verde": "El JSX puede declarar solo Manrope y el CSS servido seguir mostrando Montserrat si una regla de cascada como la que ya existia (Tailwind v4 @layer theme vs next/font sin capa) vuelve a imponerse — verificar el CSS que sirve el navegador, nunca el codigo fuente, tal como ya establecio §1.2 del propio spec.",
+      "prueba_por_mutacion": "Dejar una sola referencia a Caveat en un comentario de CSS con la clase real todavia aplicada y confirmar que R-10 de check-marca (N-07.1) la detecta.",
+      "depende_de": [],
+      "artefactos": ["app/[locale]/layout.tsx", "app/admin/layout.tsx", "app/globals.css (tokens de fuente)"],
+      "toca": ["app/[locale]/layout.tsx", "app/admin/layout.tsx", "app/globals.css"],
+      "fuente": "fase-6 §2, §3.1",
+      "esfuerzo": "M"
+    },
+    {
+      "id": "N-06.2",
+      "titulo": "Documentacion de tipografia: /design-system y sistema-de-identidad.md",
+      "objetivo": "/design-system muestra la familia real, sus pesos y la cadena de respaldo; sistema-de-identidad.md §5.2 y §5.3 confirman que la contradiccion Manrope-vs-Montserrat+Lato+Caveat ya no esta abierta.",
+      "verificacion": {
+        "tipo": "escenario",
+        "como": "Abrir /design-system y sistema-de-identidad.md §5.2-5.3",
+        "salida_esperada": "los dos documentos reflejan Manrope como la familia real del codigo",
+        "puede_correrse_ahora": false,
+        "bloqueada_por": "N-06.1: no hay familia real que documentar hasta que el cambio de codigo exista."
+      },
+      "depende_de": [{ "id": "N-06.1", "tipo": "artefacto" }],
+      "falso_verde": "sistema-de-identidad.md puede decir 'decidido: Manrope' sin que ese texto cambie realmente — ya lo decia antes de esta fase, porque la decision D-A ya estaba tomada. Lo que hay que verificar es que el documento ahora dice que el CODIGO cumple, no solo que la decision existe.",
+      "artefactos": ["/design-system (seccion de tipografia)", "docs/brand/sistema-de-identidad.md §5.2-5.3"],
+      "toca": ["app/[locale]/(sitio)/design-system/page.tsx", "docs/brand/sistema-de-identidad.md"],
+      "fuente": "fase-6 §7, entregable 3-4",
+      "esfuerzo": "S"
+    },
+    {
+      "id": "N-06.V",
+      "titulo": "Medicion de peso de fuentes y LCP para tipografia",
+      "objetivo": "El peso de fuentes no sube respecto a los 352KB actuales; el LCP movil no empeora; el titular del hero sigue en 2 lineas maximo a 375px y ningun boton desborda.",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "Comparacion del build (peso de .woff2) + Lighthouse movil antes/despues + medicion visual a 375px",
+        "salida_esperada": "peso igual o menor, LCP igual o mejor, hero en 2 lineas, ningun boton desbordado",
+        "puede_correrse_ahora": false,
+        "bloqueada_por": "N-06.1: necesita el cambio de familia ya hecho para medir su peso real."
+      },
+      "depende_de": [{ "id": "N-06.1", "tipo": "artefacto" }],
+      "falso_verde": "El hero puede 'caber en 2 lineas' con el copy de prueba corto usado durante desarrollo y desbordar con el copy real de produccion, que suele ser mas largo — medir con el copy definitivo, no con texto de relleno.",
+      "artefactos": ["tabla de peso/LCP antes-despues en el PR"],
+      "toca": ["evidencia en el cuerpo del PR de Fase 6 (sin archivo de codigo propio)"],
+      "fuente": "fase-6 §4-5, T-6/T-8/T-9",
+      "esfuerzo": "S"
+    },
+    {
+      "id": "N-07.1",
+      "titulo": "scripts/check-marca.mjs completo: reglas R-6 a R-10",
+      "objetivo": "El script extendido detecta text-white conviviendo con bg-brand-orange/turquoise, referencias a logo-broway, rounded- fuera de sm/md/lg/full, iconos fuera de phosphor con weight!=regular, y familias tipograficas no declaradas por la marca — y no da falsos positivos sobre el repo real al terminar las fases 1-6.",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "pnpm check:marca, mas la introduccion deliberada de cada uno de los 10 defectos (uno a la vez) para confirmar que cada regla falla con mensaje util",
+        "salida_esperada": "0 violaciones en el repo limpio; 10/10 defectos introducidos detectados con archivo y linea",
+        "puede_correrse_ahora": false,
+        "bloqueada_por": "H-4 (cero falsos positivos sobre el repo real) necesita que las fases 1, 2, 4 y 6 ya esten mergeadas — pero las 10 reglas en si se pueden escribir y probar con fixtures sinteticos desde el dia 1."
+      },
+      "falso_verde": "El script puede pasar en verde simplemente porque ninguna de las fases 1-6 introdujo el defecto que cada regla busca — eso prueba que el repo esta limpio, no que la regla funciona. Solo la prueba por mutacion (introducir el defecto a proposito) prueba que la regla detecta algo.",
+      "prueba_por_mutacion": "Por cada una de las 10 reglas: introducir el defecto exacto que describe, confirmar que pnpm check:marca falla con un mensaje que dice que hacer, revertir. Es el propio metodo que pide fase-7 §8.1.",
+      "depende_de": [
+        { "id": "N-03.5", "tipo": "artefacto" },
+        { "id": "N-01.1", "tipo": "verificacion" },
+        { "id": "N-02.1", "tipo": "verificacion" },
+        { "id": "N-04.2", "tipo": "verificacion" },
+        { "id": "N-04.3", "tipo": "verificacion" },
+        { "id": "N-06.1", "tipo": "verificacion" }
+      ],
+      "artefactos": ["scripts/check-marca.mjs (completo, 10 reglas)"],
+      "toca": ["scripts/check-marca.mjs"],
+      "fuente": "fase-7 §3, §3.bis, §8",
+      "esfuerzo": "M"
+    },
+    {
+      "id": "N-07.2",
+      "titulo": "Bloque E del Pre-Flight en brief-v0.md §11",
+      "objetivo": "El Pre-Flight de brief-v0.md §11 gana el bloque E (color, firma, social, grafico, fotografia, voz) y la casilla de proceso sobre si una pieza cambia identidad y requiere aprobacion.",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "Abrir docs/design/brief-v0.md §11 y confirmar el bloque E",
+        "salida_esperada": "bloque E presente con sus seis grupos y la casilla de proceso",
+        "puede_correrse_ahora": true
+      },
+      "falso_verde": "El bloque puede agregarse con 40 casillas sueltas en vez de los seis grupos que resume §5 de fase-7 — el propio riesgo que la fase anota ('el Pre-Flight crece hasta que nadie lo lee') se materializaria si se copian todos los criterios en vez de resumirlos.",
+      "depende_de": [],
+      "artefactos": ["docs/design/brief-v0.md §11, bloque E"],
+      "toca": ["docs/design/brief-v0.md"],
+      "fuente": "fase-7 §5, criterio H-5",
+      "esfuerzo": "S"
+    },
+    {
+      "id": "N-07.3",
+      "titulo": "aprobaciones.md: columna 'Aplicada en' completa",
+      "objetivo": "Cada una de las siete decisiones (D-A a D-G) tiene su columna 'Aplicada en' rellena con el PR real que la ejecuto, no con el nombre generico del spec.",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "Leer docs/brand/aprobaciones.md y cruzar cada fila contra el PR que la cerro",
+        "salida_esperada": "las siete filas apuntan a un numero de PR real, no a 'Fase N' generico",
+        "puede_correrse_ahora": false,
+        "bloqueada_por": "Necesita que N-01.1 (D-E), N-02.1/N-02.2 (D-C, D-F), N-03.1 (D-G), N-05.1/N-05.2 (D-D) y N-06.1 (D-A, D-B) ya esten mergeados como PRs reales."
+      },
+      "falso_verde": "La columna puede 'llenarse' con el nombre del spec (ej. 'Fase 1') en vez del numero de PR real — eso ya era el estado antes de esta fase (fase-7 la encontro asi) y no cumple H-6 tal como esta escrito: tiene que ser el PR, no el spec.",
+      "depende_de": [
+        { "id": "N-01.1", "tipo": "artefacto" },
+        { "id": "N-02.1", "tipo": "artefacto" },
+        { "id": "N-02.2", "tipo": "artefacto" },
+        { "id": "N-03.1", "tipo": "artefacto" },
+        { "id": "N-05.1", "tipo": "artefacto" },
+        { "id": "N-05.2", "tipo": "artefacto" },
+        { "id": "N-06.1", "tipo": "artefacto" }
+      ],
+      "artefactos": ["docs/brand/aprobaciones.md (columna 'Aplicada en' completa)"],
+      "toca": ["docs/brand/aprobaciones.md"],
+      "fuente": "fase-7 §6, criterio H-6",
+      "esfuerzo": "S",
+      "nota": "Este es el nodo de integracion del bolson de abanico: converge sobre casi todas las ramas de marca solo para el registro, no para construir nada nuevo."
+    },
+    {
+      "id": "N-07.4",
+      "titulo": "sistema-de-identidad.md §7 enlaza el registro y el guardian",
+      "objetivo": "sistema-de-identidad.md §7 enlaza aprobaciones.md y scripts/check-marca.mjs como el mecanismo de gobierno vigente.",
+      "verificacion": {
+        "tipo": "comando",
+        "como": "Leer sistema-de-identidad.md §7",
+        "salida_esperada": "enlaces a aprobaciones.md y a check-marca.mjs presentes",
+        "puede_correrse_ahora": false,
+        "bloqueada_por": "N-07.1: no hay guardian completo que enlazar hasta que el script este terminado."
+      },
+      "depende_de": [{ "id": "N-07.1", "tipo": "artefacto" }],
+      "falso_verde": "El enlace puede apuntar al archivo por nombre sin explicar que reglas cubre — cumple 'enlaza' en sentido literal pero no informa a quien lo lea que R-1..R-10 existen y que hacen.",
+      "artefactos": ["docs/brand/sistema-de-identidad.md §7"],
+      "toca": ["docs/brand/sistema-de-identidad.md"],
+      "fuente": "fase-7 §6, criterio H-7",
+      "esfuerzo": "S"
+    }
+  ],
+  "colisiones": [
+    {
+      "nodos": ["N-01.0b", "N-03.2"],
+      "superficie": "app/admin/** (JSX del panel) o src/modules/*/presentation/admin/** y src/platform/admin/**",
+      "concurrentes": true,
+      "mitigacion": "Unica colision real dentro de la ventana de paralelismo que intent.md si autoriza ({Fase 2, Fase 3} juntas). Si Fase 3 corre en paralelo a Fase 1 (el orden recomendado los pone secuenciales, pero nada lo impone), N-01.0b mueve/extrae los archivos mientras N-03.2 edita su texto en el mismo momento. Mitigacion: serializar N-01.0b antes que N-03.2 siempre, incluso si el resto de Fase 3 (N-03.0, N-03.1, N-03.4) arranca antes que Fase 1. Ya declarado en fase-3 §1.bis en prosa; este grafo lo vuelve dependencia explicita (N-03.2 depende de N-01.0b, no de 'la Fase 1 en general') — ver hallazgo H-5."
+    },
+    {
+      "nodos": ["N-03.1", "N-03.3", "N-03.4", "N-05.1"],
+      "superficie": "messages/es.json y messages/en.json",
+      "concurrentes": true,
+      "mitigacion": "N-03.1, N-03.4 y N-05.1 arrancan los tres el dia 1 segun este grafo y los tres escriben el mismo par de archivos JSON (aunque en claves distintas: CTAs/D-G, marcadores de ingles, y alt de fotos respectivamente). Un merge de git resuelve solo si las claves no se solapan linea a linea, pero conviene coordinar el orden de merge para no generar conflictos de formato (comas, orden de claves). N-03.3 ya depende de N-03.1 (artefacto) asi que no colisiona con el, pero si con N-03.4/N-05.1 si corren a la vez. Mitigacion: mergear N-03.1 primero (bloquea a N-03.3 igual), despues N-03.4 y N-05.1 pueden ir en cualquier orden entre si — sus claves no se tocan (CTAs/nav vs. marcadores de idioma vs. alt de fotos)."
+    },
+    {
+      "nodos": ["N-01.1", "N-04.1", "N-06.1"],
+      "superficie": "app/globals.css",
+      "concurrentes": false,
+      "mitigacion": "intent.md §6 ya identifica esta colision para el par Fase1/Fase6 ('toca los mismos archivos que la paleta') y por eso sube la Fase 6 al tercer puesto — pero no menciona que Fase 4 (N-04.1, la ruta de marca) TAMBIEN escribe globals.css. Mitigacion: mantener el orden secuencial 1 -> 6 -> 4 que intent.md ya recomienda; no adelantar N-04.1 respecto a N-06.1 aunque en el grafo no haya una dependencia de artefacto directa entre ambos."
+    },
+    {
+      "nodos": ["N-01.1", "N-03.4", "N-04.1", "N-04.2", "N-05.4", "N-06.2"],
+      "superficie": "app/[locale]/(sitio)/design-system/page.tsx",
+      "concurrentes": false,
+      "mitigacion": "El orden recomendado de intent.md §6 (Fase 1 -> {2,3} en paralelo -> 6 -> 4 -> 5 -> 7) evita que estos seis nodos escriban design-system/page.tsx al mismo tiempo, PERO el propio intent.md nunca dice que esa es la razon — solo justifica el orden por 'compartir archivos con la paleta' entre Fase 1 y 6. Es el hallazgo H-2: si alguna vez se paraleliza mas alla de {Fase 2, Fase 3}, este archivo es el primero que va a chocar. Mitigacion declarada: ningun par de {N-01.1, N-04.1, N-04.2, N-05.4, N-06.2} corre en paralelo; N-03.4 (el unico que por dia-1 podria coincidir con N-01.1) se serializa despues de N-01.1 explicitamente aunque el resto de Fase 3 no espere."
+    },
+    {
+      "nodos": ["N-02.4", "N-04.1", "N-06.1"],
+      "superficie": "app/[locale]/layout.tsx",
+      "concurrentes": false,
+      "mitigacion": "N-02.4 ya depende de N-01.1 (artefacto), y N-04.1/N-06.1 tambien — el orden secuencial de fases evita que los tres se toquen a la vez. Sin dependencia estructural directa entre ellos, la unica proteccion real es seguir el orden de intent.md §6."
+    },
+    {
+      "nodos": ["N-02.2", "N-02.5", "N-04.1"],
+      "superficie": "app/[locale]/lp/[campana]/{layout,page}.tsx",
+      "concurrentes": false,
+      "mitigacion": "N-04.1 (vocabulario de linea en las 18 rutas) toca tambien la landing de campana que N-02.2/N-02.5 ya establecieron. Secuencial por el orden de fases; si se paraleliza, N-04.1 espera a que Fase 2 cierre esta pagina."
+    },
+    {
+      "nodos": ["N-02.1", "N-02.3", "N-04.3"],
+      "superficie": "app/favicon.ico, app/icon.png, app/apple-icon.png",
+      "concurrentes": false,
+      "mitigacion": "N-04.3 (normalizar rounded-) no tiene motivo real para tocar archivos de imagen — su 'toca' amplio (app/**) es un falso positivo del propio grafo: se declara aqui para que quede escrito, pero no requiere mitigacion mas alla de acotar el patron de busqueda de N-04.3 a *.tsx/*.css cuando se ejecute, no a app/** literal."
+    },
+    {
+      "nodos": ["N-06.2", "N-07.4"],
+      "superficie": "docs/brand/sistema-de-identidad.md",
+      "concurrentes": false,
+      "mitigacion": "N-07.4 ya depende de N-07.1 (artefacto), que a su vez depende via verificacion de N-06.1 — en la practica Fase 6 cierra mucho antes que Fase 7. Sin accion adicional."
+    },
+    {
+      "nodos": ["N-04.3", "*casi todos los demas nodos*"],
+      "superficie": "app/**, components/**, src/** (declarado literalmente asi en N-04.3.toca)",
+      "concurrentes": false,
+      "mitigacion": "El validador (python3 scripts/validar_grafo.py) marca ~35 pares adicionales como colision no declarada, casi todos porque N-04.3 (normalizar rounded-) declara su superficie como app/**, components/** y src/** completos — es un search-and-replace mecanico que en efecto toca cualquier archivo con una clase Tailwind, asi que el patron amplio es honesto, no un error de tipeo. Mitigacion real, no per-par: (1) N-04.3 corre al final de Fase 4, despues de N-04.0/04.1/04.2, nunca en paralelo a otra fase; (2) al ejecutarlo, el grep/reemplazo se acota a *.tsx/*.css, no a los tres directorios completos, para no tocar imagenes ni JSON por accidente. El resto de los pares que el validador senala (ej. N-01.0a vs N-04.0/04.2 compartiendo src/modules/offers/presentation/components/**) son dos nodos poblando la MISMA carpeta con archivos DISTINTOS — el detector de colisiones no distingue eso de una colision real de archivo porque ambos declaran el directorio con '**' en vez de listar el archivo exacto; se anota como limite conocido de esta version del grafo, no como riesgo real."
+    }
+  ],
+  "bloqueos_externos": [
+    {
+      "id": "EXT-1",
+      "que": "Cache del scraper de link-preview de WhatsApp",
+      "bloquea": ["N-02.V"],
+      "dueno": "tercero (WhatsApp/Meta)",
+      "arrancar": "en cuanto N-02.2/02.3/02.4/02.5 esten mergeados",
+      "nota": "No es una espera larga como una aprobacion humana, pero un reintento con la misma URL da falso negativo. Se evita con un parametro de cache-busting en la URL de prueba, no esperando."
+    },
+    {
+      "id": "EXT-2",
+      "que": "SVG maestro, version vertical y monocromatica blanca de la firma",
+      "bloquea": ["firma en el pie de pagina y en el panel — fuera de alcance de N-02.x por decision D-C"],
+      "dueno": "cliente",
+      "arrancar": "ya pedido; no bloquea ningun nodo de este grafo porque D-C ya decidio ejecutar sin esperarlo",
+      "nota": "Declarado aqui para que quede visible, aunque no bloquea el grafo: si llega a mitad de ejecucion, agrega un nodo nuevo (firma en pie/panel), no reabre N-02.1."
+    },
+    {
+      "id": "EXT-3",
+      "que": "Fotografia propia del cliente",
+      "bloquea": ["reemplazo real de las fotos marcadas 'se reemplaza' en N-05.1 — fuera de alcance por decision D-D"],
+      "dueno": "cliente",
+      "arrancar": "lista priorizada ya sale de N-05.2",
+      "nota": "Igual que EXT-2: no bloquea el grafo actual, D-D ya decidio ejecutar sin ella."
+    }
+  ],
+  "hallazgos": [
+    {
+      "id": "H-1",
+      "donde": "fase-1 §1.4, §5, criterio A-1 · CURRENT.md linea 18 · CLAUDE.md linea 105",
+      "que": "El criterio A-1 y la lista blanca de R-1 (check-marca) solo exceptuan history/ y docs/brand/**. Pero CURRENT.md y CLAUDE.md YA mencionan hoy los tres hex antiguos de forma legitima (avisando del defecto, igual que docs/brand/**) y no estan en ninguna lista blanca ni en la tabla de fase-1 §5 'Cambios por archivo' (que solo lista CLAUDE.md y docs/README.md para editar, pero no CURRENT.md). Verificado por grep directo sobre el repo real: los tres archivos contienen el texto hoy.",
+      "efecto": "Si N-01.1 no retira tambien el aviso de CURRENT.md, o si N-01.2 no agrega estos tres archivos a su lista blanca, el check:marca de la propia Fase 1 fallaria sobre su propio PR en cuanto se escriba, aunque el aviso sea correcto.",
+      "estado": "resuelto-en-el-grafo",
+      "nodo": "N-01.1"
+    },
+    {
+      "id": "H-2",
+      "donde": "intent.md §6 · design-system/page.tsx tocado por 6 nodos distintos (N-01.1, N-03.4, N-04.1, N-04.2, N-05.4, N-06.2)",
+      "que": "intent.md justifica el orden Fase1->Fase6 solo por compartir globals.css/layouts, pero nunca menciona que /design-system/page.tsx es escrito por CASI TODAS las fases de contenido (1, 3, 4, 5, 6). El orden recomendado evita la colision de facto, pero no la declara como razon.",
+      "efecto": "Un ejecutor que paralelice mas agresivamente que 'Fase 2 y 3 juntas' (la unica paralelizacion que intent.md autoriza) choca en este archivo sin que ningun documento se lo advierta de antemano.",
+      "estado": "resuelto-en-el-grafo",
+      "nodo": null
+    },
+    {
+      "id": "H-3",
+      "donde": "fase-1 §8, criterio A-1: 'Doce archivos los contienen hoy'",
+      "que": "Medido en el repo real (2026-09-16), el numero de archivos con los tres hex antiguos fuera de history/ y docs/brand/** es 9 (design-system/page.tsx, admin/layout.tsx, globals.css, CLAUDE.md, CURRENT.md, spec-tecnica.md, brief-v0-producto.md, brief-v0.md, docs/README.md), no 12. La cifra pudo cambiar entre el 2026-09-11 (fecha del spec) y hoy, o contarse con un criterio distinto.",
+      "efecto": "Bajo impacto por si solo (no cambia el criterio de aceptacion, que es 'cero fuera de la lista blanca', no un numero exacto), pero es la clase de numero-fosilizado que el propio Fase 7 §1 identifica como el patron de desviacion de este proyecto ('el comentario decia lo correcto; el numero, no'). Se anota para que quien ejecute Fase 1 no se sorprenda si el grep da un numero distinto de 12.",
+      "estado": "anotado-sin-resolver",
+      "nodo": "N-01.1"
+    },
+    {
+      "id": "H-4",
+      "donde": "fase-4 §4.2 (G-D) vs. criterio de check-marca R-9",
+      "que": "Fase 4 permite legitimamente que un concepto (verificado/respaldo) tenga hasta DOS iconos distintos si la distincion es real (§4.2: 'Dos como maximo, con criterio escrito'). Pero R-9 de fase-7 ('un concepto, un icono') y G-D ('cada concepto tiene un icono') estan escritos en singular estricto en los criterios de aceptacion, sin la excepcion de los dos.",
+      "efecto": "Si N-07.1 escribe la regla R-9 en su forma literal (un unico icono por concepto), va a marcar como violacion el caso 'incluido' vs 'respaldo institucional' que Fase 4 explicitamente autorizo — un falso positivo del propio guardian contra su propia fase de origen.",
+      "estado": "anotado-sin-resolver",
+      "nodo": "N-07.1"
+    },
+    {
+      "id": "H-5",
+      "donde": "fase-3 §1.bis vs. fase-1 §1.bis",
+      "que": "Trabajo huerfano potencial: fase-3 §1.bis dice 'si esta fase se ejecuta antes que la 1... direccion de marca revisa que la ubicacion no cambio el texto en el PR de migracion de la Fase 1' — pero ninguna spec asigna esa revision a un entregable o criterio de aceptacion concreto. Es una responsabilidad mencionada en prosa sin nodo que la sostenga.",
+      "efecto": "Sin un nodo o criterio explicito, esta revision se pierde si N-01.0b y N-03.2 corren en paralelo por error (ver colision declarada arriba).",
+      "estado": "resuelto-en-el-grafo",
+      "nodo": "N-03.2"
+    }
+  ]
+}
