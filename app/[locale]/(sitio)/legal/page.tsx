@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 
-import { Section } from "@/components/ui/section";
+import { Section } from "@/src/shared/ui/section";
 import { POLICY_VERSION } from "@/lib/consent";
 import { CONTACT, RNT_NUMBER } from "@/lib/config";
 

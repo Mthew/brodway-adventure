@@ -1,6 +1,6 @@
 import { getFormatter, getTranslations } from "next-intl/server";
 
-import { ButtonLink } from "@/components/ui/button";
+import { ButtonLink } from "@/src/shared/ui/button";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
 import { buildWhatsAppUrl } from "@/lib/config";
 import type { Offer } from "@/lib/types/offer";

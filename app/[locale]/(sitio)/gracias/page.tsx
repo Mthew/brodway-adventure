@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ChatCircleDots, CheckCircle } from "@phosphor-icons/react/dist/ssr";
 
-import { ButtonLink } from "@/components/ui/button";
-import { Section } from "@/components/ui/section";
+import { ButtonLink } from "@/src/shared/ui/button";
+import { Section } from "@/src/shared/ui/section";
 import { TrackLead } from "@/components/forms/track-lead";
 import { Link } from "@/lib/i18n/navigation";
 import { buildWhatsAppUrl } from "@/lib/config";

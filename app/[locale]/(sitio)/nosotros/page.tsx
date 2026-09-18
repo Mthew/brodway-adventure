@@ -3,8 +3,8 @@ import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { SealCheck } from "@phosphor-icons/react/dist/ssr";
 
-import { ButtonLink } from "@/components/ui/button";
-import { Section } from "@/components/ui/section";
+import { ButtonLink } from "@/src/shared/ui/button";
+import { Section } from "@/src/shared/ui/section";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
 import {
   AFILIACIONES,

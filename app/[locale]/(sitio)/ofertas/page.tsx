@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
-import { ButtonLink } from "@/components/ui/button";
+import { ButtonLink } from "@/src/shared/ui/button";
 import { PackageCard } from "@/components/ui/card";
 import { FiltroCategoria } from "@/components/ui/filtro-categoria";
-import { Section } from "@/components/ui/section";
+import { Section } from "@/src/shared/ui/section";
 import { buildWhatsAppUrl } from "@/lib/config";
 import { getCategoriasPorSlug } from "@/lib/destinations";
 import { listOffersByCollection } from "@/lib/offers";

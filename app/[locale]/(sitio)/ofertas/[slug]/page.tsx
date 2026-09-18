@@ -4,15 +4,15 @@ import { getFormatter, getTranslations, setRequestLocale } from "next-intl/serve
 import { Check, X } from "@phosphor-icons/react/dist/ssr";
 
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
-import { ButtonLink } from "@/components/ui/button";
+import { Badge } from "@/src/shared/ui/badge";
+import { ButtonLink } from "@/src/shared/ui/button";
 import { PackageCard } from "@/components/ui/card";
 import { PriceDisclosure } from "@/components/ui/price-disclosure";
-import { Section } from "@/components/ui/section";
+import { Section } from "@/src/shared/ui/section";
 import { LeadForm } from "@/components/forms/lead-form";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
 import { Galeria } from "@/components/oferta/galeria";
-import { StickyCta } from "@/components/oferta/sticky-cta";
+import { StickyCta } from "@/src/modules/offers/presentation/components/sticky-cta";
 import { TarifaVencida } from "@/components/oferta/tarifa-vencida";
 import { buildWhatsAppUrl, RNT_NUMBER, SITE_URL } from "@/lib/config";
 import { Link } from "@/lib/i18n/navigation";

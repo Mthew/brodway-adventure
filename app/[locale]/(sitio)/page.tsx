@@ -14,11 +14,11 @@ import {
   UsersThree,
 } from "@phosphor-icons/react/dist/ssr";
 
-import { Badge } from "@/components/ui/badge";
-import { ButtonLink } from "@/components/ui/button";
+import { Badge } from "@/src/shared/ui/badge";
+import { ButtonLink } from "@/src/shared/ui/button";
 import { Card, DestinationCard, HotelCard, PackageCard } from "@/components/ui/card";
 import { Hero } from "@/components/ui/hero";
-import { Section } from "@/components/ui/section";
+import { Section } from "@/src/shared/ui/section";
 import { LeadForm } from "@/components/forms/lead-form";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
 import { buildWhatsAppUrl, CONTACT, RNT_NUMBER, SITE_URL } from "@/lib/config";

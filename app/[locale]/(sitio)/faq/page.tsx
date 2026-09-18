@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
-import { ButtonLink } from "@/components/ui/button";
-import { Section } from "@/components/ui/section";
+import { ButtonLink } from "@/src/shared/ui/button";
+import { Section } from "@/src/shared/ui/section";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
 import { buildWhatsAppUrl } from "@/lib/config";
 

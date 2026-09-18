@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
-import { ButtonLink } from "@/components/ui/button";
+import { ButtonLink } from "@/src/shared/ui/button";
 import { HotelCard } from "@/components/ui/card";
-import { Section } from "@/components/ui/section";
+import { Section } from "@/src/shared/ui/section";
 import { buildWhatsAppUrl } from "@/lib/config";
 import { listOffersByCollection } from "@/lib/offers";
 
