@@ -230,6 +230,13 @@ src/
         api/respuestas/route.ts     → hoy app/api/demo-crm/respuestas/route.ts
 
   platform/                       → infraestructura técnica transversal, sin reglas de negocio
+    admin/
+      admin-shell.tsx               → el header/nav/superficie del panel (hoy app/admin/layout.tsx
+                                   — layout.tsx en sí no se mueve hasta el paso atómico, pero su
+                                   contenido no-ruta se extrae aquí, ver ADR-0001/ADR-0005 regla 6)
+      piezas.tsx                    → componentes sueltos del panel sin módulo propio (hoy
+                                   app/admin/piezas.tsx: no es un archivo de ruta, así que migra
+                                   completo, no se extrae)
     auth/
       session.ts                   → exigirSesion, entrar, salir, olvideClave, restablecerClave
                                    (hoy app/admin/acciones/sesion.ts — es "use server", pero no
@@ -267,7 +274,7 @@ public/ · package.json · next.config.ts · tsconfig.json · .env* · .nvmrc
                                 → SE QUEDAN EN LA RAÍZ, Next.js lo exige (§6)
 ```
 
-**Cuatro aclaraciones que el árbol no puede mostrar por sí solo:**
+**Cinco aclaraciones que el árbol no puede mostrar por sí solo:**
 
 - **Un módulo sí puede importar la `application/` de otro módulo.** La regla de dependencia (§1) es
   sobre capas *dentro* de un módulo, no una prohibición de que `destinations` use
@@ -310,6 +317,16 @@ public/ · package.json · next.config.ts · tsconfig.json · .env* · .nvmrc
   `shared/lib/form-data.ts` (§2, entrada `shared/lib/`). Consecuencia: ni `offers` ni `destinations`
   importan la `application/` del otro por este motivo — ambos importan `shared/lib`, que es
   precisamente el tipo de dependencia que `shared/` existe para servir.
+- **`platform/admin/` es el shell transversal del panel, no un módulo de negocio** (ratificado
+  2026-09-18, cerraba una decisión abierta que `docs/brand/specs/grafo.md` §7 dejó pendiente al
+  construir el grafo de ejecución de las fases de marca). `app/admin/layout.tsx` y
+  `app/admin/piezas.tsx` no tienen reglas de negocio propias — son infraestructura de UI que
+  `offers/presentation/admin/` y `destinations/presentation/admin/` comparten, así que el criterio
+  de §4 de este documento ("¿es infraestructura técnica que varios módulos usan pero que no decide
+  nada de negocio?") los coloca en `platform/`, no en un módulo nuevo. Si en el futuro un tercer
+  módulo con panel admin (`leads`, `tracking`) necesita el mismo shell, confirma que la ubicación
+  fue correcta; si en cambio empieza a acumular lógica específica de un solo módulo, esa lógica se
+  extrae de vuelta al módulo, no se queda en `platform/`.
 
 ## 3. Anatomía de un módulo — y cuándo se colapsa
 

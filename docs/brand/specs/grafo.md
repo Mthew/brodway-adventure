@@ -232,7 +232,8 @@ más allá del import), con su contenido extraído a `src/modules/{offers,destin
 4 rutas que lo usan sin tocar ningún `page.tsx`.
 **Depende de:** — (día 1)
 **Artefactos:** `src/modules/{offers,destinations}/presentation/admin/**`,
-`src/platform/admin/admin-shell.tsx`
+`src/platform/admin/admin-shell.tsx`, `src/platform/admin/piezas.tsx` (destino ratificado en
+`arquitectura-modular.md` §2 el 2026-09-18 — no es de un módulo, es shell transversal del panel)
 **Toca:** `app/admin/ofertas/**`, `app/admin/destinos/**`, `app/admin/piezas.tsx`, `app/admin/layout.tsx` +
 sus 4 destinos
 **Fuente:** fase-1 §1.bis · intent.md §0.bis
@@ -700,31 +701,46 @@ N-02.V, no si se puede construir.
 
 ## 7. Decisiones que estos nodos tienen que tomar
 
-- **N-01.0b / N-01.1:** el destino exacto de `app/admin/layout.tsx` (shell del panel) no está en
-  `arquitectura-modular.md` — el spec de Fase 1 propone `src/platform/admin/admin-shell.tsx` como
-  candidato razonable, pero es una decisión de arquitectura que nadie ratificó todavía, a diferencia de
-  los destinos que sí cita el árbol objetivo textualmente.
-- **N-07.1:** si R-9 ("un concepto, un icono") se escribe en singular estricto o admite la excepción de 2
-  que Fase 4 ya autorizó (hallazgo H-4) — sin esa decisión, el guardián puede fallar contra su propia fase
-  de origen el mismo día que se escribe.
-- **N-03.2 / N-01.0b:** quién decide, si Fase 3 corre antes que Fase 1, si el copy revisado se aplica sobre
-  la ubicación vieja (y luego el PR de migración lo preserva) o si se pausa Fase 3 hasta que N-01.0b cierre
-  — `fase-3 §1.bis` lo menciona en prosa pero no lo asigna a un rol ni a un criterio de aceptación
-  (hallazgo H-5).
-- **N-01.1:** si el aviso de hex desviados en `CURRENT.md` se retira en el mismo PR que N-01.1 (no está en
-  la tabla de fase-1 §5, pero tiene que estarlo para que A-1/R-1 cierren en verde — hallazgo H-1).
+**Las cuatro que este grafo dejó abiertas el 2026-09-16 ya se resolvieron el 2026-09-18, antes de
+arrancar la ejecución — por eso "resolvamos los pendientes antes de iniciar el grafo":**
+
+- ~~**N-01.0b / N-01.1:** el destino exacto de `app/admin/layout.tsx`~~ — **ratificado.**
+  `arquitectura-modular.md` §2 ya declara `platform/admin/{admin-shell.tsx,piezas.tsx}` como el shell
+  transversal del panel, con la aclaración de criterio en §2 (quinta aclaración) de cuándo revisar si
+  deja de estar bien ubicado.
+- ~~**N-07.1:** si R-9 admite la excepción de 2 iconos~~ — **no era R-9.** Verificado contra la tabla
+  real de fase-7 §3: R-9 es sobre familia/peso del icono, no sobre cuántos por concepto. El
+  hallazgo H-4 estaba mal atribuido; el contraste real era interno a fase-4 §4.2 (su título decía "un
+  icono" mientras su propia tabla ya autorizaba dos) — corregido ahí, `N-07.1` no tenía nada que
+  arreglar.
+- ~~**N-03.2 / N-01.0b:** quién decide si Fase 3 corre antes que Fase 1~~ — **asignado.** `fase-1`
+  §1.bis y `fase-3` §1.bis ahora dicen lo mismo desde los dos lados: quien abre el PR de migración de
+  Fase 1 revisa, con un diff de solo-contenido adjunto al PR, que el texto no cambió al extraerlo —
+  criterio de cierre de ese PR, no "dirección de marca revisa" sin dueño.
+- ~~**N-01.1:** si el aviso de `CURRENT.md` se retira en el mismo PR~~ — **sí, explícito.** `fase-1`
+  §1.4 y §5 ya nombran `CLAUDE.md`/`CURRENT.md`/`docs/README.md` juntos como una sola instrucción.
+
+Ninguna decisión nueva quedó pendiente al resolver estas cuatro — no hicieron falta ADR nuevos, solo
+correcciones de texto en los specs que ya existían y una entrada nueva en `arquitectura-modular.md`
+§2.
 
 ## 8. Hallazgos — deuda de especificación detectada al construir el grafo
 
+**Actualizado 2026-09-18 — los cinco se resolvieron antes de iniciar la ejecución del grafo**, no
+solo se anotaron. La corrección va en los specs de origen (no en el grafo únicamente), siguiendo la
+regla de `references/protocolo-de-ejecucion.md`: "el grafo corregido y el trabajo que lo corrigió
+van en el mismo commit".
+
 | # | Dónde | Qué | Efecto | Estado |
 |---|---|---|---|---|
-| H-1 | fase-1 §1.4/§5/A-1 · `CURRENT.md:18` · `CLAUDE.md:105` | La lista blanca de A-1/R-1 solo exceptúa `history/` y `docs/brand/**`, pero `CURRENT.md` y `CLAUDE.md` **ya mencionan hoy** los tres hex antiguos de forma legítima (avisando del defecto) y no están en ninguna lista blanca ni en la tabla "cambios por archivo" de fase-1 §5 (que solo lista `CLAUDE.md` y `docs/README.md` para editar, no `CURRENT.md`). Verificado por grep directo sobre el repo real. | Si N-01.1 no retira también el aviso de `CURRENT.md`, o si N-01.2 no suma estos tres archivos a su whitelist, el propio `check:marca` de Fase 1 falla sobre su propio PR. | Resuelto en el grafo (nota en N-01.1) |
-| H-2 | `intent.md` §6 · 6 nodos escriben `design-system/page.tsx` | `intent.md` justifica el orden Fase1→Fase6 solo por compartir `globals.css`/layouts, pero nunca menciona que `/design-system/page.tsx` lo escriben CASI TODAS las fases de contenido (1, 3, 4, 5, 6). El orden recomendado evita la colisión de hecho, pero no la declara como razón. | Un ejecutor que paralelice más allá de {Fase 2, Fase 3} (la única paralelización que `intent.md` autoriza) choca en este archivo sin aviso previo. | Resuelto en el grafo (§5) |
-| H-3 | fase-1 §8, A-1: "Doce archivos los contienen hoy" | Medido en el repo real (2026-09-16): 9 archivos, no 12, contienen los hex antiguos fuera de la lista blanca. | Bajo impacto (el criterio es "cero fuera de whitelist", no un número exacto), pero es la misma clase de número fosilizado que Fase 7 §1 identifica como el patrón de desviación de este proyecto. | Anotado sin resolver |
-| H-4 | fase-4 §4.2 (G-D) vs. R-9 de check-marca | Fase 4 permite legítimamente hasta 2 iconos por concepto si la distinción es real, pero R-9/G-D están escritos en singular estricto en los criterios de aceptación. | Si N-07.1 escribe R-9 literal, marca como violación el caso que Fase 4 explícitamente autorizó — falso positivo del guardián contra su propia fase de origen. | Anotado sin resolver |
-| H-5 | fase-3 §1.bis vs. fase-1 §1.bis | Trabajo huérfano potencial: fase-3 §1.bis asigna una revisión ("dirección de marca revisa que la ubicación no cambió el texto") a nadie en concreto — ni entregable ni criterio de aceptación la sostiene. | Sin un nodo o criterio explícito, la revisión se pierde si N-01.0b y N-03.2 corren en paralelo por error. | Resuelto en el grafo (N-03.2 depende de N-01.0b) |
+| H-1 | fase-1 §1.4/§5/A-1 · `CURRENT.md` · `CLAUDE.md` | La lista blanca de A-1/R-1 solo exceptuaba `history/` y `docs/brand/**`, pero `CURRENT.md` y `CLAUDE.md` **ya mencionan hoy** los tres hex antiguos de forma legítima (avisando del defecto) y no estaban en ninguna lista blanca ni en la tabla "cambios por archivo" de fase-1 §5. | Sin la corrección, el propio `check:marca` de Fase 1 fallaría sobre su propio PR. | **Resuelto en el spec** — §1.4 y §5 de fase-1 ya nombran los tres documentos juntos |
+| H-2 | `intent.md` §6 · 6 nodos escriben `design-system/page.tsx` | `intent.md` justificaba el orden Fase1→Fase6 solo por compartir `globals.css`/layouts, sin mencionar que `/design-system/page.tsx` lo escriben casi todas las fases de contenido. | Un ejecutor que paralelice más allá de {Fase 2, Fase 3} choca en este archivo sin aviso previo. | Resuelto en el grafo (§5) — no requería tocar `intent.md`, el orden ya lo evitaba de hecho |
+| H-3 | fase-1 §8, A-1: "Doce archivos los contienen hoy" | Medido en el repo real (2026-09-16): 9 archivos, no 12. | Bajo impacto por sí solo, pero es la misma clase de número fosilizado que Fase 7 §1 identifica como el patrón de desviación de este proyecto. | **Resuelto en el spec** — A-1 ya dice 9, con la lista, y aclara que el número no es el criterio |
+| H-4 | fase-4 §4.2 y su criterio G-D — **no** R-9 de fase-7 (la atribución original era incorrecta) | Verificado contra la tabla real de fase-7 §3: R-9 es sobre familia/peso del icono, sin relación con "cuántos por concepto". El contraste real era interno a Fase 4: su título de §4.2 decía "un icono" mientras su propia tabla ya autorizaba dos. | Sin la corrección de atribución, alguien habría editado el guardián (`N-07.1`) cuando el defecto vivía en la fase de origen (`N-04.2`). | **Resuelto en el spec** — §4.2 y G-D de fase-4 ya dicen "máximo dos, con criterio escrito" |
+| H-5 | fase-3 §1.bis vs. fase-1 §1.bis | La revisión "dirección de marca revisa que la ubicación no cambió el texto" no tenía dueño ni criterio de aceptación asignado. | Sin dueño, la revisión se pierde si `N-01.0b` y `N-03.2` corren en paralelo. | **Resuelto en el spec** — ambos specs asignan la revisión a quien abre el PR de migración, con diff de solo-contenido |
 
-Ninguno de los cinco es cosmético: H-1 y H-4 son casos concretos donde el propio guardián que las fases
-están construyendo (`check-marca.mjs`) fallaría contra el código que sus propias fases de origen dejan
-correcto — exactamente el tipo de defecto que Fase 7 existe para prevenir, encontrado al construir el grafo
-en vez de al ejecutarlo.
+Dos quedan resueltos en el grafo (nivel de mitigación de ejecución, no requerían tocar la spec de
+origen); tres requirieron editar el spec de origen porque el defecto vivía ahí, no en cómo se
+ejecuta. H-1 y H-4 eran los dos casos donde el propio guardián que las fases construyen habría
+fallado contra su propia fase de origen — exactamente el tipo de defecto que Fase 7 existe para
+prevenir, encontrado al construir el grafo en vez de al ejecutarlo.

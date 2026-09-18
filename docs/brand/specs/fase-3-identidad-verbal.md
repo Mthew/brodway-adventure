@@ -53,8 +53,16 @@ Un solo movimiento pendiente, que ninguna fase anterior cubrió: `components/for
 **no se mueve** — es contenido de `next-intl`, no código, y ADR-0001 lo deja explícitamente en la
 raíz. El copy del panel que esta fase también audita ya vive en `src/modules/*/presentation/admin/`
 y `src/platform/admin/` si la Fase 1 ya corrió su propia migración (§1.bis de esa fase); si esta
-fase se ejecuta antes que la 1 (son paralelizables, `intent.md` §6), audita el copy donde esté hoy
-y dirección de marca revisa que la ubicación no cambió el texto en el PR de migración de la Fase 1.
+fase se ejecuta antes que la 1 (son paralelizables, `intent.md` §6), audita el copy donde esté hoy.
+
+**Colisión con N-01.0b, con dueño asignado (corrección 2026-09-18, hallazgo H-5 de
+[`grafo.md`](grafo.md) §8):** si el copy de N-03.2 (§3.3) se editó en `app/admin/**` antes de que el
+PR de migración de la Fase 1 (`arq/paleta-y-superficies`, §1.bis de esa fase) extraiga esos mismos
+archivos, **quien abre ese PR de migración** es quien revisa, en su propia descripción de PR, que el
+texto quedó idéntico tras la extracción — con un diff de solo-contenido (`git diff --word-diff` o
+equivalente) entre el `page.tsx` de origen y el componente extraído, adjunto al PR. No es "dirección
+de marca" en abstracto: es un criterio de cierre de ese PR de migración, igual que el resto de su
+verificación de "sin cambio visual" (`ADR-0005` §5).
 
 ## 2. Alcance
 

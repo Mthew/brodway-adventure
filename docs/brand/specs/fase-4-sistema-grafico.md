@@ -131,10 +131,15 @@ destacadas), que se declara como variante única y no cinco.
 Estilo lineal, geométrico, esquinas suaves y grosor consistente (`weight="regular"`); máximo 4-5
 por composición; sin mezclar lineal con sólido o 3D. **Se verifican, no se cambian.**
 
-### 4.2 Un concepto, un icono
+### 4.2 Un concepto, un icono (dos como máximo, con criterio escrito)
 
-El repertorio se racionaliza: cada concepto tiene **un** icono en todo el proyecto, y la tabla vive
-en `/design-system` para que la siguiente página no invente el suyo.
+**Corrección 2026-09-18 (hallazgo H-4 de [`grafo.md`](grafo.md) §8):** el título de esta sección y
+el criterio G-D (§6) decían "un icono" en singular estricto, mientras la propia tabla de abajo ya
+autorizaba dos para «verificado/respaldo» — una contradicción dentro del mismo spec, no con ninguna
+otra fase. El repertorio se racionaliza: cada concepto tiene **como máximo dos** iconos en todo el
+proyecto, y solo cuando la distinción entre ambos es real (no dos sinónimos) y queda escrita en la
+tabla — el caso por defecto sigue siendo uno. La tabla vive en `/design-system` para que la
+siguiente página no invente la suya.
 
 | Concepto | Hoy | Objetivo |
 |---|---|---|
@@ -176,7 +181,7 @@ aplicación del manual.
 | **G-A** | La ruta está declarada como utilidad del sistema y documentada en `/design-system`, con sus dos colores según superficie | Abrir la guía |
 | **G-B** | Ninguna composición tiene dos rutas compitiendo | Recorrido de las 18 rutas |
 | **G-C** | El vocabulario de línea se reduce a dos tratamientos | `grep` de `border-l-*`, `border-t-*`, `line-draw*` |
-| **G-D** | Cada concepto tiene un icono y la tabla está en `/design-system`; `Compass` retirado | `grep` de imports de Phosphor |
+| **G-D** | Cada concepto tiene máximo dos iconos, con criterio escrito si son dos, y la tabla está en `/design-system`; `Compass` retirado | `grep` de imports de Phosphor + lectura de la tabla de §4.2 |
 | **G-E** | Ninguna sección supera 5 iconos y todos llevan `weight="regular"` | Conteo por sección |
 | **G-F** | Ningún icono ni trazo informativo queda por debajo de 3:1 | Medición en navegador |
 | **G-G** | Solo se usan los tres radios del sistema más `rounded-full` | `grep` de `rounded-` |
