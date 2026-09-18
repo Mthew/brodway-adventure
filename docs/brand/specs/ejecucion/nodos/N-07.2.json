@@ -1,0 +1,15 @@
+{
+  "id": "N-07.2",
+  "titulo": "Bloque E del Pre-Flight en brief-v0.md §11",
+  "estado": "completado",
+  "commit_base": "8ccfaf8",
+  "rama": "fase-1/marca-n-07-2-preflight-bloque-e",
+  "commit": "6917650",
+  "artefactos": [
+    "docs/design/brief-v0.md §11, bloque E"
+  ],
+  "verificacion": "Abierto brief-v0.md §11: el bloque E existe, entre el bloque D y el separador de fin de sección, con los 6 grupos (Color, Firma, Social, Gráfico, Fotografía, Voz) definidos en fase-7-gobierno.md §5, más una casilla de proceso final sobre aprobación de cambios de identidad que remite a aprobaciones.md §6. La intro del §11 se actualizó de 'Cuatro bloques' a 'Cinco bloques' y la línea de autoría de bloques ahora lista A, C, D y E como propios del proyecto.",
+  "falso_verde_descartado": "El propio spec (fase-7-gobierno.md §5, H-5) anticipa que el bloque E podía agregarse como ~40 casillas sueltas en vez de organizarse en los 6 grupos que resume §5. Se verificó explícitamente que el bloque E usa subtítulos en negrita por grupo (Color / Firma / Social / Gráfico / Fotografía / Voz / Proceso), cada uno con sus propias casillas dentro — misma convención que ya usan los sub-grupos en negrita del bloque B (ej. 'Hero y navegación', 'Repetición de estructura') — y no una lista plana.",
+  "prueba_mutacion": "N/A — nodo de puro texto Markdown, sin lógica ni comportamiento ejecutable que mutar. La verificación equivalente aplicada: quitar mentalmente el bloque E y volver a agregarlo a partir de fase-7-gobierno.md §5 produce el mismo resultado revisable (mismos 6 grupos, mismo contenido por casilla), porque el bloque es una traducción literal y no ambigua de las seis viñetas de la spec a checkboxes.",
+  "notas": "Sin dependencias (día 1 según grafo.md §N-07.2, esfuerzo S). CURRENT.md no fue tocado, conforme a la instrucción del nodo. PR abierto contra main: https://github.com/Mthew/brodway-adventure/pull/29."
+}
