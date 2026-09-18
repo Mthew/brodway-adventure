@@ -51,6 +51,12 @@ lugar de usar `components/ui/button.tsx`. Ahí están los cuatro botones naranja
 `docs/architecture/spec-tecnica.md` §4 y el encabezado de `app/admin/layout.tsx`. Todos publican
 los hex desviados como si fueran oficiales.
 
+**Corrección 2026-09-18 (hallazgo H-1 de [`grafo.md`](grafo.md) §8):** `CLAUDE.md` y `CURRENT.md`
+**también** mencionan hoy los tres hex antiguos — de forma legítima, avisando del defecto, no
+publicándolos como oficiales — pero ninguno de los dos estaba en esta lista ni en la lista blanca
+de A-1/R-1 (§8, §9), que solo exceptúa `history/` y `docs/brand/**`. Sin este PR retirando también
+esos dos avisos, el propio `check:marca` que esta fase escribe fallaría contra el PR que lo crea.
+
 ### 1.5 Fuera de alcance
 
 Logo, favicon e imagen social (Fase 2) · copy (Fase 3) · ruta de marca e iconografía como sistema
@@ -85,15 +91,22 @@ que `arquitectura-modular.md` §2 asigna a `offers/presentation/admin/` y
 cada carpeta son de ruta y cuáles son componentes extraíbles — mirando el árbol real, no una lista
 fija que quedaría desactualizada; (2) mueve los extraíbles a su módulo; (3) deja cada `page.tsx`
 como un envoltorio delgado que importa desde la nueva ubicación, sin más lógica que esa.
-`app/admin/piezas.tsx` entra en el mismo movimiento: no es un archivo de ruta, así que migra
-completo a `src/modules/offers/presentation/admin/piezas.tsx` (los cuatro botones que corrige §6.1
-ya nacen en su ubicación objetivo, no en la raíz). `app/admin/layout.tsx` sigue la regla de
-extracción: su contenido no-ruta pasa a un componente de shell (`src/platform/admin/admin-shell.tsx`
-o el nombre que decida el PR), y `app/admin/layout.tsx` queda como el envoltorio que lo importa.
+`app/admin/piezas.tsx` no es un archivo de ruta ni tiene regla de negocio propia, así que migra
+completo a `src/platform/admin/piezas.tsx` — destino ya ratificado en `arquitectura-modular.md` §2
+(no en `offers/presentation/admin/`: los botones de §6.1 no son de un solo módulo, son del shell
+transversal del panel). `app/admin/layout.tsx` sigue la regla de extracción: su contenido no-ruta
+pasa a `src/platform/admin/admin-shell.tsx`, y `app/admin/layout.tsx` queda como el envoltorio que
+lo importa.
 
 **Verificación de este PR:** `pnpm build` en `EXIT=0` y recorrido de las 18 rutas públicas + las 13
 del panel, sin ningún cambio visual. Los imports que rompan se actualizan como parte del propio
 movimiento, no como una edición aparte.
+
+**Si la Fase 3 ya editó el copy del panel primero** (son paralelizables, `intent.md` §6): quien abre
+este PR de migración revisa, en su propia descripción, que el texto del copy quedó idéntico tras
+extraerlo — un diff de solo-contenido entre el `page.tsx` de origen y el componente extraído,
+adjunto al PR. Es la resolución del hallazgo H-5 de [`grafo.md`](grafo.md) §8: antes no tenía dueño
+asignado, ahora es criterio de cierre de este PR, no una revisión difusa de "dirección de marca".
 
 ## 2. Estado objetivo de los tokens
 
@@ -242,9 +255,9 @@ donde siempre.
 | `app/admin/layout.tsx:13-15` | El encabezado declara los hex antiguos como identidad del panel |
 | `app/[locale]/(sitio)/design-system/page.tsx:29-54` | Los seis colores, sus ratios y los cuatro estados; añadir arena y el grupo «color de canal» |
 | `docs/design/brief-v0.md:63,85-95` · `docs/design/brief-v0-producto.md:116-118` · `docs/architecture/spec-tecnica.md:173-175` | Los hex desviados y los ratios que ya no aplican |
-| `CLAUDE.md` · `docs/README.md` | Hoy avisan de que «los hex del código no son los de la marca». Al cerrar la fase eso deja de ser cierto: el aviso pasa a historia o se retira. Un aviso caduco enseña a desconfiar de los avisos |
+| `CLAUDE.md` · `docs/README.md` · `CURRENT.md` | Los tres avisan hoy de que «los hex del código no son los de la marca» (`CURRENT.md` y `CLAUDE.md` no estaban en esta fila hasta el hallazgo H-1 de `grafo.md` §8). Al cerrar la fase eso deja de ser cierto: el aviso pasa a historia o se retira en los tres. Un aviso caduco enseña a desconfiar de los avisos |
 | `scripts/check-marca.mjs` *(nuevo)* + `package.json` | Adelanto de la Fase 7: solo la comprobación de hex (§8) |
-| `CURRENT.md` | En el mismo PR. Incluye corregir la fila de E1/E2, que dice «En revisión» y ya está en `main` |
+| `CURRENT.md` | En el mismo PR, además de lo anterior. Incluye corregir la fila de E1/E2, que dice «En revisión» y ya está en `main` |
 
 ## 6. Defectos que esta fase corrige
 
@@ -287,7 +300,7 @@ Escrito para que nadie lo «arregle» de paso:
 
 | # | Criterio | Cómo se verifica |
 |---|---|---|
-| **A-1** | Los cinco hex del manual son los únicos valores de marca del repo | `grep -rniE "003062\|00aac3\|ff6a03"` sobre código y `docs/` → resultados **solo** en `history/` y en `docs/brand/**`, que los citan como defecto ya corregido. Doce archivos los contienen hoy |
+| **A-1** | Los cinco hex del manual son los únicos valores de marca del repo | `grep -rniE "003062\|00aac3\|ff6a03"` sobre código y `docs/` → resultados **solo** en `history/` y en `docs/brand/**`, que los citan como defecto ya corregido. Medido el 2026-09-16: 9 archivos los contienen hoy fuera de esa lista blanca (`design-system/page.tsx`, `admin/layout.tsx`, `globals.css`, `CLAUDE.md`, `CURRENT.md`, `spec-tecnica.md`, `brief-v0-producto.md`, `brief-v0.md`, `docs/README.md`) — el número exacto no es el criterio, solo una referencia para no sorprenderse si el `grep` da otro (hallazgo H-3 de `grafo.md` §8: la fecha de escritura del spec decía doce) |
 | **A-2** | Ningún hex de marca vive fuera del `@theme` | `pnpm check:marca` en verde dentro del `build` |
 | **A-3** | Cada combinación de la matriz §4 medida **en navegador** coincide con el spec, o el spec se corrige con la medición | DevTools sobre las páginas reales, no cálculo sobre el papel |
 | **A-4** | Ningún texto queda por debajo de 4,5:1 y ningún texto grande por debajo de 3:1, en las 18 rutas públicas y las 13 del panel | Recorrido de páginas + los cuatro botones de §6.1 |

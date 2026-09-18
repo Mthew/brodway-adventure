@@ -69,7 +69,7 @@
     {
       "id": "N-01.0b",
       "titulo": "Extraccion del panel admin: ofertas, destinos, piezas.tsx y el shell de layout.tsx",
-      "objetivo": "app/admin/ofertas/** y app/admin/destinos/** quedan separados en archivos de ruta delgados (que se quedan bajo app/, sin logica mas alla del import) y componentes extraidos en src/modules/{offers,destinations}/presentation/admin/; app/admin/piezas.tsx migra completo a src/modules/offers/presentation/admin/piezas.tsx; app/admin/layout.tsx queda como envoltorio de un componente de shell en src/platform/admin/. pnpm build en EXIT=0, sin cambio visual en las 13 rutas del panel.",
+      "objetivo": "app/admin/ofertas/** y app/admin/destinos/** quedan separados en archivos de ruta delgados (que se quedan bajo app/, sin logica mas alla del import) y componentes extraidos en src/modules/{offers,destinations}/presentation/admin/; app/admin/piezas.tsx migra completo a src/platform/admin/piezas.tsx; app/admin/layout.tsx queda como envoltorio de un componente de shell en src/platform/admin/. pnpm build en EXIT=0, sin cambio visual en las 13 rutas del panel.",
       "verificacion": {
         "tipo": "comando",
         "como": "pnpm build && recorrido de las 13 rutas del panel comparando captura antes/despues",
@@ -77,12 +77,12 @@
         "puede_correrse_ahora": true
       },
       "falso_verde": "El build pasa aunque el 'envoltorio delgado' siga teniendo la mitad de la logica vieja adentro (una extraccion parcial) — verificar leyendo cada page.tsx resultante, no solo que compile y se vea igual.",
-      "prueba_por_mutacion": "Cambiar un texto dentro de src/modules/offers/presentation/admin/piezas.tsx y confirmar que se refleja en /admin/ofertas, /admin/destinos, /admin (dashboard) y /admin/ofertas/[id]/publicar sin tocar ningun page.tsx — si alguna pantalla no lo refleja, esa pantalla todavia tiene su propia copia sin extraer.",
+      "prueba_por_mutacion": "Cambiar un texto dentro de src/platform/admin/piezas.tsx y confirmar que se refleja en /admin/ofertas, /admin/destinos, /admin (dashboard) y /admin/ofertas/[id]/publicar sin tocar ningun page.tsx — si alguna pantalla no lo refleja, esa pantalla todavia tiene su propia copia sin extraer.",
       "depende_de": [],
       "artefactos": [
         "src/modules/offers/presentation/admin/**",
         "src/modules/destinations/presentation/admin/**",
-        "src/modules/offers/presentation/admin/piezas.tsx",
+        "src/platform/admin/piezas.tsx",
         "src/platform/admin/admin-shell.tsx"
       ],
       "toca": [
@@ -121,7 +121,7 @@
         "src/shared/layout/navbar.tsx",
         "src/modules/tracking/presentation/components/cookie-banner.tsx",
         "src/modules/offers/presentation/components/sticky-cta.tsx",
-        "src/modules/offers/presentation/admin/piezas.tsx",
+        "src/platform/admin/piezas.tsx",
         "app/[locale]/lp/[campana]/page.tsx"
       ],
       "toca": [
@@ -130,7 +130,7 @@
         "src/shared/layout/navbar.tsx",
         "src/modules/tracking/presentation/components/cookie-banner.tsx",
         "src/modules/offers/presentation/components/sticky-cta.tsx",
-        "src/modules/offers/presentation/admin/piezas.tsx",
+        "src/platform/admin/piezas.tsx",
         "app/[locale]/lp/[campana]/page.tsx",
         "app/[locale]/(sitio)/design-system/page.tsx",
         "docs/design/brief-v0.md",
@@ -823,8 +823,9 @@
       "donde": "fase-1 §1.4, §5, criterio A-1 · CURRENT.md linea 18 · CLAUDE.md linea 105",
       "que": "El criterio A-1 y la lista blanca de R-1 (check-marca) solo exceptuan history/ y docs/brand/**. Pero CURRENT.md y CLAUDE.md YA mencionan hoy los tres hex antiguos de forma legitima (avisando del defecto, igual que docs/brand/**) y no estan en ninguna lista blanca ni en la tabla de fase-1 §5 'Cambios por archivo' (que solo lista CLAUDE.md y docs/README.md para editar, pero no CURRENT.md). Verificado por grep directo sobre el repo real: los tres archivos contienen el texto hoy.",
       "efecto": "Si N-01.1 no retira tambien el aviso de CURRENT.md, o si N-01.2 no agrega estos tres archivos a su lista blanca, el check:marca de la propia Fase 1 fallaria sobre su propio PR en cuanto se escriba, aunque el aviso sea correcto.",
-      "estado": "resuelto-en-el-grafo",
-      "nodo": "N-01.1"
+      "estado": "resuelto-en-el-spec",
+      "nodo": "N-01.1",
+      "resolucion": "2026-09-18: fase-1 §1.4 y §5 ya nombran CLAUDE.md/CURRENT.md/docs/README.md juntos como 'el aviso se retira en los tres', antes de ejecutar N-01.1."
     },
     {
       "id": "H-2",
@@ -838,25 +839,28 @@
       "id": "H-3",
       "donde": "fase-1 §8, criterio A-1: 'Doce archivos los contienen hoy'",
       "que": "Medido en el repo real (2026-09-16), el numero de archivos con los tres hex antiguos fuera de history/ y docs/brand/** es 9 (design-system/page.tsx, admin/layout.tsx, globals.css, CLAUDE.md, CURRENT.md, spec-tecnica.md, brief-v0-producto.md, brief-v0.md, docs/README.md), no 12. La cifra pudo cambiar entre el 2026-09-11 (fecha del spec) y hoy, o contarse con un criterio distinto.",
-      "efecto": "Bajo impacto por si solo (no cambia el criterio de aceptacion, que es 'cero fuera de la lista blanca', no un numero exacto), pero es la clase de numero-fosilizado que el propio Fase 7 §1 identifica como el patron de desviacion de este proyecto ('el comentario decia lo correcto; el numero, no'). Se anota para que quien ejecute Fase 1 no se sorprenda si el grep da un numero distinto de 12.",
-      "estado": "anotado-sin-resolver",
-      "nodo": "N-01.1"
+      "efecto": "Bajo impacto por si solo (no cambia el criterio de aceptacion, que es 'cero fuera de la lista blanca', no un numero exacto), pero es la clase de numero-fosilizado que el propio Fase 7 §1 identifica como el patron de desviacion de este proyecto ('el comentario decia lo correcto; el numero, no').",
+      "estado": "resuelto-en-el-spec",
+      "nodo": "N-01.1",
+      "resolucion": "2026-09-18: A-1 en fase-1 §8 ya dice 9 (medido, con la lista de archivos) en vez de 12, y aclara que el numero no es el criterio de cierre."
     },
     {
       "id": "H-4",
-      "donde": "fase-4 §4.2 (G-D) vs. criterio de check-marca R-9",
-      "que": "Fase 4 permite legitimamente que un concepto (verificado/respaldo) tenga hasta DOS iconos distintos si la distincion es real (§4.2: 'Dos como maximo, con criterio escrito'). Pero R-9 de fase-7 ('un concepto, un icono') y G-D ('cada concepto tiene un icono') estan escritos en singular estricto en los criterios de aceptacion, sin la excepcion de los dos.",
-      "efecto": "Si N-07.1 escribe la regla R-9 en su forma literal (un unico icono por concepto), va a marcar como violacion el caso 'incluido' vs 'respaldo institucional' que Fase 4 explicitamente autorizo — un falso positivo del propio guardian contra su propia fase de origen.",
-      "estado": "anotado-sin-resolver",
-      "nodo": "N-07.1"
+      "donde": "fase-4 §4.2 y su criterio G-D (§6) — no R-9 de fase-7 (correccion de esta misma entrada, ver abajo)",
+      "que": "Corregido 2026-09-18: la atribucion original de este hallazgo decia 'R-9 de fase-7' — verificado contra la tabla real de fase-7 §3, R-9 es 'ningun icono fuera de @phosphor-icons/react, ningun weight != regular' (familia/peso), no tiene nada que ver con cuantos iconos por concepto. El contraste real era interno a la Fase 4: su propio titulo de §4.2 y el criterio G-D decian 'un icono' en singular estricto, mientras la tabla de la misma seccion ya autorizaba dos para 'verificado/respaldo'.",
+      "efecto": "Sin esta correccion, alguien habria intentado resolver la contradiccion editando fase-7 (el guardian) cuando el defecto vivia en fase-4 (la fuente). Un hallazgo mal atribuido cuesta el mismo tipo de tiempo perdido que uno no detectado.",
+      "estado": "resuelto-en-el-spec",
+      "nodo": "N-04.2",
+      "resolucion": "2026-09-18: fase-4 §4.2 y G-D ya dicen 'maximo dos, con criterio escrito' de forma consistente con su propia tabla."
     },
     {
       "id": "H-5",
       "donde": "fase-3 §1.bis vs. fase-1 §1.bis",
       "que": "Trabajo huerfano potencial: fase-3 §1.bis dice 'si esta fase se ejecuta antes que la 1... direccion de marca revisa que la ubicacion no cambio el texto en el PR de migracion de la Fase 1' — pero ninguna spec asigna esa revision a un entregable o criterio de aceptacion concreto. Es una responsabilidad mencionada en prosa sin nodo que la sostenga.",
       "efecto": "Sin un nodo o criterio explicito, esta revision se pierde si N-01.0b y N-03.2 corren en paralelo por error (ver colision declarada arriba).",
-      "estado": "resuelto-en-el-grafo",
-      "nodo": "N-03.2"
+      "estado": "resuelto-en-el-spec",
+      "nodo": "N-03.2",
+      "resolucion": "2026-09-18: fase-3 §1.bis y fase-1 §1.bis (N-01.0b) ya asignan la revision a quien abre el PR de migracion, con un diff de solo-contenido adjunto como criterio de cierre de ese PR — no queda como 'direccion de marca revisa' sin dueno."
     }
   ]
 }
