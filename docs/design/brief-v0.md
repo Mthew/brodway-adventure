@@ -843,11 +843,12 @@ borrar:
 
 ## 11. Pre-Flight — checklist de aceptación antes de llevar el output al repo
 
-Cuatro bloques. **A** y **C** son los que se rompen solos; **B** es lo que separa un sitio
-profesional de una plantilla; **D** es lo que tiene consecuencia legal o comercial. Si una
-casilla no se puede marcar honestamente, el output no está listo.
+Cinco bloques. **A** y **C** son los que se rompen solos; **B** es lo que separa un sitio
+profesional de una plantilla; **D** es lo que tiene consecuencia legal o comercial; **E** es el
+guardián de marca que la fase 7 de gobierno deja establecido. Si una casilla no se puede marcar
+honestamente, el output no está listo.
 
-Los bloques A, C y D son de este proyecto. El bloque B viene del Pre-Flight del skill
+Los bloques A, C, D y E son de este proyecto. El bloque B viene del Pre-Flight del skill
 [`design-taste-frontend`](../../.claude/skills/design-taste-frontend/SKILL.md) §14, podado a
 lo que aplica con los diales de §2.bis (6 / 3 / 4): se omitieron las casillas de modo oscuro,
 serif, paletas premium-consumer, GSAP y marquees porque las decisiones de §2.bis las dejan sin
@@ -995,6 +996,58 @@ datos de entrenamiento. Da por hecho que tendrás que corregir esto aunque el pr
 - [ ] "Next Stop" aparece máximo una vez por página.
 - [ ] Ninguna palabra de la lista prohibida (§2) en el copy.
 - [ ] Ningún countdown ni temporizador.
+
+### E. Marca — gobierno (`docs/brand/specs/fase-7-gobierno.md` §5)
+
+**Color**
+
+- [ ] Los cinco hex de la superficie declarados salen del `@theme` (`sistema-de-identidad.md`
+      §4.5.3), no de un pantallazo ni de memoria.
+- [ ] Ninguna combinación de color en uso baja de 4,5:1 medido contra **su superficie real**
+      (no contra blanco).
+- [ ] El naranja no rellena superficie amplia (fondo de sección, tarjeta grande); es acento/CTA.
+
+**Firma**
+
+- [ ] Es la firma real del manual vivo, no la firma cursiva antigua ni una reconstrucción.
+- [ ] Ancho mínimo de 180px donde se use.
+- [ ] Espacio de resguardo ≥1X (el ancho de su propio símbolo) hasta cualquier otro elemento.
+- [ ] Donde se necesita icono/favicon se usa el símbolo (la paloma), nunca la firma reducida.
+- [ ] Nada se añadió al logo (ni tagline, ni "Next Stop", ni elementos decorativos).
+
+**Social**
+
+- [ ] La página comparte tarjeta social (OG/Twitter) con imagen, título y descripción.
+- [ ] Probado pegando la URL real en WhatsApp y viendo la preview generada.
+
+**Gráfico**
+
+- [ ] Cualquier diagrama de la pieza tiene una sola ruta dominante (sin ambigüedad de flujo).
+- [ ] Los nodos significan origen, decisión o destino — no decoración.
+- [ ] ≤5 iconos en el gráfico.
+- [ ] Un concepto, un icono (ningún icono repetido para dos conceptos distintos, ni dos iconos
+      para el mismo concepto).
+
+**Fotografía**
+
+- [ ] La foto cumple los seis criterios del manual (`fase-5-fotografia.md` §3).
+- [ ] El hero lleva personas.
+- [ ] El espacio negativo de la foto está donde va el texto superpuesto.
+- [ ] El `alt` describe la foto realmente publicada (no un alt genérico ni heredado del seed).
+
+**Voz**
+
+- [ ] El CTA sale de los cinco aprobados en `aprobaciones.md`, o de su variante de canal
+      (WhatsApp/formulario).
+- [ ] El bloque de copy recorre los cuatro pasos del mensaje: necesidad reconocible → beneficio
+      concreto → información que reduce fricción → invitación a actuar
+      (`fase-3-identidad-verbal.md` §148).
+
+**Proceso**
+
+- [ ] ¿Esta pieza cambia logo, color, tipografía, tono, posicionamiento, eslogan o submarca? Si
+      la respuesta es sí, requiere aprobación registrada en `aprobaciones.md` (§6) y no entra
+      sin ella.
 
 ---
 
