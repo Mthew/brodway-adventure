@@ -2,7 +2,13 @@
 
 > **Intent:** [`../intent.md`](../intent.md) §Fase 1 · **Fuente de marca:**
 > [`../sistema-de-identidad.md`](../sistema-de-identidad.md) §4.5
-> **Rama:** `fase-1/marca-1-paleta` · **PR:** a `main`, con `CURRENT.md` en el mismo PR
+> **Arquitectura:** [`../intent.md`](../intent.md) §0.bis y
+> [`../../architecture/arquitectura-modular.md`](../../architecture/arquitectura-modular.md) —
+> mapeo de esta fase en §1.bis
+> **PR de migración (primero):** rama `arq/paleta-y-superficies`, desde `main`, sin cambio de
+> comportamiento
+> **PR de marca (segundo, sobre la ubicación ya migrada):** rama `fase-1/marca-1-paleta` · a
+> `main`, con `CURRENT.md` en el mismo PR
 > **Escrito:** 2026-09-11 · **Estado:** listo para plan
 
 ## 0. Objetivo
@@ -51,6 +57,43 @@ Logo, favicon e imagen social (Fase 2) · copy (Fase 3) · ruta de marca e icono
 (Fase 4) · fotografía (Fase 5) · familias tipográficas (Fase 6) · el resto del `check:marca`
 (Fase 7; aquí entra solo su comprobación de hex) · la escala tipográfica, que ya cumple el manual ·
 el rediseño de cualquier sección.
+
+## 1.bis Migración de arquitectura (PR previo, sin cambio de comportamiento)
+
+Antes del cambio de color, un PR aparte (`arq/paleta-y-superficies`) migra lo que §1 toca, con el
+límite de `intent.md` §0.bis: **los archivos de convención de Next.js dentro de `app/` no se mueven
+todavía** (esperan al paso atómico final); lo que sí migra ya es todo lo demás.
+
+**Movimientos limpios, sin ambigüedad — de `components/` a `src/`:**
+
+| Archivo hoy | Destino | Fuente del destino |
+|---|---|---|
+| `components/ui/button.tsx` · `badge.tsx` · `section.tsx` | `src/shared/ui/{button,badge,section}.tsx` | `arquitectura-modular.md` §2, `shared/ui/` |
+| `components/layout/navbar.tsx` | `src/shared/layout/navbar.tsx` | §2, `shared/layout/` |
+| `components/layout/cookie-banner.tsx` | `src/modules/tracking/presentation/components/cookie-banner.tsx` | §2, nota "CookieBanner se muda de `shared/layout`" |
+| `components/oferta/sticky-cta.tsx` | `src/modules/offers/presentation/components/sticky-cta.tsx` | §2, `offers/presentation/components/` (`StickyCta`) |
+
+**No se tocan todavía** (son `page.tsx`/convención de Next.js dentro de `app/`, esperan al paso
+atómico): `app/globals.css` y `app/[locale]/(sitio)/design-system/page.tsx`. Esta fase edita su
+contenido en su ubicación actual — el cambio de color no depende de que ya estén en `src/`.
+
+**Extracción, no movimiento — `app/admin/ofertas/**` y `app/admin/destinos/**`:** estas carpetas
+mezclan archivos de ruta (`page.tsx` de listado/alta/edición/fotos/publicar/secciones, que se
+quedan bajo `app/` hasta el paso atómico) con componentes de soporte (`OfferFields` y equivalentes,
+que `arquitectura-modular.md` §2 asigna a `offers/presentation/admin/` y
+`destinations/presentation/admin/`). El PR de migración: (1) identifica cuáles de los archivos de
+cada carpeta son de ruta y cuáles son componentes extraíbles — mirando el árbol real, no una lista
+fija que quedaría desactualizada; (2) mueve los extraíbles a su módulo; (3) deja cada `page.tsx`
+como un envoltorio delgado que importa desde la nueva ubicación, sin más lógica que esa.
+`app/admin/piezas.tsx` entra en el mismo movimiento: no es un archivo de ruta, así que migra
+completo a `src/modules/offers/presentation/admin/piezas.tsx` (los cuatro botones que corrige §6.1
+ya nacen en su ubicación objetivo, no en la raíz). `app/admin/layout.tsx` sigue la regla de
+extracción: su contenido no-ruta pasa a un componente de shell (`src/platform/admin/admin-shell.tsx`
+o el nombre que decida el PR), y `app/admin/layout.tsx` queda como el envoltorio que lo importa.
+
+**Verificación de este PR:** `pnpm build` en `EXIT=0` y recorrido de las 18 rutas públicas + las 13
+del panel, sin ningún cambio visual. Los imports que rompan se actualizan como parte del propio
+movimiento, no como una edición aparte.
 
 ## 2. Estado objetivo de los tokens
 
@@ -180,7 +223,11 @@ que el margen importa; el titular es `text-h1` y es texto grande.
 ## 5. Cambios por archivo
 
 Inventario de dónde hay que mirar. **No es la lista de pasos** —eso es del plan— sino el mapa del
-terreno, para que nada quede fuera por olvido.
+terreno, para que nada quede fuera por olvido. Las rutas de esta tabla son las de **hoy**; el PR de
+migración de §1.bis mueve primero lo que tiene destino claro (§1.bis lista exactamente qué sí y qué
+no) — al llegar a este PR, los archivos movidos ya están en su destino nuevo, y los que son
+convención de Next.js (`app/globals.css`, `design-system/page.tsx`, los `page.tsx` del panel) siguen
+donde siempre.
 
 | Archivo | Qué cambia |
 |---|---|
@@ -283,6 +330,8 @@ Tres pasadas, en este orden:
 
 ## 11. Entregables del PR
 
+0. **El PR de migración de §1.bis (`arq/paleta-y-superficies`) ya mergeado a `main`.** Este PR no
+   se abre sobre la ubicación antigua de los archivos.
 1. El cambio de tokens y las correcciones de uso que §5 lista.
 2. `scripts/check-marca.mjs` con su comprobación de hex, enganchado a `pnpm check`.
 3. `/design-system` actualizado: paleta oficial, ratios medidos, arena y color de canal.

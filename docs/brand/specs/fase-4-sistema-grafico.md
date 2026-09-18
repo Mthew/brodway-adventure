@@ -5,7 +5,11 @@
 > recursos) y §4.11 (composición)
 > **Depende de:** Fase 1 (la ruta y los iconos se pintan con la paleta oficial) y Fase 2 (conviven
 > con la firma)
-> **Rama:** `fase-1/marca-4-sistema-grafico` · **PR:** a `main`, con `CURRENT.md` en el mismo PR
+> **Arquitectura:** [`../intent.md`](../intent.md) §0.bis · mapeo de esta fase en §1.bis
+> **PR de migración (primero):** rama `arq/sistema-grafico`, desde `main`, sin cambio de
+> comportamiento
+> **PR de marca (segundo):** rama `fase-1/marca-4-sistema-grafico` · a `main`, con `CURRENT.md` en
+> el mismo PR
 > **Escrito:** 2026-09-11 · **Estado:** listo para plan
 
 ## 0. Objetivo
@@ -57,6 +61,22 @@ de añadir decoración».
 `rounded-lg` 46 usos · `rounded-md` 16 · `rounded-full` 8 · `rounded-sm` 3 · **`rounded-xl` 1**, que
 está fuera de los tres valores que el sistema declara. Las fotos se enmarcan con radio uniforme y
 `overflow-hidden`; no hay marcos decorativos.
+
+## 1.bis Migración de arquitectura
+
+Para cuando esta fase corre (depende de Fase 1 y 2), la mayor parte de los 9 archivos con iconos ya
+migró: `shared/ui`, `shared/layout` y lo que la Fase 1 movió. Lo que queda, por `arquitectura-modular.md`
+§2, son los dos pares que ninguna fase anterior tenía motivo para tocar:
+
+| Archivo hoy | Destino |
+|---|---|
+| `components/destinos/listado-categoria.tsx` · `components/ui/filtro-categoria.tsx` | `src/modules/destinations/presentation/components/{category-list,category-filter}.tsx` |
+| `components/oferta/galeria.tsx` · `components/oferta/tarifa-vencida.tsx` · `components/ui/price-disclosure.tsx` | `src/modules/offers/presentation/components/` (`price-disclosure.tsx` se muda aquí por tener regla de negocio propia, `arquitectura-modular.md` §4) |
+
+La ruta de marca (`.line-draw`, `.line-draw-y`) vive en `app/globals.css` y en
+`app/[locale]/(sitio)/page.tsx` — ambos archivos de convención de Next.js, se quedan donde están
+(`intent.md` §0.bis). Si al auditar aparece un tercer archivo de `components/` sin migrar, se mueve
+con el mismo criterio antes de tocar su contenido.
 
 ## 2. Alcance
 
@@ -184,6 +204,7 @@ aplicación del manual.
 
 ## 9. Entregables del PR
 
+0. El PR de migración de §1.bis (`arq/sistema-grafico`) ya mergeado.
 1. La ruta declarada como utilidad en `app/globals.css`, con sus dos variantes de color.
 2. El vocabulario de línea reducido a dos tratamientos en las 18 rutas.
 3. El repertorio de iconos racionalizado, `Compass` retirado y la tabla concepto→icono publicada en
