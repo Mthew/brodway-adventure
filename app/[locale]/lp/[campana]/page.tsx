@@ -12,6 +12,8 @@ import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
 import { CapturaUtm } from "@/components/campana/captura-utm";
 import { buildWhatsAppUrl } from "@/lib/config";
 import { getCampaign, listCampaignSlugs } from "@/lib/campaigns";
+import { getPathname } from "@/lib/i18n/navigation";
+import { buildOgImage, DEFAULT_OG_IMAGE } from "@/lib/seo/og-image";
 
 /**
  * Landing de campaña.
@@ -33,16 +35,35 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ campana: string }>;
+  params: Promise<{ locale: string; campana: string }>;
 }): Promise<Metadata> {
-  const { campana } = await params;
+  const { locale, campana } = await params;
   const lookup = await getCampaign(campana);
 
   if (lookup.status === "not-found") return {};
 
+  const { campaign } = lookup;
+  const t = await getTranslations({ locale, namespace: "metadata" });
+
+  // `imagen`/`imagenAlt`: literalmente "MISMA imagen del anuncio" (comentario de
+  // `lib/types/campaign.ts`), ya perfecta para OG — es la única de las tres fotos
+  // de este nodo con `alt` obligatorio en el tipo, no opcional.
+  const ogImage =
+    (await buildOgImage(campaign.imagen, campaign.imagenAlt)) ?? DEFAULT_OG_IMAGE;
+
   return {
-    title: lookup.campaign.titular,
-    description: lookup.campaign.subtitular,
+    title: campaign.titular,
+    description: campaign.subtitular,
+    openGraph: {
+      type: "website",
+      siteName: t("siteName"),
+      locale,
+      title: campaign.titular,
+      description: campaign.subtitular,
+      url: getPathname({ href: `/lp/${campaign.slug}`, locale }),
+      images: [ogImage],
+    },
+    twitter: { card: "summary_large_image" },
     /**
      * Las landings de pauta NO se indexan: competirían con las páginas de destino
      * y de oferta por las mismas búsquedas, y esas sí están hechas para

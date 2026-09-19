@@ -15,8 +15,9 @@ import { OfferGallery } from "@/src/modules/offers/presentation/components/offer
 import { ExpiredRateNotice } from "@/src/modules/offers/presentation/components/expired-rate-notice";
 import { PriceDisclosure } from "@/src/modules/offers/presentation/components/price-disclosure";
 import { buildWhatsAppUrl, RNT_NUMBER, SITE_URL } from "@/lib/config";
-import { Link } from "@/lib/i18n/navigation";
+import { getPathname, Link } from "@/lib/i18n/navigation";
 import { getOffer, listActiveOffers, listOfferSlugs } from "@/lib/offers";
+import { buildOgImage, DEFAULT_OG_IMAGE } from "@/lib/seo/og-image";
 import type { Offer } from "@/lib/types/offer";
 
 /**
@@ -39,14 +40,35 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { locale, slug } = await params;
   const lookup = await getOffer(slug);
 
   if (lookup.status === "not-found") return {};
 
+  const { offer } = lookup;
+  const t = await getTranslations({ locale, namespace: "metadata" });
+
+  // Primera foto de la galería (`orden: 0`, ya ordenada por `imagenesOrdenadas`):
+  // es la imagen de portada de la oferta. `ImagenOferta` no tiene una bandera de
+  // "principal" aparte del orden (verificado en `lib/types/offer.ts`).
+  const primeraImagen = offer.imagenes[0];
+  const ogImage =
+    (await buildOgImage(primeraImagen?.url, primeraImagen?.alt ?? offer.titulo)) ??
+    DEFAULT_OG_IMAGE;
+
   return {
-    title: lookup.offer.titulo,
-    description: lookup.offer.beneficioCorto,
+    title: offer.titulo,
+    description: offer.beneficioCorto,
+    openGraph: {
+      type: "website",
+      siteName: t("siteName"),
+      locale,
+      title: offer.titulo,
+      description: offer.beneficioCorto,
+      url: getPathname({ href: `/ofertas/${offer.slug}`, locale }),
+      images: [ogImage],
+    },
+    twitter: { card: "summary_large_image" },
   };
 }
 

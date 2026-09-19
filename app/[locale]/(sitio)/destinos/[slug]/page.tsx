@@ -12,12 +12,13 @@ import { Section } from "@/src/shared/ui/section";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
 import { SLUGS_RESERVADOS } from "@/lib/destinations/categorias";
 import { buildWhatsAppUrl, SITE_URL } from "@/lib/config";
-import { Link } from "@/lib/i18n/navigation";
+import { getPathname, Link } from "@/lib/i18n/navigation";
 import {
   getDestination,
   listDestinationSlugs,
   listOffersForDestination,
 } from "@/lib/destinations";
+import { buildOgImage, DEFAULT_OG_IMAGE } from "@/lib/seo/og-image";
 import type { Destination } from "@/lib/types/destination";
 
 /**
@@ -50,12 +51,37 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { locale, slug } = await params;
   const destino = await getDestination(slug);
 
   if (!destino) return {};
 
-  return { title: destino.nombre, description: destino.resumen };
+  const t = await getTranslations({ locale, namespace: "metadata" });
+
+  // `imagenHero` (panorámica) antes que `imagen` (tarjeta 4:3): es la que de verdad
+  // se lee en el recorte 1.91:1 que usan los scrapers de OG, y ya se pide así para
+  // la cabecera de la propia página (§4.4 lo deja abierto entre las dos, este es el
+  // criterio elegido). `imagen` es el respaldo para un destino sin hero — no
+  // debería ocurrir hoy (los 7 destinos activos tienen las dos), pero el tipo la
+  // declara opcionalmente vacía (`filaADestino` cae a `""`).
+  const ogImage =
+    (await buildOgImage(destino.imagenHero || destino.imagen, destino.nombre)) ??
+    DEFAULT_OG_IMAGE;
+
+  return {
+    title: destino.nombre,
+    description: destino.resumen,
+    openGraph: {
+      type: "website",
+      siteName: t("siteName"),
+      locale,
+      title: destino.nombre,
+      description: destino.resumen,
+      url: getPathname({ href: `/destinos/${destino.slug}`, locale }),
+      images: [ogImage],
+    },
+    twitter: { card: "summary_large_image" },
+  };
 }
 
 export default async function DestinoPage({
