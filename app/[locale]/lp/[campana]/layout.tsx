@@ -34,11 +34,20 @@ export default async function LandingLayout({
       <header className="bg-surface-base shadow-[inset_0_-1px_0_var(--color-neutral-200)]">
         <div className="mx-auto flex max-w-6xl items-center px-6 py-3 md:px-8">
           {/*
-            Sin <Link>: identifica la marca, no navega. N-02.1 reemplaza el archivo
+            Sin <Link>: identifica la marca, no navega. N-02.1 reemplazó el archivo
             por la firma horizontal oficial del kit (public/README); las dimensiones
-            reales declaradas (fase-2-la-firma.md §4.2, en vez de 180×56 sobre el
-            sello cuadrado anterior) evitan que Next distorsione el aspect ratio. El
-            tamaño visual final (h-14) lo termina de ajustar N-02.2.
+            reales declaradas (width/height 1759×894) evitan que Next distorsione el
+            aspect ratio.
+
+            N-02.2 (fase-2-la-firma.md §4.2): dimensionado por ANCHO, no por altura
+            — el mínimo del manual (180px) se mide en el ancho. Esta landing NO
+            tiene el techo de 80px de la barra de navegación (§4.1 es exclusivo de
+            `navbar.tsx`; §4.2 no menciona ningún límite de alto para el
+            encabezado de campaña), así que aquí sí se puede cumplir el mínimo real
+            del manual sin el conflicto que sí existe en `navbar.tsx` (ver el
+            comentario ahí y docs/brand/specs/ejecucion/nodos/N-02.2.json): 200px
+            de ancho da ~102px de alto (200 × 894/1759), bien por encima de los
+            180px mínimos, con margen frente a compresión del contenedor.
           */}
           <Image
             src="/brand/logo-horizontal.png"
@@ -46,7 +55,7 @@ export default async function LandingLayout({
             width={1759}
             height={894}
             priority
-            className="h-14 w-auto"
+            className="h-auto w-[200px]"
           />
         </div>
       </header>

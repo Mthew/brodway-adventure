@@ -115,22 +115,56 @@ export function Navbar() {
 
   /*
    * El separador inferior va como sombra interior y NO como `border-b`.
-   * El contenido de la barra mide exactamente 80px, que es el techo del
+   * El contenido de la barra mide exactamente 80px (`h-20` explícito, no
+   * derivado de `py-*` + altura del contenido), que es el techo del
    * Pre-Flight §11.B; un borde de 1px lo dejaba en 81 e incumplía la casilla por
    * un píxel. Una sombra interior se dibuja dentro de la caja y no suma altura.
+   *
+   * N-02.2 fija la altura con `h-20` (antes: `py-3` + la altura del logo, que
+   * variaba entre 68px en móvil y 80px en escritorio porque el logo se
+   * dimensionaba por ALTURA). Con `h-20` fijo la barra mide 80px en TODOS los
+   * breakpoints, sin importar el tamaño del logo — ver nota sobre el panel móvil
+   * más abajo, que dependía de la altura variable anterior.
    */
   return (
     <header className="bg-surface-base sticky top-0 z-50 shadow-[inset_0_-1px_0_var(--color-neutral-200),0_1px_2px_rgba(0,48,98,0.06)]">
-      {/* La zona de seguridad del logo (py-3 + gap) respeta el mínimo del manual de marca. */}
-      <nav className="mx-auto flex max-w-6xl items-center gap-6 px-6 py-3 md:px-8">
-        <Link href="/" aria-label={t("irAlInicio")} className="shrink-0">
+      <nav className="mx-auto flex h-20 max-w-6xl items-center gap-6 px-6 md:px-8">
+        <Link href="/" aria-label={t("irAlInicio")} className="mr-2 shrink-0">
           {/*
-            N-02.1 solo reemplaza el archivo por la firma horizontal oficial del kit
-            (docs/brand/Kit_Marca_BroWay_Adventures/, ver public/README). El
-            dimensionado por ALTURA (h-11/h-14) es el mismo de antes a propósito:
-            pasar a ancho fijo con el mínimo de 180px del manual y la zona de
-            seguridad es alcance de N-02.2 (fase-2-la-firma.md §3.1, §4.1), no de
-            este nodo. width/height sí reflejan ya el tamaño real del archivo.
+            N-02.2 (fase-2-la-firma.md §3.1, §4.1): dimensionado por ANCHO, no por
+            altura — el mínimo del manual (180px) se mide en el ancho de la firma,
+            no en su alto. width/height del <Image> siguen reflejando el tamaño
+            real del archivo (1759×894) para que Next no distorsione el aspect
+            ratio; el CSS (`w-[142px] h-auto`) controla el ancho RENDERIZADO. El
+            `mr-2` (8px) del <Link> se suma al `gap-6` (24px) del <nav> para dar
+            32px hasta el siguiente elemento — el mínimo de B-1 es ≥31px — sin
+            tocar el gap general de la barra (que ya está ajustado al límite para
+            no desbordar a 1280px, ver comentario del <ul> de Destinos).
+
+            LÍMITE DEL ARCHIVO, verificado por medición (no se puede resolver solo
+            con CSS): `public/brand/logo-horizontal.png` es el lienzo oficial del
+            kit, 1759×894, pero el arte de tinta real mide solo 1442×464 dentro de
+            ese lienzo (bbox medido: x=[133,1581] y=[203,668]) — el archivo trae de
+            fábrica un margen interno que NO es la zona de seguridad del manual,
+            sino aire de exportación del kit. Como consecuencia, la proporción del
+            ARCHIVO (1759:894 ≈ 1,97:1) es muy distinta de la proporción del ARTE
+            (1444:464 ≈ 3,11:1) que usa el manual para definir el mínimo de 180px.
+            Dimensionar el archivo completo por ancho a 180px da una firma de
+            ~91px de alto (180 × 894/1759) — ya por sí sola más alta que el techo
+            de 80px de la barra, ANTES de sumar ningún margen vertical. Con el
+            archivo actual es matemáticamente imposible cumplir a la vez B-1
+            (firma ≥180px) y B-2 (barra ≤80px): incluso con margen vertical CERO,
+            el ancho máximo que cabe en 80px de alto es ~157px (80 × 1759/894).
+            Este nodo prioriza B-2 (invariante ya existente y referenciada en
+            varios lugares del repo) y maximiza el ancho dentro de ese techo:
+            142px de ancho → ~72px de alto → ~4px de aire vertical a cada lado
+            dentro de los 80px fijos de la barra. Sigue por debajo del mínimo de
+            180px del manual — bloqueado por el archivo, no por el CSS. Ver
+            docs/brand/specs/ejecucion/nodos/N-02.2.json para el detalle y las
+            dos salidas propuestas (recortar el archivo para que su lienzo
+            coincida con la proporción del arte, o usar el símbolo en vez de la
+            firma completa — fase-2-la-firma.md §3.1 ya contempla esa segunda
+            salida para el caso en que la firma completa no quepa en la barra).
           */}
           <Image
             src="/brand/logo-horizontal.png"
@@ -138,7 +172,7 @@ export function Navbar() {
             width={1759}
             height={894}
             priority
-            className="h-11 w-auto md:h-14"
+            className="h-auto w-[142px]"
           />
         </Link>
 
@@ -235,7 +269,16 @@ export function Navbar() {
           id="menu-movil"
           ref={panelRef}
           className={cn(
-            "bg-surface-base fixed inset-x-0 top-[65px] bottom-0 z-50 lg:hidden",
+            /*
+             * N-02.2: antes `top-[65px]`, un valor afinado a ojo para la altura
+             * MÓVIL anterior (44px de logo + 24px de padding = 68px, tampoco 65
+             * exactos). Con `h-20` la barra mide 80px fijos en TODOS los
+             * breakpoints (ver comentario en el <nav> de arriba), así que el
+             * panel debe empezar exactamente en `top-20` — con 65px quedaría
+             * 15px por debajo del borde real de la barra, superponiéndose a su
+             * franja inferior.
+             */
+            "bg-surface-base fixed inset-x-0 top-20 bottom-0 z-50 lg:hidden",
             "flex flex-col gap-2 overflow-y-auto px-6 py-6",
           )}
         >
