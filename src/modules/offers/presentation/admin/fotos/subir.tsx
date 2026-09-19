@@ -73,11 +73,10 @@ export function SubirFotos({
 
       router.refresh();
     } catch (e) {
-      setError(
-        e instanceof Error
-          ? `No se pudo subir: ${e.message}`
-          : "No se pudo subir la foto.",
-      );
+      // El detalle técnico va a la consola, no a la pantalla: quien sube la foto
+      // necesita saber qué hacer, no el mensaje del driver de Supabase (V-1, clara).
+      if (e instanceof Error) console.error("Error al subir foto de oferta:", e.message);
+      setError("No se pudo subir la foto. Revisa tu conexión e inténtalo de nuevo.");
     } finally {
       setSubiendo(false);
     }
