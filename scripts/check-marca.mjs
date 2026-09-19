@@ -1,14 +1,18 @@
 /**
  * Verifica que los cinco hex del manual de marca sean los únicos valores de
- * color de marca del repo (docs/brand/specs/fase-1-paleta-y-superficies.md §9).
+ * color de marca del repo (docs/brand/specs/fase-1-paleta-y-superficies.md §9),
+ * y que el copy respete el nombre, el léxico y la firma «Next Stop» que fija
+ * docs/brand/specs/fase-3-identidad-verbal.md §4 y §6.
  *
  * POR QUÉ EXISTE:
  * Nada frenaba a alguien de escribir un hex "parecido" directamente en un
- * componente. Este script adelanta, del check:marca completo de la Fase 7,
- * solo la comprobación de hex — las dos reglas que N-01.1 necesita para no
- * regresar a la desviación que acaba de corregir.
+ * componente, ni de escribir "Bro Way" o una de las ocho promesas prohibidas
+ * del manual en una cadena nueva. Este script cubre, del check:marca completo
+ * de la Fase 7 (fase-7-gobierno.md §3), las cinco reglas contables de las
+ * Fases 1 y 3 — R-1/R-2 (hex, N-01.2) y R-3/R-4/R-5 (texto, N-03.5).
  *
- * DOS REGLAS, NADA MÁS (nombre, léxico y "Next Stop" los añade la Fase 3):
+ * CINCO REGLAS (R-6 a R-10 — gráfico, tipografía, contraste — quedan para la
+ * Fase 7):
  *
  *   1. Los tres hex antiguos no aparecen en ningún sitio fuera de la lista
  *      blanca (`history/`, que archiva el defecto ya corregido, y
@@ -19,11 +23,32 @@
  *      única excepción declarada aquí mismo: la guía viva `/design-system`,
  *      cuya razón de existir es publicar la paleta.
  *
- * La segunda regla es la que impide que la desviación se repita: comparar
- * solo contra los tres hex viejos no detecta que alguien escriba un cuarto
- * hex "parecido" directo en un componente en lugar de usar el token.
+ *   3. Ninguna de las ocho promesas prohibidas (sistema-de-identidad.md §3.5,
+ *      fila P-10) aparece en `messages/`, `app/`, `components/`, `lib/` o
+ *      `src/**` — las superficies donde el copy llega al usuario.
  *
- * MODO DE PRUEBA (N-01.2):
+ *   4. Ninguna grafía incorrecta del nombre ("Bro Way", "Broway", "Bro-Way",
+ *      "BRO WAY"…) aparece en esas mismas superficies. El nombre correcto es
+ *      "BroWay Adventures" — B y W mayúsculas, una sola palabra (CLAUDE.md,
+ *      sección "Naming note").
+ *
+ *   5. «Next Stop» no se repite dentro del mismo archivo — la firma se usa
+ *      una sola vez por pieza (sistema-de-identidad.md §3, V-6).
+ *
+ * La segunda regla es la que impide que la desviación de color se repita:
+ * comparar solo contra los tres hex viejos no detecta que alguien escriba un
+ * cuarto hex "parecido" directo en un componente en lugar de usar el token.
+ *
+ * LÍMITE DECLARADO DE R-3 (no se inventa lo que el manual no hace contable):
+ * de las ocho promesas prohibidas, siete son frases literales y se buscan tal
+ * cual. La octava — "exceso de diminutivos o jerga" — no es una cadena de
+ * texto, es un juicio de estilo; fase-7-gobierno.md §4 ya reserva esa clase de
+ * criterio para la lectura en voz alta, no para un guardián mecánico. Forzar
+ * aquí una lista de sufijos "-ito/-ita" sería inventar una regla que el manual
+ * no define y produciría falsos positivos sin fin. Queda fuera de R-3 a
+ * propósito.
+ *
+ * MODO DE PRUEBA (N-01.2, extendido en N-03.5):
  * `CHECK_MARCA_ROOT=<ruta>` reemplaza la raíz del repo por un fixture aislado
  * (ver `scripts/__fixtures__/check-marca/`), para poder probar por mutación
  * sin ensuciar el repo real. En modo normal (sin la variable) la raíz es el
@@ -43,6 +68,51 @@ const HEX_ANTIGUOS = ["003062", "00aac3", "ff6a03"];
 
 // Los cinco hex oficiales del manual (§15).
 const HEX_OFICIALES = ["0d3b66", "16b4c6", "ff8a00", "f6e7c3", "f2f4f7"];
+
+// Regla 3: siete de las ocho promesas prohibidas (sistema-de-identidad.md
+// §3.5, fila P-10) que SÍ son una cadena literal buscable. Comparación
+// case-insensitive, igual que los hex. La octava ("exceso de diminutivos o
+// jerga") queda fuera — ver el límite declarado en la cabecera del archivo.
+const LEXICO_PROHIBIDO = [
+  "la mejor oferta",
+  "precio garantizado",
+  "viaja sin preocupaciones",
+  "cumplimos tus sueños",
+  "últimos cupos",
+  "te resolvemos todo",
+  "financiamos",
+];
+
+// Regla 4: cualquier variante de "bro"+"way" (con o sin espacio, con o sin
+// guion, en cualquier combinación de mayúsculas) que NO sea exactamente
+// "BroWay". Detecta "Bro Way", "Broway", "Bro-Way", "BRO WAY", etc. El límite
+// derecho es \b a propósito: "browayadventures.com" (dominio técnico, ver
+// lib/config.ts) no matchea porque "way" sigue pegado a "adventures" sin
+// separador — un dominio no es una grafía del nombre, es un identificador.
+const NOMBRE_INCORRECTO_REGEX = /\bbro[\s-]?way\b/gi;
+const NOMBRE_CORRECTO = "BroWay";
+
+// Regla 5: «Next Stop» —tal cual, con esa capitalización— no se repite
+// dentro del mismo archivo. Case-SENSITIVE a propósito: messages/en.json
+// usa "next stop" en minúscula como frase corriente del idioma ("Plan your
+// next stop"), no como la firma de marca (D-B, siempre "Next Stop", nunca
+// traducida ni en otra capitalización) — contarla sería un falso positivo.
+const NEXT_STOP_REGEX = /Next Stop/g;
+
+// Reglas 3/4/5 sólo se aplican donde el copy llega al usuario o se declara
+// como contenido de marca: `messages/` (next-intl), `app/`, `components/`,
+// `lib/` y, en paralelo, `src/**` — la migración de arquitectura puede estar a
+// medias (fase-7-gobierno.md §3.bis), así que ambas ubicaciones se cubren a
+// la vez en lugar de asumir una.
+function enAlcanceTexto(rutaRelativa) {
+  return (
+    rutaRelativa.startsWith(`messages${sep}`) ||
+    rutaRelativa.startsWith(`app${sep}`) ||
+    rutaRelativa.startsWith(`components${sep}`) ||
+    rutaRelativa.startsWith(`lib${sep}`) ||
+    rutaRelativa.startsWith(`src${sep}`)
+  );
+}
 
 // Directorios que no se recorren: dependencias, build, control de versiones,
 // los fixtures sintéticos de este mismo script (N-01.2, contienen hex a
@@ -87,6 +157,18 @@ const EXTENSIONES_REGLA_2 = new Set([
   ".cjs",
   ".css",
 ]);
+
+// Extensiones sobre las que corren las reglas 3/4/5: las mismas de siempre
+// MENOS `.css`. Una hoja de estilos no lleva copy de marca — solo lleva
+// nombres de `@keyframes`/clases como `broway-reveal` (ver app/globals.css),
+// que son identificadores kebab-case, no una mención en prosa del nombre.
+// Tratarlos como grafía incorrecta sería exactamente el mismo error que
+// tratar un hex citado en un comentario como si pintara — la Regla 2 ya
+// resuelve ese caso análogo quitando comentarios; este lo resuelve quitando
+// la extensión que nunca contiene prosa.
+const EXTENSIONES_TEXTO = new Set(
+  [...EXTENSIONES].filter((extension) => extension !== ".css"),
+);
 
 function fueraDeCodigoFuente(rutaRelativa) {
   return (
@@ -202,6 +284,66 @@ for (const rutaAbsoluta of archivos) {
         }
       });
   }
+
+  // Reglas 3/4/5: sólo dentro de messages/app/components/lib/src, y sólo
+  // fuera de comentarios para el código que los admite (mismo criterio que
+  // la Regla 2: una mención en un comentario es documentación, no copy real
+  // — es exactamente el caso de los comentarios de app/[locale]/layout.tsx y
+  // .../page.tsx que citan "Next Stop" al explicar la firma). Los JSON de
+  // `messages/` no tienen sintaxis de comentario, así que se leen tal cual.
+  if (enAlcanceTexto(rutaRelativa) && EXTENSIONES_TEXTO.has(extension)) {
+    const contenidoTexto = EXTENSIONES_REGLA_2.has(extension)
+      ? quitarComentarios(contenido)
+      : contenido;
+    const lineas = contenidoTexto.split("\n");
+
+    // Regla 3: léxico prohibido.
+    lineas.forEach((linea, indice) => {
+      const lineaMin = linea.toLowerCase();
+      for (const frase of LEXICO_PROHIBIDO) {
+        if (lineaMin.includes(frase)) {
+          violaciones.push({
+            regla: 3,
+            archivo: rutaRelativa,
+            linea: indice + 1,
+            detalle: `promesa prohibida "${frase}" — sistema-de-identidad.md §3.5 (P-10)`,
+          });
+        }
+      }
+    });
+
+    // Regla 4: grafía incorrecta del nombre.
+    lineas.forEach((linea, indice) => {
+      for (const coincidencia of linea.matchAll(NOMBRE_INCORRECTO_REGEX)) {
+        if (coincidencia[0] !== NOMBRE_CORRECTO) {
+          violaciones.push({
+            regla: 4,
+            archivo: rutaRelativa,
+            linea: indice + 1,
+            detalle: `grafía incorrecta del nombre "${coincidencia[0]}" — debe ser "BroWay Adventures" (B y W mayúsculas, una sola palabra)`,
+          });
+        }
+      }
+    });
+
+    // Regla 5: "Next Stop" no se repite en el mismo archivo.
+    let contadorNextStop = 0;
+    lineas.forEach((linea, indice) => {
+      const coincidencias = linea.match(NEXT_STOP_REGEX);
+      if (!coincidencias) return;
+      for (const coincidencia of coincidencias) {
+        contadorNextStop += 1;
+        if (contadorNextStop > 1) {
+          violaciones.push({
+            regla: 5,
+            archivo: rutaRelativa,
+            linea: indice + 1,
+            detalle: `"${coincidencia}" repetido (aparición #${contadorNextStop} en este archivo) — la firma se usa una sola vez por pieza`,
+          });
+        }
+      }
+    });
+  }
 }
 
 if (violaciones.length === 0) {
@@ -220,6 +362,11 @@ console.error(
     "  history/ o docs/brand/** como defecto ya corregido.\n" +
     "  Regla 2: los cinco hex oficiales solo se declaran en app/globals.css — en\n" +
     "  cualquier otro archivo, usa el token (bg-brand-navy, text-brand-navy, …).\n" +
-    "  La única excepción es la guía viva en /design-system.\n",
+    "  La única excepción es la guía viva en /design-system.\n" +
+    "  Regla 3: ninguna de las ocho promesas prohibidas (sistema-de-identidad.md\n" +
+    "  §3.5) en messages/, app/, components/, lib/ o src/**.\n" +
+    "  Regla 4: el nombre se escribe \"BroWay Adventures\" — B y W mayúsculas, una\n" +
+    "  sola palabra. Nunca \"Bro Way\", \"Broway\", \"Bro-Way\" ni \"BRO WAY\".\n" +
+    "  Regla 5: «Next Stop» se firma una sola vez por archivo/pieza.\n",
 );
 process.exit(1);
