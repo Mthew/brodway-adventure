@@ -1,0 +1,57 @@
+{
+  "id": "N-05.1",
+  "titulo": "Inventario, veredicto, recortes y alt de las 22 imagenes",
+  "estado": "completado",
+  "fecha": "2026-09-18",
+  "rama": "fase-1/marca-n-05-1-inventario-fotos",
+  "objetivo": "Cada una de las 22 imagenes de public/destinos/ tiene un veredicto escrito (se queda / se re-encuadra / se reemplaza); las que se re-encuadran estan recortadas segun fase-5 §4; ningun alt de messages/es.json o messages/en.json describe algo que no esta en la foto.",
+  "artefactos": [
+    "docs/brand/specs/ejecucion/N-05.1-inventario-fotos.md (inventario de 22 filas)",
+    "public/destinos/punta-cana.webp (recortada)",
+    "messages/es.json (3 alt corregidos: heroImagenAlt, heroImagenAlt2, heroImagenAlt3)",
+    "messages/en.json (mismos 3 alt, traducidos)"
+  ],
+  "metodo": {
+    "revision": "Las 22 imagenes se leyeron una por una con la herramienta de lectura de imagenes (no se adivino por nombre de archivo), contra los seis criterios de fase-5 §3 y las reglas de encuadre por uso de §4, priorizando como se ven en movil.",
+    "herramientas_de_recorte_probadas": "sips (macOS) SI puede leer WebP (dimensiones y pixeles) pero NO puede escribirlo: 'Error: Can't write format: org.webmproject.webp', probado con un archivo real, no asumido. magick/convert no estan instalados. Se encontraron cwebp y Pillow (python3 -c \"import PIL\") ya presentes en el sistema via Homebrew, sin necesitar red, y se uso Pillow (decode -> crop -> resize LANCZOS -> re-encode webp quality=80 method=6) para el unico recorte real que hacia falta."
+  },
+  "veredictos": {
+    "se_queda": 13,
+    "se_re_encuadra": 1,
+    "se_reemplaza": 8,
+    "detalle": "ver docs/brand/specs/ejecucion/N-05.1-inventario-fotos.md — tabla completa de 22 filas con uso real, dimensiones, personas/luz/composicion y veredicto por imagen"
+  },
+  "recortes": {
+    "aplicado": [
+      {
+        "archivo": "public/destinos/punta-cana.webp",
+        "motivo": "fase-5 §1.2 y §5 lo senalan explicitamente: mitad de la imagen era arena vacia sin foco ('postal de resort desierto')",
+        "operacion": "crop (left=166, top=0, right=833, bottom=500) sobre el original 1000x750 -> resize a 1000x750 con Lanczos -> re-encode WebP quality=80 method=6",
+        "peso_antes_bytes": 133118,
+        "peso_despues_bytes": 97686,
+        "cumple_f7": true
+      }
+    ],
+    "pendiente_no_aplicable": "Los 8 archivos con veredicto 'se reemplaza' NO se corrigen recortando: su defecto (falta de personas obligatoria, luz plana en toda la toma, o falta de reconocibilidad del destino) esta en el contenido, no en el encuadre. Forzar un recorte ahi seria el 'falso verde' que fase-5 §5 distingue explicitamente entre re-encuadrar y reemplazar."
+  },
+  "alt_corregidos": {
+    "archivos": ["messages/es.json", "messages/en.json"],
+    "claves": ["home.heroImagenAlt", "home.heroImagenAlt2", "home.heroImagenAlt3"],
+    "resumen": "Los tres alt describian algo ausente de la foto real: heroImagenAlt decia 'viajeros' sobre un paisaje sin gente; heroImagenAlt2 decia 'al atardecer' sobre una foto de luz plana y nublada; heroImagenAlt3 decia 'playa' sobre una vista aerea de un islote sin playa visible. Los tres se reescribieron para describir lo que SI esta en la foto (no un texto generico tipo 'foto de destino') en los dos idiomas."
+  },
+  "falso_verde_evitado": "grafo.json advertia que el alt podia 'corregirse' quitando la mencion a personas/momentos ausentes pero quedando generico ('Foto de un paisaje'), lo cual pasa F-2 tal como esta escrito sin cumplir su espiritu. Los tres alt nuevos se escribieron describiendo elementos concretos y verificables de cada foto (rayos de sol entre nubes, balcones y torre coloniales, islote con arrecife), no una descripcion vacia.",
+  "hallazgos_no_anticipados": [
+    "lib/mock/offers.ts referencia 4 archivos que no existen: /destinos/santa-marta-2.webp, /destinos/santa-marta-3.webp, /destinos/punta-cana-2.webp, /destinos/punta-cana-3.webp (rutas de galeria rotas). No corregido: editar offers.ts esta fuera de 'toca' de este nodo.",
+    "public/destinos/cancun-3.webp no esta referenciada en ningun .ts/.tsx del repo (huerfana) y muestra unas banderas azules que podrian llevar marca/logo de un hotel o mayorista, sin poder confirmarlo con certeza a la resolucion disponible — se marca para revision humana antes de activarla en cualquier pagina.",
+    "app/[locale]/(sitio)/nosotros/page.tsx:91 usa alt=\"\" (decorativo) para nosotros.webp, que NO es decorativa — es la foto de la pagina 'Nosotros'. No corregido aqui porque no vive en messages/es.json ni messages/en.json (el mandato explicito de este nodo) y porque escribirle un alt real es una clave de i18n nueva, no una correccion de una existente.",
+    "cartagena-3.webp (galeria de oferta) es la unica foto del set que cumple los seis criterios sin reservas (persona real, rostro visible, expresion natural, luz natural, destino reconocible) y hoy esta escondida en una galeria secundaria — se recomienda evaluarla para el hero o la campana en una fase de arquitectura, fuera del alcance de este nodo.",
+    "El conteo de fase-5 §1.1 dice 6 imagenes en la familia 'hero de escritorio 1920x1080'; el conteo real da 7 (incluye home-hero.webp ademas de las 6 de destino). Imprecision menor del spec original, no un archivo faltante."
+  ],
+  "notas": [
+    "Colision esperada con N-03.1 y N-03.4 sobre messages/*.json: este nodo solo toco las 3 claves 'heroImagenAlt*' bajo 'home', sin tocar las claves de CTA/idioma que tocan esos otros nodos.",
+    "No se toco CURRENT.md (instruccion explicita del encargo).",
+    "public/destinos/README (lista provisional priorizada, F-4) es responsabilidad de N-05.2, que depende de este inventario — no se crea aqui.",
+    "La seccion de fotografia en /design-system (F-6) es responsabilidad de N-05.4, tambien dependiente de este inventario — no se crea aqui.",
+    "La medicion de Lighthouse/peso antes-despues (F-7, N-05.V) tampoco es de este nodo; el unico dato de peso verificado aqui es el de punta-cana.webp (baja, no sube)."
+  ]
+}
