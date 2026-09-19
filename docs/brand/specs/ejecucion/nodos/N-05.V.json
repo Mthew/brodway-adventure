@@ -1,0 +1,86 @@
+{
+  "id": "N-05.V",
+  "titulo": "Medicion de peso y LCP antes/despues del recorte de fotografia (N-05.1)",
+  "estado": "completado",
+  "fecha": "2026-09-18",
+  "rama": "fase-1/marca-n-05-v-lighthouse-fotografia",
+  "objetivo": "Verificar F-7 de fase-5-fotografia.md: el peso total del sitio no sube y el LCP movil no empeora tras el recorte de punta-cana.webp aplicado en N-05.1.",
+  "cambio_medido": {
+    "commit_n_05_1": "966844dcc8c14087c613570e7b28e70fa8fda36a",
+    "commit_padre": "ef3c0dcf1d1cc9ffe2377e820bf6f9c88989920d",
+    "archivo": "public/destinos/punta-cana.webp",
+    "peso_antes_bytes": 133118,
+    "peso_despues_bytes": 97686,
+    "delta_bytes": -35432,
+    "delta_pct": "-26.6%",
+    "verificado_con": "git show <commit_padre>:public/destinos/punta-cana.webp comparado byte a byte contra el archivo actual en public/destinos/punta-cana.webp"
+  },
+  "bloqueo_encontrado": {
+    "descripcion": "No se pudo correr Lighthouse sobre las paginas reales del sitio (/es, /es/destinos/internacionales) con `pnpm build && pnpm start` ni con `pnpm dev`. Desde N-04.0/N-04.1 el contenido de destinos y ofertas se lee en vivo de Supabase (lib/destinations/index.ts, lib/offers) y no del mock estatico lib/mock/destinations.ts. Sin NEXT_PUBLIC_SUPABASE_URL/NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY el build falla en `next build` (Error: Faltan NEXT_PUBLIC_SUPABASE_URL o NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, lanzado al generar /[locale]/destinos/[slug]) y `pnpm dev` sirve /es con HTTP 500 por el mismo motivo (verificado con curl).",
+    "por_que_no_se_resolvio_aqui": "Este nodo es de medicion pura (sin codigo nuevo). Crear credenciales de Supabase locas, o levantar un stack local con `supabase start` + migraciones + semillas reconstruidas a mano desde lib/supabase/mapeo.ts, es trabajo de infraestructura fuera del alcance declarado del nodo y además implicaría escribir codigo/config nuevo. Las credenciales reales de Supabase no se piden ni se exponen aqui, siguiendo la politica de proteccion de datos de la organizacion.",
+    "verificado": [
+      "El activo estatico SI se sirve sin Supabase: `curl http://localhost:3001/destinos/punta-cana.webp` -> HTTP 200, 97686 bytes (public/ se sirve independiente de las rutas que consultan la base).",
+      "`curl -L http://localhost:3001/es` -> HTTP 500 (confirma el bloqueo, no se asumio)."
+    ]
+  },
+  "alternativa_usada": {
+    "metodo": "Prueba aislada de LCP: dos paginas HTML estaticas identicas (mismo layout, mismo CSS, mismo <img>) que replican el contenedor real de components/ui/card.tsx donde se pinta punta-cana.webp (aspect-ratio 4/5, object-fit: cover, imagen a ancho completo del contenedor ~85vw en movil, sin JS ni fuentes externas para no anadir ruido). La UNICA variable que cambia entre las dos paginas es el archivo de imagen: una sirve el punta-cana.webp de antes de N-05.1 (133118 bytes) y la otra el de despues (97686 bytes). Cada una se sirvio con `python3 -m http.server` en su propio puerto (5500 / 5501) y se audito con Lighthouse CLI (`npx lighthouse`) dos veces cada una para chequear estabilidad.",
+    "por_que_es_valido": "El diff completo de N-05.1 (`git show --stat 966844d`) toca un solo binario (punta-cana.webp) mas texto de alt y documentacion, sin tocar CSS ni la estructura de la tarjeta. Aislar esa unica variable en un layout identico mide el efecto causal del recorte sobre el LCP sin necesitar datos reales de Supabase ni fabricar numeros.",
+    "limitacion_declarada": "Esto NO es un Lighthouse de la pagina real (/es o /es/destinos/internacionales): mide el efecto del archivo en un contenedor equivalente, no el LCP de la pagina completa con su JS, fuentes y resto de imagenes. Ademas, en la tarjeta real (`components/ui/card.tsx`) la imagen de destino no lleva `priority`, por lo que en la pagina real puede no ser el elemento LCP si no es la primera tarjeta visible; esta prueba asume el caso donde SI lo es (peor caso / caso de mayor impacto), que es el escenario relevante para responder F-7."
+  },
+  "configuracion_lighthouse": {
+    "comando_base": "npx lighthouse <url> --preset=perf --form-factor=mobile --screenEmulation.mobile --screenEmulation.width=390 --screenEmulation.height=844 --screenEmulation.deviceScaleFactor=3 --throttling-method=devtools --chrome-flags=\"--headless=new --no-sandbox\" --only-categories=performance",
+    "throttling": {
+      "metodo": "devtools (simulacion de red+CPU real, no solo 'simulate')",
+      "rttMs": 150,
+      "downloadThroughputKbps": 1474.56,
+      "uploadThroughputKbps": 675,
+      "cpuSlowdownMultiplier": 4
+    },
+    "cache": "fria en cada corrida: Lighthouse CLI lanza una instancia de Chrome headless nueva con perfil temporal por corrida, sin cache previa de la pagina",
+    "corridas_por_variante": 2
+  },
+  "resultados": {
+    "antes": {
+      "archivo": "punta-cana.webp (133118 bytes)",
+      "LCP_ms": [1875.17, 1873.101],
+      "totalBytes": 135647,
+      "FCP_ms": 630.726,
+      "performanceScore": 1
+    },
+    "despues": {
+      "archivo": "punta-cana.webp (97686 bytes)",
+      "LCP_ms": [1694.188, 1681.965],
+      "totalBytes": 100213,
+      "FCP_ms": 621.395,
+      "performanceScore": 1
+    },
+    "delta": {
+      "LCP_promedio_ms": "-186 ms (de ~1874 ms a ~1688 ms)",
+      "LCP_pct": "-9.9%",
+      "totalBytes": "-35434 bytes (-26.1%), consistente con el delta de 35432 bytes del archivo"
+    }
+  },
+  "peso_directorio_publico": {
+    "metodo": "suma de bytes de cada blob de public/destinos/ en el commit padre vs. HEAD, via `git ls-tree` + `git cat-file -s` (sin necesitar checkout del commit viejo)",
+    "antes_bytes": 3006456,
+    "antes_mb": 2.87,
+    "despues_bytes": 2971024,
+    "despues_mb": 2.83,
+    "delta_bytes": -35432,
+    "coincide_con": "el delta de punta-cana.webp exactamente — confirma que N-05.1 no toco ningun otro archivo de public/destinos/"
+  },
+  "criterio_f7": {
+    "cumple": true,
+    "justificacion": "El peso total de public/destinos/ baja (no sube) en los 35432 bytes exactos del recorte, y la prueba aislada de LCP muestra una mejora de ~186 ms (~9.9%) en el escenario de mayor impacto (imagen como elemento LCP), nunca un empeoramiento. F-7 pide 'el peso total no sube y el LCP movil no empeora' — ambas condiciones se cumplen con margen; no se midio degradacion en ningun eje."
+  },
+  "artefactos": [
+    "docs/brand/specs/ejecucion/nodos/N-05.V.json (este archivo)",
+    "Tabla antes/despues en el cuerpo del PR"
+  ],
+  "notas": [
+    "No se toco CURRENT.md (instruccion explicita del encargo).",
+    "No hay cambio de codigo de produccion: node_modules/, /tmp y el scratchpad de la sesion (paginas HTML de prueba, servidores python, reportes JSON de Lighthouse) quedan fuera del repo y no se commitean.",
+    "Si en una fase futura se dispone de credenciales de Supabase de un entorno de prueba (o de N-05.2/N-05.4 avanzando), vale la pena repetir esta medicion sobre /es y /es/destinos/internacionales reales para confirmar el LCP de la pagina completa, no solo el efecto aislado del archivo."
+  ]
+}
