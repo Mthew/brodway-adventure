@@ -19,7 +19,7 @@ import { ButtonLink } from "@/src/shared/ui/button";
 import { Card, DestinationCard, HotelCard, PackageCard } from "@/components/ui/card";
 import { Hero } from "@/components/ui/hero";
 import { Section } from "@/src/shared/ui/section";
-import { LeadForm } from "@/components/forms/lead-form";
+import { LeadForm } from "@/src/modules/leads/presentation/components/lead-form";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
 import { buildWhatsAppUrl, CONTACT, RNT_NUMBER, SITE_URL } from "@/lib/config";
 import { Link } from "@/lib/i18n/navigation";

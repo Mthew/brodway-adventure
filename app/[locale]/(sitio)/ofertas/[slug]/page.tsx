@@ -8,7 +8,7 @@ import { Badge } from "@/src/shared/ui/badge";
 import { ButtonLink } from "@/src/shared/ui/button";
 import { PackageCard } from "@/components/ui/card";
 import { Section } from "@/src/shared/ui/section";
-import { LeadForm } from "@/components/forms/lead-form";
+import { LeadForm } from "@/src/modules/leads/presentation/components/lead-form";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
 import { StickyCta } from "@/src/modules/offers/presentation/components/sticky-cta";
 import { OfferGallery } from "@/src/modules/offers/presentation/components/offer-gallery";
