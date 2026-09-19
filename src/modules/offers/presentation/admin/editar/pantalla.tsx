@@ -104,7 +104,7 @@ export default async function EditarOferta({
                   Reactivar
                 </button>
                 <p className="text-caption text-red-800">
-                  Vuelve a verse en el sitio si su vigencia sigue vigente.
+                  Vuelve a verse en el sitio, salvo que su vigencia ya haya vencido por fecha.
                 </p>
               </form>
             )}
