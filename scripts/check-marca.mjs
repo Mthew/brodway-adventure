@@ -45,8 +45,11 @@ const HEX_ANTIGUOS = ["003062", "00aac3", "ff6a03"];
 const HEX_OFICIALES = ["0d3b66", "16b4c6", "ff8a00", "f6e7c3", "f2f4f7"];
 
 // Directorios que no se recorren: dependencias, build, control de versiones,
-// y los fixtures sintéticos de este mismo script (N-01.2) — contienen hex a
-// propósito para probar las reglas, no son código ni docs reales del repo.
+// los fixtures sintéticos de este mismo script (N-01.2, contienen hex a
+// propósito para probar las reglas) y `.claude/` — gitignorado, local a cada
+// máquina, puede contener git worktrees enteros con copias de archivos de
+// commits anteriores a este (ver `.gitignore`: "Skills y agentes de Claude
+// Code: locales a cada máquina, no se versionan").
 const DIRS_IGNORADOS = new Set([
   "node_modules",
   ".git",
@@ -55,6 +58,7 @@ const DIRS_IGNORADOS = new Set([
   "coverage",
   "__fixtures__",
   ".turbo",
+  ".claude",
 ]);
 
 // Extensiones de archivo de texto donde un hex de marca tiene sentido.
