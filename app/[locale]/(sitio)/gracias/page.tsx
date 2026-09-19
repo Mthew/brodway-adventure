@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { ChatCircleDots, CheckCircle } from "@phosphor-icons/react/dist/ssr";
+import { Check, ChatCircleText } from "@phosphor-icons/react/dist/ssr";
 
 import { ButtonLink } from "@/src/shared/ui/button";
 import { Section } from "@/src/shared/ui/section";
@@ -54,7 +54,7 @@ export default async function GraciasPage({
 
       <Section className="flex min-h-[60vh] flex-col justify-center">
         <div className="flex max-w-2xl flex-col gap-6">
-          <CheckCircle
+          <Check
             weight="regular"
             className="text-brand-turquoise size-12"
             aria-hidden="true"
@@ -90,7 +90,7 @@ export default async function GraciasPage({
               rel="noopener noreferrer"
               className="self-start"
             >
-              <ChatCircleDots weight="regular" className="size-5" aria-hidden="true" />
+              <ChatCircleText weight="regular" className="size-5" aria-hidden="true" />
               {t("ctaWhatsapp")}
             </ButtonLink>
 

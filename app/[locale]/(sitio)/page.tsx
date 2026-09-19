@@ -2,13 +2,10 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import {
   ChatCircleText,
-  ChatText,
   Clock,
-  Compass,
   HourglassSimple,
   ListChecks,
   MapPin,
-  SealCheck,
   ShieldCheck,
   Tag,
   UsersThree,
@@ -123,7 +120,7 @@ export default async function HomePage({
   const whatsappHref = buildWhatsAppUrl({ message: t("heroSubtitulo") });
 
   const pasos = [
-    { icono: ChatText, titulo: "paso1Titulo", texto: "paso1Texto" },
+    { icono: ChatCircleText, titulo: "paso1Titulo", texto: "paso1Texto" },
     { icono: ListChecks, titulo: "paso2Titulo", texto: "paso2Texto" },
     { icono: UsersThree, titulo: "paso3Titulo", texto: "paso3Texto" },
   ] as const;
@@ -131,7 +128,7 @@ export default async function HomePage({
   const razones = [
     { icono: Tag, titulo: "porQue1Titulo", texto: "porQue1Texto" },
     { icono: ChatCircleText, titulo: "porQue2Titulo", texto: "porQue2Texto" },
-    { icono: SealCheck, titulo: "porQue3Titulo", texto: "porQue3Texto" },
+    { icono: ShieldCheck, titulo: "porQue3Titulo", texto: "porQue3Texto" },
     { icono: HourglassSimple, titulo: "porQue4Titulo", texto: "porQue4Texto" },
   ] as const;
 

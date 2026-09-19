@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { CalendarBlank, Compass } from "@phosphor-icons/react/dist/ssr";
+import { CalendarBlank, ChatCircleText } from "@phosphor-icons/react/dist/ssr";
 
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { Badge } from "@/src/shared/ui/badge";
@@ -240,7 +240,7 @@ export default async function DestinoPage({
 
       <Section background="navy">
         <div className="flex flex-col items-start gap-5">
-          <Compass
+          <ChatCircleText
             weight="regular"
             className="text-brand-turquoise size-8"
             aria-hidden="true"

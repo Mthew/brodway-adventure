@@ -1,5 +1,20 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
+import {
+  CalendarBlank,
+  Check,
+  ChatCircleText,
+  Clock,
+  HourglassSimple,
+  List,
+  ListChecks,
+  MapPin,
+  Phone,
+  ShieldCheck,
+  Tag,
+  UsersThree,
+  X,
+} from "@phosphor-icons/react/dist/ssr";
 
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { Badge } from "@/src/shared/ui/badge";
@@ -90,6 +105,90 @@ const NEUTRALS = [
   { step: "700", className: "bg-neutral-700" },
   { step: "800", className: "bg-neutral-800" },
   { step: "900", className: "bg-neutral-900" },
+] as const;
+
+/**
+ * Un concepto, un icono — máximo dos, con criterio escrito (fase-4-sistema-grafico.md
+ * §4.2). `Compass` se retiró: estaba importado sin usar en la home y, donde sí tenía
+ * uso real (CTA de destino), el concepto detrás era "invitación a conversar", no
+ * "explorar" — así que pasó a compartir icono con "conversación" en vez de sumar un
+ * tercer significante.
+ *
+ * "Verificado / respaldo" es el único concepto con dos iconos, porque agrupa dos
+ * cosas genuinamente distintas: un ítem afirmativo dentro de una lista (una oferta
+ * incluye X) y un respaldo de la propia empresa (RNT, NIT, seguridad anti-fraude).
+ * Confundirlos donde antes había `Check`, `CheckCircle`, `SealCheck` y `ShieldCheck`
+ * mezclados sin criterio era el problema que esta tabla cierra.
+ */
+const ICON_CONCEPTS = [
+  {
+    concepto: "Verificado / respaldo — incluido en el plan",
+    iconos: [{ Icono: Check, nombre: "Check" }],
+    criterio:
+      "Ítem afirmativo dentro de una lista: qué incluye una oferta o un paquete, o la confirmación puntual de que una acción se completó (ej. envío del formulario en /gracias). Va emparejado con X para lo que NO incluye.",
+  },
+  {
+    concepto: "Verificado / respaldo — respaldo institucional",
+    iconos: [{ Icono: ShieldCheck, nombre: "ShieldCheck" }],
+    criterio:
+      "Verificación de la propia agencia: RNT/NIT, afiliaciones, seguridad anti-fraude. Sustituyó a SealCheck, que cubría el mismo terreno (verificación legal) con un icono distinto sin razón real — dos iconos para la misma idea en páginas distintas (home, nosotros) era justo el problema, no dos conceptos legítimos.",
+  },
+  {
+    concepto: "Conversación",
+    iconos: [{ Icono: ChatCircleText, nombre: "ChatCircleText" }],
+    criterio:
+      "Único icono para cualquier invitación a hablar con un asesor: contarnos el viaje, que te responda una persona, el CTA de un destino o el botón de WhatsApp en /gracias. Reemplazó a ChatText y ChatCircleDots — ninguno de los tres marcaba una diferencia de significado real, solo de dónde vivía cada uso.",
+  },
+  {
+    concepto: "Lo que no incluye",
+    iconos: [{ Icono: X, nombre: "X" }],
+    criterio: "Sin cambio: es el par negativo de \"incluido en el plan\".",
+  },
+  {
+    concepto: "Ubicación",
+    iconos: [{ Icono: MapPin, nombre: "MapPin" }],
+    criterio: "Sin cambio.",
+  },
+  {
+    concepto: "Horario / duración",
+    iconos: [{ Icono: Clock, nombre: "Clock" }],
+    criterio: "Sin cambio.",
+  },
+  {
+    concepto: "Fecha",
+    iconos: [{ Icono: CalendarBlank, nombre: "CalendarBlank" }],
+    criterio: "Sin cambio.",
+  },
+  {
+    concepto: "Precio / etiqueta",
+    iconos: [{ Icono: Tag, nombre: "Tag" }],
+    criterio: "Sin cambio.",
+  },
+  {
+    concepto: "Grupo de personas",
+    iconos: [{ Icono: UsersThree, nombre: "UsersThree" }],
+    criterio: "Sin cambio.",
+  },
+  {
+    concepto: "Lista de pasos",
+    iconos: [{ Icono: ListChecks, nombre: "ListChecks" }],
+    criterio: "Sin cambio.",
+  },
+  {
+    concepto: "Urgencia / tiempo limitado",
+    iconos: [{ Icono: HourglassSimple, nombre: "HourglassSimple" }],
+    criterio: "Sin cambio.",
+  },
+  {
+    concepto: "Teléfono",
+    iconos: [{ Icono: Phone, nombre: "Phone" }],
+    criterio: "Sin cambio.",
+  },
+  {
+    concepto: "Menú",
+    iconos: [{ Icono: List, nombre: "List" }],
+    criterio: "Sin cambio. Vive en el menú admin, fuera del sitio público.",
+  },
 ] as const;
 
 const TYPE_SCALE = [
@@ -389,6 +488,68 @@ export default async function DesignSystemPage({
               ),
             )}
           </div>
+        </Block>
+
+        <Block
+          title="Iconografía"
+          description={
+            'Un concepto, un icono — dos como máximo, con el criterio escrito aquí (fase-4-sistema-grafico.md §4.2). Lineal, weight="regular", máximo 4-5 por composición, nunca mezclado con sólido o 3D. Antes de importar un icono nuevo para un concepto que ya está en esta tabla, usa el que ya existe.'
+          }
+        >
+          <div className="overflow-hidden rounded-md border border-neutral-200">
+            <table className="text-body-sm w-full">
+              <thead>
+                <tr className="bg-neutral-50 text-left">
+                  <th className="p-2 font-semibold text-brand-navy">
+                    Concepto
+                  </th>
+                  <th className="p-2 font-semibold text-brand-navy">Icono</th>
+                  <th className="p-2 font-semibold text-brand-navy">
+                    Criterio de uso
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {ICON_CONCEPTS.map(({ concepto, iconos, criterio }) => (
+                  <tr key={concepto} className="border-t border-neutral-200 align-top">
+                    <td className="p-2 font-semibold text-neutral-800">
+                      {concepto}
+                    </td>
+                    <td className="p-2">
+                      <div className="flex flex-wrap items-center gap-3">
+                        {iconos.map(({ Icono, nombre }) => (
+                          <span
+                            key={nombre}
+                            className="inline-flex items-center gap-1.5"
+                          >
+                            <Icono
+                              weight="regular"
+                              className="text-brand-navy size-5 shrink-0"
+                              aria-hidden="true"
+                            />
+                            <code className="font-mono text-neutral-600">
+                              {nombre}
+                            </code>
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="p-2 text-neutral-600">{criterio}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-caption text-neutral-500">
+            <code className="font-mono">Compass</code> se retiró: en la home estaba
+            importado sin usar, y en la página de destino cubría un concepto
+            (&ldquo;invitación a conversar&rdquo;) que ya tenía icono propio.
+            Verificación:{" "}
+            <code className="font-mono">
+              {"grep -rn \"Compass\" app/ src/"}
+            </code>{" "}
+            debe devolver cero coincidencias.
+          </p>
         </Block>
 
         <Block title="Etiquetas">
