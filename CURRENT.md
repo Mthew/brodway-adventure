@@ -11,23 +11,23 @@
 | Sitio, docs del cliente, panel admin, **E1**+**E2** ([`006`](history/006-supabase-y-arquitectura-cliente.md)) | ✅ Mergeado | PR #1-#22 |
 | Marca: fuente de verdad, 7 specs, 7 decisiones ([`007`](history/007-fuente-de-verdad-de-marca.md)) | ✅ Mergeado | PR #24 |
 | Arquitectura module-first: 5 ADR + guardrails deterministas en `docs/architecture/` | ✅ Mergeado | PR #23 |
-| Grafo de ejecución de marca (`docs/brand/specs/grafo.md`, 33 nodos) | ✅ Mergeado | PR #25, #26 |
-| **32/33 nodos del grafo ejecutados**: falta solo `N-07.4` | ✅ Mergeado | PR #28-#62 |
+| **Grafo de marca completo: 33/33 nodos** ([`008`](history/008-grafo-de-marca-ejecutado.md)) | ✅ Mergeado | PR #25-#64 |
 
 ## ⚠️ Producción en Vercel congelada en PR #46 — no confundir con `main`
 
-`main` tiene todo el trabajo de marca; **el sitio público (`browayadventures.com`/`*.vercel.app`) no**.
-`N-02.V` encontró y arregló un bug real (`lib/config.ts`, `??`→`||` ante `NEXT_PUBLIC_SITE_URL=""`
-en Vercel) que rompía el build desde `N-02.4`, pero el deploy a producción sigue sin dispararse
-incluso con el fix — la API de Vercel devolvió `402 api-deployments-free-per-day, remaining: 0`
-(cuota diaria agotada, probablemente por el volumen de ramas de esta sesión). Se resuelve solo
-(reset de cuota) o redesplegando a mano desde el dashboard — no es un problema de código.
+`main` tiene todo el trabajo de marca; **el sitio público no**. Bug real ya corregido
+(`lib/config.ts`, `??`→`||` ante `NEXT_PUBLIC_SITE_URL=""`), pero el deploy sigue sin dispararse:
+la API de Vercel devuelve `402 api-deployments-free-per-day, remaining: 0` (cuota agotada). Se
+resuelve solo o redesplegando a mano — verificar que producción refleje `main` antes de asumir que
+algo de marca ya es visible para el cliente.
 
-## Próximo paso: 1 nodo restante del grafo
+## Próximo paso: sin frente abierto en marca
 
-- `N-07.4` (`sistema-de-identidad.md` §7 enlaza `aprobaciones.md` y `check-marca.mjs`) — depende de `N-07.1` ✅, listo para arrancar.
-- **La marca tiene un documento rector:** [`sistema-de-identidad.md`](docs/brand/sistema-de-identidad.md). Los hex del código ya son los de la marca (`#0D3B66`/`#16B4C6`/`#FF8A00`). `pnpm check:marca` (10 reglas, R-1 a R-10) corre dentro de `pnpm build`.
-- **Navbar usa el símbolo, no la firma horizontal completa** — `logo-horizontal.png` es incompatible con la barra de 80px por el margen interno del archivo del kit (`N-02.2`). El símbolo vive en `public/brand/simbolo.png`.
+- `pnpm check:marca` (10 reglas, R-1 a R-10) corre dentro de `pnpm build` — cualquier desviación
+  futura de marca falla el build solo.
+- Deuda técnica suelta, sin nodo propio: regresión de LCP en `/ofertas/[slug]` por el banner de
+  cookies, 7 mensajes de error crudo en `lib/admin/{ofertas,destinos}.ts`/`sesion.ts`.
+- **Navbar usa el símbolo** (`public/brand/simbolo.png`), no la firma completa — detalle en [`008`](history/008-grafo-de-marca-ejecutado.md).
 
 ## Lo que hay que saber para no romper nada
 
