@@ -1,0 +1,50 @@
+{
+  "id": "N-06.2",
+  "titulo": "Documentación de tipografía — /design-system y sistema-de-identidad.md reflejan que el código cumple Manrope",
+  "estado": "hecho",
+  "fecha": "2026-09-18",
+  "rama": "fase-1/marca-n-06-2-docs-tipografia",
+  "pr": null,
+  "objetivo": "/design-system y docs/brand/sistema-de-identidad.md §5.2/§5.3/§8.1 dejan de decir solo 'decidido: Manrope' (eso ya lo decían antes de N-06.1) y pasan a decir explícitamente que el CÓDIGO cumple: familia real, pesos cargados y cadena de respaldo, con evidencia del CSS servido.",
+  "falso_verde_verificado": "sistema-de-identidad.md §4.6/§5.2 ya declaraba 'Resuelto/Decidido: Manrope' desde el 2026-09-11, ANTES de que N-06.1 tocara una línea de código. Se confirmó que ese texto por sí solo no cambiaba con N-06.1 (era el mismo antes y después del merge) — por eso este nodo añade, en vez de reescribir, un párrafo aparte que dice 'aplicado en código' con la evidencia del CSS servido, distinguible de la frase de la decisión.",
+  "cambios": {
+    "docs/brand/sistema-de-identidad.md": "§4.6: añade párrafo 'Aplicado en código, no solo decidido' con la evidencia del CSS servido (--font-manrope, --font-display/--font-body, 31 @font-face, cero Montserrat/Lato/Caveat). §5.2: añade una frase que remite a la ejecución de N-06.1. §5.3: extiende el veredicto de Caveat para decir que ANTES de N-06.1 seguía cargándose (aunque con cero usos) y que N-06.1 retiró esa carga. §8.1: añade un párrafo que dice explícitamente 'el código la cumple', citando los mismos datos verificados.",
+    "app/[locale]/(sitio)/design-system/page.tsx": "Bloque 'Tipografía' reescrito: description ahora dice 'Manrope, aplicado' en vez de solo describir la escala. Se agrega una tarjeta con familia real + pesos cargados + cadena de respaldo + la evidencia de verificación (CSS servido, no JSX), una tabla de los 5 pesos realmente cargados con muestra renderizada en cada peso (font-weight inline, no clases arbitrarias), y la escala original (TYPE_SCALE) se conserva debajo, ahora como sub-sección con su propio rótulo."
+  },
+  "verificacion": {
+    "metodo": "pnpm dev levantado en este worktree (tras `pnpm install`, node_modules no venía en el worktree). Se leyó el CSS realmente servido en /_next/static/chunks/*.css vía curl, no el JSX ni globals.css fuente — la misma disciplina que exige fase-6-tipografia.md §1.2/§5.1.",
+    "pagina_inspeccionada": "http://localhost:3000/design-system (bloqueada inicialmente por falta de NEXT_PUBLIC_SUPABASE_*; se envolvió temporalmente `listActiveOffers()` en `.catch(() => [])` solo para poder cargar la página sin datos reales, se verificó el CSS, y esa línea temporal se revirtió con `git checkout` antes de escribir el cambio real — no queda en el diff final)",
+    "hallazgos_css_servido": {
+      "font_manrope_valor": "--font-manrope: \"Manrope\", \"Manrope Fallback\";",
+      "font_display_computado": "--font-display: var(--font-manrope), Arial, Helvetica, sans-serif;",
+      "font_body_computado": "--font-body: var(--font-manrope), Arial, Helvetica, sans-serif;",
+      "conteo_font_face": 31,
+      "familias_en_font_face": ["Manrope", "Manrope Fallback"],
+      "pesos_font_face": "400, 500, 600, 700, 800 — 6 fragmentos unicode-range por peso, cero fragmentos de otra familia",
+      "grep_caveat_montserrat_lato_css_servido": 0
+    },
+    "verificacion_texto_publicado": "El texto que /design-system muestra hoy (familia Manrope, pesos 400·500·600·700·800, cadena Manrope/Arial/Helvetica/sans-serif) se copió literal de estos hallazgos, no de lo que N-06.1 dice haber hecho — son dos fuentes independientes que coinciden."
+  },
+  "bloqueos": [
+    {
+      "descripcion": "pnpm build local falló con 'Faltan NEXT_PUBLIC_SUPABASE_URL...' incluso ANTES de aplicar el diff de este nodo (confirmado revirtiendo el diff con git checkout/git apply y corriendo pnpm build otra vez, mismo error, misma línea) — es un problema de entorno del worktree, no algo que este nodo introdujo.",
+      "resultado": "Resuelto localmente copiando el .env.local de desarrollo ya existente en otro worktree de esta misma sesión (mismo mecanismo documentado en N-06.1.json bloqueos: 'se copió el .env real ... mismo mecanismo ya usado en los demás nodos día-1'), no credenciales inventadas ni solicitadas a nadie. Con ese .env.local, `pnpm build` corrió completo (check:tokens/check:current/check:deps/vitest en verde, Next.js compiló y generó las ~90 páginas) sin ningún error ni warning nuevo respecto al estado sin este diff."
+    }
+  ],
+  "criterios_cubiertos": {
+    "seccion_5.2_dice_aplicado": "cumplido — párrafo explícito 'Aplicado en código' con evidencia, no solo la frase de decisión que ya existía antes de N-06.1",
+    "seccion_5.3_cierra_caveat": "cumplido — añade que N-06.1 retiró la carga que sobrevivía con cero usos",
+    "seccion_8.1_cierra_contradiccion": "cumplido — añade que la contradicción de §5.2/§5.3 'queda cerrada en el código, no solo en el registro de la decisión'",
+    "design_system_muestra_familia_pesos_fallback": "cumplido — tarjeta con los tres datos + tabla de pesos renderizados + referencia a la evidencia de verificación",
+    "verificado_contra_css_servido_no_creencia": "cumplido — ver 'verificacion' arriba; pnpm dev + curl a /_next/static/chunks/*.css, no lectura de app/globals.css ni de los layouts"
+  },
+  "artefactos": [
+    "app/[locale]/(sitio)/design-system/page.tsx",
+    "docs/brand/sistema-de-identidad.md"
+  ],
+  "fuera_de_alcance_dejado_intacto": [
+    "CURRENT.md — instrucción explícita de no tocarlo en este nodo (sigue con la línea 'el código sigue en Montserrat/Lato/Caveat hasta N-06.1', que ya es falsa tras N-06.1; no se corrigió aquí por instrucción explícita, queda para quien gestione CURRENT.md)",
+    "app/globals.css, app/[locale]/layout.tsx, app/admin/layout.tsx, src/platform/admin/admin-shell.tsx — son N-06.1, ya mergeado, no se tocan aquí",
+    "Otras secciones de /design-system (color N-01.1, iconografía N-04.2, fotografía N-05.4) — colisión conocida, se edita solo la sección de tipografía"
+  ]
+}
