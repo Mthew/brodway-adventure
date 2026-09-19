@@ -1,6 +1,6 @@
 import { setRequestLocale } from "next-intl/server";
 
-import { Navbar } from "@/components/layout/navbar";
+import { Navbar } from "@/src/shared/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { WhatsAppFloating } from "@/components/layout/whatsapp-floating";
 

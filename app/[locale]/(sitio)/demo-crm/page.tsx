@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/src/shared/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Section } from "@/components/ui/section";
+import { Section } from "@/src/shared/ui/section";
 import { CampoRespuesta } from "@/components/demo-crm/campo-respuesta";
 import {
   BANDERAS,

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/src/shared/ui/button";
 import { Link } from "@/lib/i18n/navigation";
 import {
   actualizarConsentimiento,

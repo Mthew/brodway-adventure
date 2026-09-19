@@ -5,8 +5,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Check } from "@phosphor-icons/react/dist/ssr";
 
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
-import { ButtonLink } from "@/components/ui/button";
-import { Section } from "@/components/ui/section";
+import { ButtonLink } from "@/src/shared/ui/button";
+import { Section } from "@/src/shared/ui/section";
 import { LeadForm } from "@/components/forms/lead-form";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
 import { CapturaUtm } from "@/components/campana/captura-utm";

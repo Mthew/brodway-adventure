@@ -6,11 +6,11 @@ import { useTranslations } from "next-intl";
 
 import { Link } from "@/lib/i18n/navigation";
 import { buildWhatsAppUrl } from "@/lib/config";
-import { ButtonLink } from "@/components/ui/button";
+import { ButtonLink } from "@/src/shared/ui/button";
 import { cn } from "@/lib/utils";
 
-import { LanguageSwitcher } from "./language-switcher";
-import { WhatsAppIcon } from "./whatsapp-floating";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
 
 /**
  * Los tres destinos del menú del cliente, agrupados bajo "Destinos".

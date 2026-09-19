@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import type { Destination } from "@/lib/types/destination";
 import type { Offer } from "@/lib/types/offer";
 
-import { Badge } from "./badge";
+import { Badge } from "@/src/shared/ui/badge";
 
 export function Card({ className, ...props }: React.ComponentProps<"div">) {
   return (

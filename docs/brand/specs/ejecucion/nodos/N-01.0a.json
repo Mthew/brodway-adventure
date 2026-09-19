@@ -1,0 +1,30 @@
+{
+  "id": "N-01.0a",
+  "titulo": "Migración limpia: componentes compartidos",
+  "estado": "cerrado",
+  "abierto_en": "2026-09-18T00:00:00Z",
+  "cerrado_en": "2026-09-18T00:00:00Z",
+  "commit_base": "8ccfaf8e503e7e13a1148dd44c40b13b08ef259e",
+  "rama": "arq/n-01-0a-migrar-shared",
+  "commit": "da933aa",
+  "artefactos": [
+    "src/shared/ui/button.tsx",
+    "src/shared/ui/badge.tsx",
+    "src/shared/ui/section.tsx",
+    "src/shared/layout/navbar.tsx",
+    "src/modules/tracking/presentation/components/cookie-banner.tsx",
+    "src/modules/offers/presentation/components/sticky-cta.tsx"
+  ],
+  "verificacion": {
+    "comando": "pnpm build",
+    "resultado": "EXIT=0",
+    "detalle": "check:tokens OK, check:current 41/50, check:deps sin violaciones (191 módulos, 359 dependencias), vitest sin archivos de test, next build: 90 páginas generadas.",
+    "recorrido_navegador": "pnpm dev; curl -L /es (200, navbar y menu-destinos presentes) y /es/ofertas/eje-cafetero-4-dias (200, StickyCta/barraCta presentes). Sin diferencia visual reportada."
+  },
+  "falso_verde_descartado": "El grep de rutas absolutas viejas (@/components/ui/badge\") dio cero, pero no cubre imports relativos: components/ui/card.tsx importaba Badge como \"./badge\". Se detectó corriendo `grep -rn \"from \\\"\\./\" components/` tras el reemplazo masivo y corrigiendo el único caso encontrado antes de dar el nodo por cerrado.",
+  "prueba_mutacion": {
+    "accion": "rm src/shared/ui/button.tsx (con .next limpio) + pnpm exec next build",
+    "resultado": "Build falló con 'Module not found: ./src/shared/ui/button' en los 15 archivos que lo importan directamente (más los que lo hacen a través de navbar/cookie-banner). Archivo restaurado y build limpio verificado de nuevo tras restaurar."
+  },
+  "notas": "navbar.tsx importaba ./language-switcher y ./whatsapp-floating (relativos) — esos dos NO migran en este nodo, se quedan en components/layout/. Se cambiaron a rutas absolutas @/components/layout/... en vez de relativas rotas."
+}

@@ -2,7 +2,7 @@
 
 import { useId, useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/src/shared/ui/button";
 import type { Respuesta } from "@/lib/demo-crm/respuestas";
 import { cn } from "@/lib/utils";
 

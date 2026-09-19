@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/src/shared/ui/button";
 import { Checkbox, Input, Select } from "@/components/ui/field";
 import { Link, useRouter } from "@/lib/i18n/navigation";
 import { capturarUtm, leerUtm } from "@/lib/tracking/utm";

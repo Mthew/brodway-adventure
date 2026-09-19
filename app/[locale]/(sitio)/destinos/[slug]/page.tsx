@@ -5,10 +5,10 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CalendarBlank, Compass } from "@phosphor-icons/react/dist/ssr";
 
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
-import { ButtonLink } from "@/components/ui/button";
+import { Badge } from "@/src/shared/ui/badge";
+import { ButtonLink } from "@/src/shared/ui/button";
 import { PackageCard } from "@/components/ui/card";
-import { Section } from "@/components/ui/section";
+import { Section } from "@/src/shared/ui/section";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
 import { SLUGS_RESERVADOS } from "@/lib/destinations/categorias";
 import { buildWhatsAppUrl, SITE_URL } from "@/lib/config";

@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Caveat, Lato, Montserrat } from "next/font/google";
 
 import { routing } from "@/lib/i18n/routing";
-import { CookieBanner } from "@/components/layout/cookie-banner";
+import { CookieBanner } from "@/src/modules/tracking/presentation/components/cookie-banner";
 import "../globals.css";
 
 /**
