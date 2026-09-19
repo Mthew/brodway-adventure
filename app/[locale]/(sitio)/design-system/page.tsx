@@ -506,6 +506,222 @@ export default async function DesignSystemPage({
             ))}
           </div>
         </Block>
+
+        <Block
+          title="Fotografía"
+          description="El principio del manual es «mostrar cómo se siente viajar, no solamente cómo luce el destino» — hoy 21 de 22 fotos del catálogo no lo cumplen. Los seis criterios, los ratios y los ejemplos reales de abajo salen del inventario de la auditoría (docs/brand/specs/ejecucion/N-05.1-inventario-fotos.md), no de un ideal abstracto."
+        >
+          <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-3">
+              <p className="text-body-sm font-semibold text-brand-navy">
+                Los seis criterios (fase-5-fotografia.md §3)
+              </p>
+              <div className="overflow-hidden rounded-md border border-neutral-200">
+                <table className="text-body-sm w-full">
+                  <thead>
+                    <tr className="bg-neutral-50 text-left">
+                      <th className="p-2 font-semibold text-brand-navy">
+                        Criterio
+                      </th>
+                      <th className="p-2 font-semibold text-brand-navy">
+                        Regla verificable
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      [
+                        "Personas",
+                        "Expresiones naturales, diversidad de edades, relaciones auténticas. Rostro o gesto visible: una foto de espaldas no cumple “expresión natural”.",
+                      ],
+                      [
+                        "Luz",
+                        "Natural, tonos limpios, sensación de amplitud. Se rechaza el cielo gris plano y la subexposición.",
+                      ],
+                      [
+                        "Composición",
+                        "Espacio negativo donde va el texto, no en cualquier parte (ver ratios abajo).",
+                      ],
+                      [
+                        "Momentos",
+                        "Preparación, llegada, descubrimiento o conexión. Una escena con una decisión o un encuentro, no un lugar vacío.",
+                      ],
+                      [
+                        "Destinos",
+                        "Reconocible cuando el destino es el tema. Equilibrio entre playa, ciudad, naturaleza, cultura y experiencia en el conjunto.",
+                      ],
+                      [
+                        "Edición",
+                        "Color natural. Sin filtros extremos, sin sobresaturación, sin cielos irreales.",
+                      ],
+                    ].map(([criterio, regla]) => (
+                      <tr key={criterio} className="border-t border-neutral-200">
+                        <td className="p-2 align-top font-semibold whitespace-nowrap text-brand-navy">
+                          {criterio}
+                        </td>
+                        <td className="p-2 text-neutral-700">{regla}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-caption text-neutral-500">
+                Cuántas fotos deben tener personas: el hero de la home y el de
+                campaña, obligatorio. El conjunto publicado, al menos una de
+                cada tres. Las fichas de destino pueden mostrar el lugar sin
+                gente si es reconocible. Hoy el catálogo tiene 1 de cada 22 con
+                persona reconocible.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <p className="text-body-sm font-semibold text-brand-navy">
+                Encuadre y espacio negativo por uso (fase-5-fotografia.md §4)
+              </p>
+              <div className="overflow-hidden rounded-md border border-neutral-200">
+                <table className="text-body-sm w-full">
+                  <thead>
+                    <tr className="bg-neutral-50 text-left">
+                      <th className="p-2 font-semibold text-brand-navy">Uso</th>
+                      <th className="p-2 font-semibold text-brand-navy">Ratio</th>
+                      <th className="p-2 font-semibold text-brand-navy">
+                        Dónde vive el texto
+                      </th>
+                      <th className="p-2 font-semibold text-brand-navy">
+                        Qué exige a la foto
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      [
+                        "Hero de escritorio",
+                        "16:9",
+                        "Abajo a la izquierda",
+                        "Tercio inferior izquierdo sin detalle que compita; el sujeto, a la derecha o al centro",
+                      ],
+                      [
+                        "Hero móvil",
+                        "2:3",
+                        "72% inferior",
+                        "Sujeto en el tercio superior; la mitad inferior, limpia",
+                      ],
+                      [
+                        "Hero de campaña",
+                        "16:9",
+                        "Izquierda, con CTA",
+                        "Igual que el hero de escritorio",
+                      ],
+                      [
+                        "Tarjeta de destino",
+                        "4:5 y 4:3",
+                        "Fuera de la foto, debajo",
+                        "Foco centrado; nada importante en el borde inferior, donde caen badge y precio",
+                      ],
+                      [
+                        "Galería de oferta",
+                        "4:3 · 16:10 · 1:1",
+                        "Fuera",
+                        "Foco centrado; la miniatura cuadrada recorta los lados",
+                      ],
+                    ].map(([uso, ratio, texto, exige]) => (
+                      <tr key={uso} className="border-t border-neutral-200">
+                        <td className="p-2 align-top font-semibold whitespace-nowrap text-brand-navy">
+                          {uso}
+                        </td>
+                        <td className="p-2 align-top font-mono whitespace-nowrap text-neutral-700">
+                          {ratio}
+                        </td>
+                        <td className="p-2 align-top text-neutral-700">
+                          {texto}
+                        </td>
+                        <td className="p-2 align-top text-neutral-700">
+                          {exige}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-caption text-neutral-500">
+                El recorte es parte de la decisión, no un accidente del CSS:
+                una foto que solo funciona completa no sirve para una
+                tarjeta.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <p className="text-body-sm font-semibold text-brand-navy">
+                Ejemplos reales — del inventario de las 22 fotos de{" "}
+                <code className="font-mono">public/destinos/</code>
+              </p>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Card className="flex flex-col overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/destinos/cartagena-3.webp"
+                    alt="Palenquera con vestido tradicional y taxi amarillo de fondo en Cartagena, rostro y sonrisa visibles"
+                    className="h-48 w-full object-cover"
+                  />
+                  <div className="flex flex-col gap-2 p-4">
+                    <Badge variant="trust" className="self-start">
+                      Se queda
+                    </Badge>
+                    <p className="text-body-sm font-semibold text-brand-navy">
+                      cartagena-3.webp
+                    </p>
+                    <p className="text-caption text-neutral-600">
+                      La mejor foto del set: persona real, rostro y expresión
+                      genuina visibles, luz natural, destino reconocible. Hoy
+                      vive escondida en una galería de oferta secundaria —
+                      candidata a promoverse a hero o campaña en una fase de
+                      arquitectura.
+                    </p>
+                  </div>
+                </Card>
+
+                <Card className="flex flex-col overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/destinos/home-hero.webp"
+                    alt="Valle de montaña cubierto de bosque, sin personas, usado hoy como hero de la home"
+                    className="h-48 w-full object-cover"
+                  />
+                  <div className="flex flex-col gap-2 p-4">
+                    <Badge variant="dato" className="self-start">
+                      Se reemplaza
+                    </Badge>
+                    <p className="text-body-sm font-semibold text-brand-navy">
+                      home-hero.webp
+                    </p>
+                    <p className="text-caption text-neutral-600">
+                      Paisaje sin personas usado como primera imagen del
+                      hero de home, donde la persona es obligatoria (§3.1).
+                      Prioridad 1 de reemplazo: es la pieza que declara de
+                      qué va la marca y hoy contradice el principio visual.
+                    </p>
+                  </div>
+                </Card>
+              </div>
+              <p className="text-caption text-neutral-500">
+                Tercer caso, intermedio:{" "}
+                <code className="font-mono">punta-cana.webp</code> tenía
+                veredicto “se re-encuadra” — el contenido servía pero media
+                imagen era arena vacía sin foco (“postal de resort
+                desierto”). Se recortó (1000×750, foco en sombrillas y
+                camastros) sin necesitar material nuevo; hoy pasa a “se
+                queda” en su uso de tarjeta de destino.
+              </p>
+              <p className="text-caption text-neutral-500">
+                Inventario completo de las 22 fotos con su veredicto:{" "}
+                <code className="font-mono">
+                  docs/brand/specs/ejecucion/N-05.1-inventario-fotos.md
+                </code>
+                .
+              </p>
+            </div>
+          </div>
+        </Block>
       </div>
     </Section>
   );

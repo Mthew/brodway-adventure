@@ -1,0 +1,42 @@
+{
+  "id": "N-05.4",
+  "titulo": "Seccion de fotografia en /design-system",
+  "estado": "completado",
+  "fecha": "2026-09-18",
+  "rama": "fase-1/marca-n-05-4-design-system-fotografia",
+  "objetivo": "/design-system publica los seis criterios de direccion fotografica (fase-5-fotografia.md §3), los ratios de encuadre por uso (§4) y ejemplos de si/no REALES tomados de la auditoria N-05.1, no ejemplos genericos.",
+  "artefactos": [
+    "app/[locale]/(sitio)/design-system/page.tsx (nuevo Block \"Fotografia\", agregado al final, sin reformatear el resto del archivo)"
+  ],
+  "metodo": {
+    "fuente_criterios": "docs/brand/specs/fase-5-fotografia.md §3 (seis criterios) y §4 (ratios de encuadre por uso), transcritos a tablas siguiendo el mismo patron de tabla ya usado en el Block 'Idioma del sitio' de esta pagina.",
+    "fuente_ejemplos_reales": "docs/brand/specs/ejecucion/nodos/N-05.1.json y docs/brand/specs/ejecucion/N-05.1-inventario-fotos.md (ya mergeados) — se citan archivos reales de public/destinos/ con su veredicto real, no ejemplos inventados.",
+    "falso_verde_evitado": "El encargo advertia que se podia publicar solo texto plano con los criterios sin ningun ejemplo real (F-6 pide ejemplos, no solo criterios). Se evito publicando 3 fotos reales renderizadas con <img> desde public/destinos/, cada una con su veredicto real citado del inventario."
+  },
+  "ejemplos_reales_usados": [
+    {
+      "archivo": "cartagena-3.webp",
+      "veredicto": "Se queda",
+      "motivo": "Persona real (palenquera), rostro y expresion genuina visibles, luz natural, destino reconocible. Es la mejor foto del set segun N-05.1 fila 6."
+    },
+    {
+      "archivo": "home-hero.webp",
+      "veredicto": "Se reemplaza",
+      "motivo": "Paisaje sin personas usado como primera imagen del hero de home, donde persona es obligatoria (§3.1). Prioridad 1 de reemplazo segun fase-5 §5 y N-05.1 fila 1."
+    },
+    {
+      "archivo": "punta-cana.webp",
+      "veredicto": "Se re-encuadra (mencionado en texto, sin tarjeta propia)",
+      "motivo": "Contenido servia pero media imagen era arena vacia sin foco; se recorto en N-05.1 (1000x750, foco en sombrillas/camastros) y hoy pasa a 'se queda' en su uso de tarjeta."
+    }
+  ],
+  "colision_conocida": "N-01.1 (color), N-04.2 (iconografia) y N-06.2 (tipografia) editan el mismo archivo design-system/page.tsx en paralelo, en ramas separadas. Este nodo solo agrego un Block nuevo al final del archivo, sin tocar ningun otro Block existente, para minimizar el area de conflicto en el rebase posterior.",
+  "verificacion": {
+    "build": "pnpm build (con pnpm install previo y .env.local copiado desde el checkout principal para las variables de Supabase que exige el build) — EXIT=0.",
+    "manual": "Seccion 'Fotografia' visible en /design-system con: tabla de 6 criterios, tabla de ratios por uso, y 2 tarjetas de ejemplo real (cartagena-3.webp / home-hero.webp) mas un parrafo con el caso intermedio de punta-cana.webp."
+  },
+  "notas": [
+    "No se toco CURRENT.md (instruccion explicita del encargo).",
+    "No se reformateo ningun Block existente de design-system/page.tsx."
+  ]
+}
