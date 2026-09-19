@@ -7,7 +7,7 @@ import {
   BarraAccion,
   BotonPrincipal,
   Error as ErrorFormulario,
-} from "@/app/admin/piezas";
+} from "@/src/platform/admin/piezas";
 
 export function FormularioPublicar({
   ofertaId,

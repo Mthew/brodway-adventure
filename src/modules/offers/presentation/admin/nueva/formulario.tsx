@@ -3,7 +3,7 @@
 import { useActionState, useRef, useState } from "react";
 
 import { crearBorrador } from "@/app/admin/acciones/ofertas";
-import { Avance, BarraAccion, BotonPrincipal, Error as ErrorFormulario } from "@/app/admin/piezas";
+import { Avance, BarraAccion, BotonPrincipal, Error as ErrorFormulario } from "@/src/platform/admin/piezas";
 
 import { CamposOferta } from "../campos";
 import { DestinoRapido } from "./destino-rapido";

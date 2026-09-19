@@ -1,4 +1,4 @@
-import { Campo, ENTRADA } from "@/app/admin/piezas";
+import { Campo, ENTRADA } from "@/src/platform/admin/piezas";
 import { aTexto, type CamposOfertaValores } from "@/lib/admin/campos";
 
 /**

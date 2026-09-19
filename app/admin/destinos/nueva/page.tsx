@@ -1,12 +1,3 @@
-import { redirect } from "next/navigation";
-
-import { getUsuarioAdmin } from "@/lib/supabase/admin";
-
-import { FormularioNuevoDestino } from "./formulario";
-
-export default async function NuevoDestinoPage() {
-  const usuario = await getUsuarioAdmin();
-  if (!usuario) redirect("/admin/entrar");
-
-  return <FormularioNuevoDestino />;
-}
+// Ruta de convención de Next.js: su contenido vive en
+// `src/modules/destinations/presentation/admin/nueva/pantalla.tsx` (N-01.0b).
+export { default } from "@/src/modules/destinations/presentation/admin/nueva/pantalla";

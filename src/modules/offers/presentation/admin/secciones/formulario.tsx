@@ -10,7 +10,7 @@ import {
   Campo,
   ENTRADA,
   Error as ErrorFormulario,
-} from "@/app/admin/piezas";
+} from "@/src/platform/admin/piezas";
 
 type Oferta = {
   id: string;

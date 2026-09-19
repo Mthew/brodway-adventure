@@ -9,7 +9,7 @@ import {
   Campo,
   ENTRADA,
   Error as ErrorFormulario,
-} from "@/app/admin/piezas";
+} from "@/src/platform/admin/piezas";
 
 /** Pide el correo para enviar el enlace de recuperación. Ver `acciones.ts:olvideClave`. */
 export default function OlvidePage() {
