@@ -4,7 +4,7 @@
   "estado": "completado",
   "commit_base": "230b548",
   "rama": "fase-1/marca-n-02-5-ogimage-por-pagina",
-  "commit": "PENDIENTE — se completa tras el commit",
+  "commit": "1c59c7d",
   "artefactos": [
     "app/[locale]/(sitio)/ofertas/[slug]/page.tsx",
     "app/[locale]/(sitio)/destinos/[slug]/page.tsx",
