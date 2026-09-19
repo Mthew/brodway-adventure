@@ -207,15 +207,16 @@ function enListaBlancaHexAntiguos(rutaRelativa) {
   );
 }
 
-// Única excepción declarada de la regla 2: la guía viva, que existe para
-// publicar la paleta oficial.
-const EXCEPCION_HEX_OFICIALES = join(
-  "app",
-  "[locale]",
-  "(sitio)",
-  "design-system",
-  "page.tsx",
-);
+// Excepciones declaradas de la regla 2: la guía viva, que existe para
+// publicar la paleta oficial, y `lib/theme-color.ts`, el único punto donde
+// `viewport.themeColor` (que pinta la barra de direcciones vía
+// `<meta name="theme-color">`, no CSS, y por eso no puede leer
+// `var(--color-brand-navy)`) necesita el hex como string literal — ver el
+// comentario de ese archivo.
+const EXCEPCIONES_HEX_OFICIALES = new Set([
+  join("app", "[locale]", "(sitio)", "design-system", "page.tsx"),
+  join("lib", "theme-color.ts"),
+]);
 
 function listarArchivos(dir) {
   const resultado = [];
@@ -266,7 +267,7 @@ for (const rutaAbsoluta of archivos) {
     EXTENSIONES_REGLA_2.has(extension) &&
     !fueraDeCodigoFuente(rutaRelativa) &&
     rutaRelativa !== "app/globals.css" &&
-    rutaRelativa !== EXCEPCION_HEX_OFICIALES
+    !EXCEPCIONES_HEX_OFICIALES.has(rutaRelativa)
   ) {
     quitarComentarios(contenido)
       .split("\n")

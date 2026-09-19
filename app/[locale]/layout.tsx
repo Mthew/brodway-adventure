@@ -1,12 +1,24 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Manrope } from "next/font/google";
 
+import { SITE_URL } from "@/lib/config";
 import { routing } from "@/lib/i18n/routing";
+import { THEME_COLOR_NAVY } from "@/lib/theme-color";
 import { CookieBanner } from "@/src/modules/tracking/presentation/components/cookie-banner";
 import "../globals.css";
+
+/**
+ * Next.js 16: `themeColor` ya NO va dentro de `metadata`, sale a un export
+ * `viewport` aparte (fase-2-la-firma.md §4.4). Navy oficial de marca — hex
+ * literal aislado en `lib/theme-color.ts` porque este atributo no es CSS y no
+ * puede leer `var(--color-brand-navy)` (ver comentario de ese archivo).
+ */
+export const viewport: Viewport = {
+  themeColor: THEME_COLOR_NAVY,
+};
 
 /**
  * TIPOGRAFÍA OFICIAL DE MARCA. Manrope, una sola familia (D-A, decidido
@@ -52,7 +64,15 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "metadata" });
 
+  // `es` va sin prefijo por la estrategia "as-needed" de next-intl, así que su
+  // URL canónica es la raíz.
+  const path = locale === routing.defaultLocale ? "/" : `/${locale}`;
+
   return {
+    // Sin esto, `openGraph.images`/`opengraph-image.png` se resuelven como
+    // rutas relativas — inválidas para un scraper externo (WhatsApp, Slack,
+    // Meta) que necesita una URL absoluta. fase-2-la-firma.md §4.4.
+    metadataBase: new URL(SITE_URL),
     title: {
       default: t("defaultTitle"),
       template: `%s · ${t("siteName")}`,
@@ -66,6 +86,32 @@ export async function generateMetadata({
         en: "/en",
         "x-default": "/",
       },
+    },
+    openGraph: {
+      type: "website",
+      siteName: t("siteName"),
+      locale,
+      title: t("defaultTitle"),
+      description: t("defaultDescription"),
+      url: path,
+      // La convención de archivo `app/opengraph-image.png` NO se resuelve
+      // sola aquí: vive en `app/` (fuera de `[locale]`) y Next.js 16 no cruza
+      // esa frontera de segmento dinámico para adjuntar imágenes estáticas —
+      // verificado por mutación (ver más abajo). Se referencia a mano en su
+      // lugar; `metadataBase` (arriba) la vuelve absoluta.
+      images: [
+        {
+          url: "/opengraph-image.png",
+          width: 1200,
+          height: 630,
+          alt: "Firma de BroWay Adventures sobre fondo navy de marca.",
+        },
+      ],
+      // Páginas con foto propia (oferta, destino, campaña) sobrescriben este
+      // array con su propia foto — fuera de este nodo (N-02.5).
+    },
+    twitter: {
+      card: "summary_large_image",
     },
   };
 }
