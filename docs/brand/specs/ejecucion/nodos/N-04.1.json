@@ -6,7 +6,7 @@
   "cerrado_en": "2026-09-19T03:22:30Z",
   "commit_base": "7883d75396921171a7f2747d73af5dd52044d0de",
   "rama": "fase-1/marca-n-04-1-ruta-de-marca",
-  "commit": "PENDIENTE — se completa tras el primer commit de este nodo",
+  "commit": "5191a58",
   "artefactos": [
     "app/globals.css",
     "app/[locale]/(sitio)/design-system/page.tsx",
