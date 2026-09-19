@@ -1,0 +1,46 @@
+{
+  "id": "N-03.1",
+  "titulo": "CTAs corregidos y D-G aplicada en messages/*.json",
+  "fuente": "fase-3 §3.1, §3.2 · grafo.json:N-03.1",
+  "fecha_ejecucion": "2026-09-18",
+  "rama": "fase-1/marca-n-03-1-ctas-dg",
+  "estado": "hecho",
+  "decisiones_aplicadas": [
+    {
+      "id": "hablaConAsesor",
+      "veredicto": "sustituido",
+      "detalle": "Clave `cta.hablaConAsesor` eliminada de messages/es.json y messages/en.json. Los 7 call sites que usaban tc(\"hablaConAsesor\") (todos botones de WhatsApp) se movieron a tc(\"cuentanosComoViajar\"), uno de los cinco CTAs aprobados que ya existía en messages.cta pero no tenía ningún uso en el código. Se descartó 'planeemosViaje' (la otra opción del criterio de fase-3 §3.1) porque ya se usa en 2 sitios distintos (home, ficha de destino) y reutilizar la clave sin uso mantiene el diff más chico.",
+      "archivos": [
+        "messages/es.json",
+        "messages/en.json",
+        "app/[locale]/(sitio)/playas-y-hoteles/page.tsx",
+        "app/[locale]/(sitio)/destinos/page.tsx",
+        "app/[locale]/(sitio)/nosotros/page.tsx",
+        "app/[locale]/(sitio)/como-pagar/page.tsx",
+        "app/[locale]/(sitio)/faq/page.tsx",
+        "app/[locale]/(sitio)/ofertas/page.tsx",
+        "components/destinos/listado-categoria.tsx"
+      ]
+    },
+    {
+      "id": "cotizaWhatsapp",
+      "veredicto": "se_mantiene_documentado",
+      "detalle": "No se modifica ninguna clave ni valor. Queda documentado aquí (JSON no admite comentarios inline) que 'cotizaWhatsapp' es una variante declarada de canal, no una sustitución de los cinco CTAs aprobados: nombra el canal (WhatsApp) como información que reduce incertidumbre (paso 3 de la estructura del mensaje del manual), no como promesa. Sigue usada en 7 sitios (home x2, ficha de destino, contacto, ficha de oferta, navbar x2)."
+    },
+    {
+      "id": "D-G",
+      "veredicto": "aplicada",
+      "detalle": "nav.mejoresOfertas, nav.playasYHoteles, ofertas.tituloListado y playasYHoteles.titulo no se tocaron (se mantiene el nombre de sección fijado por el cliente). playasYHoteles.intro ya traía la aclaración de selección propia / no ranking; se agregó la aclaración equivalente (redacción propia, no copiada) al inicio de ofertas.introListado en es y en. La home conserva su fórmula sin superlativo, sin cambios.",
+      "archivos": ["messages/es.json", "messages/en.json"]
+    }
+  ],
+  "verificacion": {
+    "grep_hablaConAsesor": "cero resultados en messages/, app/, components/ (quedan solo menciones históricas en docs/brand/specs/fase-3-identidad-verbal.md, que documentan el hallazgo original, no código)",
+    "listados_con_aclaracion": "confirmado en es y en: ofertas.introListado y playasYHoteles.intro abren ambos con su propia aclaración de selección, con redacción distinta entre sí",
+    "json_valido": "node -e JSON.parse(...) OK en ambos archivos",
+    "pnpm_build": "BLOQUEADO en este entorno: next build falla en generateStaticParams de /destinos/[slug] y /ofertas/[slug] por falta de NEXT_PUBLIC_SUPABASE_URL/NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (no hay .env.local en este worktree). No es causado por este cambio: pnpm check (tokens, CURRENT.md, deps, vitest) pasa en verde, y next build llega a compilar y a pasar TypeScript sin errores antes de fallar en el fetch de Supabase."
+  },
+  "hallazgos_relacionados_no_tocados": [
+    "gracias.ctaWhatsapp (messages/*.json) vale 'Habla con un asesor' / 'Talk to an advisor' — mismo texto genérico que hablaConAsesor pero en una clave distinta (namespace 'gracias'), fuera del conteo de fase-3 §3.1 (que audita messages.cta). No se tocó por estar fuera del alcance acotado de este nodo (\"las claves de hablaConAsesor/cotizaWhatsapp/D-G\"); se deja anotado para que fase-3 o un nodo posterior lo evalúe."
+  ]
+}

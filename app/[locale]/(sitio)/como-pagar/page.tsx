@@ -127,7 +127,7 @@ export default async function ComoPagarPage({
             className="shrink-0"
           >
             <WhatsAppIcon className="size-5" />
-            {tc("hablaConAsesor")}
+            {tc("cuentanosComoViajar")}
           </ButtonLink>
         </div>
       </Section>

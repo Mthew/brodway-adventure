@@ -23,7 +23,6 @@
   "cta": {
     "cotizaWhatsapp": "Get a quote on WhatsApp",
     "cotizaProximaParada": "Plan your next stop",
-    "hablaConAsesor": "Talk to an advisor",
     "planeemosViaje": "Let's plan your trip",
     "descubreOpciones": "Explore the options",
     "verItinerario": "See the day-by-day itinerary",
@@ -238,7 +237,7 @@
   },
   "ofertas": {
     "tituloListado": "Best Offers",
-    "introListado": "The promotions we highlight on price. Each one comes with its price explained, the departure city and what's included.",
+    "introListado": "A selection of our own, based on price — not a ranking or a score. Each offer comes with its price explained, the departure city and what's included.",
     "vacio": "No trips published right now. Message us and we'll put one together with you.",
     "migaInicio": "Home",
     "migaOfertas": "Offers",
