@@ -1,0 +1,71 @@
+{
+  "id": "N-03.5",
+  "titulo": "scripts/check-marca.mjs — reglas R-3/R-4/R-5 (texto)",
+  "fuente": "fase-3-identidad-verbal.md §4 (V-1..V-7), §6 · fase-7-gobierno.md §3 (tabla de las diez reglas), §3.bis (cobertura dual app|components|lib y src/**) · sistema-de-identidad.md §3.5 (P-10, léxico prohibido) y §2.2 (grafías del nombre)",
+  "estado": "hecho",
+  "rama": "fase-1/marca-n-03-5-check-marca-texto",
+  "objetivo": "pnpm check falla si alguna de las siete promesas prohibidas mecanizables aparece en messages/, app/, components/, lib/ o src/**; si aparece una grafía incorrecta del nombre BroWay Adventures en esas mismas superficies; o si «Next Stop» se repite dentro del mismo archivo.",
+  "ocho_promesas_prohibidas_citadas": {
+    "fuente_exacta": "docs/brand/sistema-de-identidad.md §3.5 / fila P-10",
+    "lista": [
+      "«la mejor oferta» sin evidencia",
+      "«precio garantizado»",
+      "«viaja sin preocupaciones»",
+      "«cumplimos tus sueños»",
+      "«últimos cupos» como recurso permanente",
+      "«te resolvemos todo»",
+      "«financiamos» cuando no se otorga crédito",
+      "exceso de diminutivos o jerga"
+    ],
+    "mecanizadas_en_r3": [
+      "la mejor oferta",
+      "precio garantizado",
+      "viaja sin preocupaciones",
+      "cumplimos tus sueños",
+      "últimos cupos",
+      "te resolvemos todo",
+      "financiamos"
+    ],
+    "no_mecanizada": "«exceso de diminutivos o jerga» no es una cadena literal — es un juicio de estilo. fase-7-gobierno.md §4 reserva esa clase de criterio para la lectura en voz alta (Fase 3), no para un guardián de grep. Forzar una lista de sufijos ('-ito/-ita') habría sido inventar una regla que ningún spec define, con falsos positivos sin control. Queda documentado como límite declarado en la cabecera del script, no como omisión silenciosa."
+  },
+  "implementacion": {
+    "r3": "LEXICO_PROHIBIDO: array de 7 frases literales, comparación case-insensitive por línea, mismo estilo que HEX_ANTIGUOS/HEX_OFICIALES de R-1/R-2.",
+    "r4": "NOMBRE_INCORRECTO_REGEX = /\\bbro[\\s-]?way\\b/gi — matchea 'Bro Way', 'Broway', 'Bro-Way', 'BRO WAY', etc.; se compara cada coincidencia contra la cadena exacta 'BroWay' (case-sensitive) y solo se reporta si difiere. El límite derecho \\b evita falso positivo en identificadores técnicos pegados sin separador (p.ej. el dominio 'browayadventures.com' en lib/config.ts, donde 'way' sigue directo con 'adventures' sin frontera de palabra).",
+    "r5": "NEXT_STOP_REGEX = /Next Stop/g — case-SENSITIVE a propósito: messages/en.json usa 'next stop' en minúscula como frase corriente del idioma ('Plan your next stop', clave cotizaProximaParada), no como la firma de marca (siempre 'Next Stop', nunca traducida ni en otra capitalización). Cuenta ocurrencias por archivo; a partir de la segunda, reporta violación.",
+    "alcance": "enAlcanceTexto(): rutaRelativa empieza con 'messages/', 'app/', 'components/', 'lib/' o 'src/' — cobertura dual de la migración de arquitectura per fase-7 §3.bis (un archivo migrado no aparece en la ruta antigua y uno sin migrar no aparece en src/, así que no hay solapamiento ni hueco).",
+    "extensiones": "EXTENSIONES_TEXTO = EXTENSIONES menos '.css'. Una hoja de estilos no lleva copy de marca, solo identificadores kebab-case como los @keyframes 'broway-reveal'/'broway-line-draw' de app/globals.css — tratarlos como grafía incorrecta habría sido el mismo tipo de falso positivo que R-2 ya resuelve quitando comentarios, pero para una extensión entera en vez de un bloque de comentario.",
+    "comentarios": "Para extensiones de EXTENSIONES_REGLA_2 (.ts/.tsx/.js/.jsx/.mjs/.cjs) se reutiliza quitarComentarios() antes de aplicar R-3/R-4/R-5 — evita que una mención documental (p.ej. el JSDoc de app/[locale]/(sitio)/page.tsx citando 'Next Stop' dos veces al explicar dónde va la firma) cuente como repetición real. Los .json de messages/ no tienen sintaxis de comentario y se leen tal cual."
+  },
+  "artefactos": [
+    "scripts/check-marca.mjs (ampliado con R-3/R-4/R-5, LEXICO_PROHIBIDO, NOMBRE_INCORRECTO_REGEX, NEXT_STOP_REGEX, enAlcanceTexto, EXTENSIONES_TEXTO)",
+    "scripts/__fixtures__/check-marca/mutated-r3/messages/es.json (fixture con 'cumplimos tus sueños', 1 violación R-3)",
+    "scripts/__fixtures__/check-marca/mutated-r4/components/Marca.tsx (fixture con 'Bro Way Adventures', 1 violación R-4)",
+    "scripts/__fixtures__/check-marca/mutated-r5/components/NextStopDoble.tsx (fixture con 'Next Stop' dos veces, 1 violación R-5)"
+  ],
+  "falsos_positivos_encontrados_y_corregidos_durante_el_desarrollo": [
+    {
+      "detalle": "Primera versión de R-4 (sin excluir .css) marcaba 19 violaciones en app/globals.css: los nombres de @keyframes 'broway-reveal', 'broway-line-draw', 'broway-hero-parallax', etc.",
+      "correccion": "Se excluyó '.css' del alcance de las reglas de texto (EXTENSIONES_TEXTO) — una hoja de estilos no contiene prosa de marca, solo identificadores."
+    },
+    {
+      "detalle": "Primera versión de R-5 (case-insensitive) marcaba messages/en.json:25 ('Plan your next stop', clave cotizaProximaParada) como repetición de la firma junto con la aparición real en nextStopTitulo (línea 112).",
+      "correccion": "NEXT_STOP_REGEX se volvió case-sensitive (/Next Stop/g) — la frase inglesa corriente en minúscula no es la firma de marca, que siempre se escribe con esa capitalización exacta."
+    }
+  ],
+  "verificacion": {
+"repo_real_antes_de_empezar": "node scripts/check-marca.mjs (script solo con R-1/R-2, antes de tocar nada) → 0 violaciones sobre 221 archivos, exit 0.",
+    "repo_real_tras_el_cambio": "node scripts/check-marca.mjs (con R-3/R-4/R-5 ya activas, incluyendo este mismo N-03.5.json) → 0 violaciones sobre 224 archivos, exit 0. El conteo sube porque el recorrido incluye los archivos nuevos de este PR (docs/brand/specs/ejecucion/nodos/N-03.5.json y, si existían en el worktree, otros .md/.json sueltos) — no porque el alcance de la Regla 1/2 haya cambiado.",
+    "fixtures_preexistentes_sin_cambios": {
+      "clean": "0 violaciones, exit 0 (igual que antes)",
+      "mutated-r1": "1 violación, regla 1, components/Bad.tsx:3, exit 1 (igual que antes)",
+      "mutated-r2": "1 violación, regla 2, lib/theme.ts:2, exit 1 (igual que antes)"
+    },
+    "fixtures_nuevos": {
+      "mutated-r3": "1 violación, regla 3, messages/es.json:3 ('cumplimos tus sueños'), exit 1",
+      "mutated-r4": "1 violación, regla 4, components/Marca.tsx:3 ('Bro Way'), exit 1",
+      "mutated-r5": "1 violación, regla 5, components/NextStopDoble.tsx:6 (aparición #2 de 'Next Stop'), exit 1"
+    },
+    "pnpm_build": "EXIT=0. Requirió pnpm install (node_modules no existía en este worktree) y copiar .env del checkout principal a .env.local para que next build generara las rutas dinámicas ([slug], [campana]). pnpm check (tokens, current, marca, deps) y next build completos en verde."
+  },
+  "notas": "No se tocó CURRENT.md, según instrucción explícita del encargo del nodo."
+}
