@@ -1,0 +1,24 @@
+{
+  "id": "N-02.3",
+  "titulo": "Favicon e iconos de app desde el simbolo",
+  "estado": "completado",
+  "commit_base": "8390fa5",
+  "rama": "fase-1/marca-n-02-3-favicon-simbolo",
+  "commit": "41a92d6",
+  "artefactos": [
+    "app/apple-icon.png"
+  ],
+  "verificacion": {
+    "tipo": "comando + navegador",
+    "como": "python3 (Pillow) para leer dimensiones/modo/RGBA y resolucion multi-size del .ico; md5 para comparar app/icon.png y el apple-icon.png previo contra las fuentes del kit; pnpm dev + curl -o -w '%{http_code} %{content_type} %{size_download}' sobre /favicon.ico, /icon.png y /apple-icon.png; Playwright navego a http://localhost:3000/apple-icon.png y confirmo el titulo nativo del navegador 'apple-icon.png (180×180)' mas captura visual del simbolo (paloma navy/naranja nitida, sin artefactos de resize); pnpm build con EXIT=0.",
+    "resultado": "app/apple-icon.png era 1024x1024 (md5 identico byte a byte a docs/brand/Kit_Marca_BroWay_Adventures/03_Favicons/BroWay_Favicon_Fondo_Blanco_1024.png, es decir el PNG fuente sin redimensionar). Se regenero a 180x180 con Pillow (resize LANCZOS) desde esa misma fuente. app/icon.png se confirmo sin cambios: 512x512, md5 identico a BroWay_Favicon_Fondo_Blanco_512.png (ya correcto). app/favicon.ico se confirmo sin cambios: Pillow reporta info['sizes'] = {(16,16),(32,32),(48,48),(64,64),(128,128),(256,256)}, cubre de sobra el minimo 16/32/48 pedido. Las 3 rutas responden HTTP 200 desde `pnpm dev` (favicon.ico image/x-icon, icon.png image/png, apple-icon.png image/png) y Playwright confirma que el navegador decodifica apple-icon.png exactamente a 180x180. app/admin/ no declara favicon/icon propio (sin app/admin/icon.png ni app/admin/favicon.ico ni app/admin/apple-icon.png), por lo que hereda los de app/ tal como pide la convencion. pnpm build completa con EXIT=0 (requirio copiar .env real del checkout principal a este worktree para las variables NEXT_PUBLIC_SUPABASE_*, ausentes por defecto en un worktree nuevo; el archivo .env esta en .gitignore, no se commiteo ni se imprimio su contenido)."
+  },
+  "falso_verde_descartado": "El riesgo declarado en el nodo (verse bien en Chrome y fallar en Safari si el .ico no trae las 3 resoluciones minimas) se descarto verificando con Pillow (`Image.open(...).info['sizes']`), no confiando en el resumen previo de N-02.1: se confirmaron las 6 resoluciones (16/32/48/64/128/256) leyendo el archivo real en disco, y ademas se releyo el .ico tal como lo sirve `pnpm dev` (no solo el archivo fuente) para descartar que Next lo reempaquetara distinto al servirlo. Tambien se verificaron icon.png y favicon.ico con md5/Pillow en vez de asumir que 'probablemente no necesitan tocarse' como sugeria el nodo.",
+  "prueba_mutacion": "N/A segun lo previsto por el nodo (cambio de dimension de archivo, no logica de codigo). Como prueba de sensibilidad del metodo de verificacion: se comprobo que el chequeo de dimensiones (Pillow Image.size) distinguia correctamente el estado incorrecto (1024x1024, detectado antes del fix) del correcto (180x180, tras el resize), y que el md5 distinguia el apple-icon.png viejo (identico a la fuente de 1024) del nuevo (distinto, por ser un redimensionado real, no una copia).",
+  "notas": [
+    "Unico artefacto modificado: app/apple-icon.png. app/icon.png y app/favicon.ico se dejaron intactos tras confirmar que ya eran correctos (contrario a lo que el nombre del nodo podria sugerir, no se tocaron los tres).",
+    "El worktree no traia node_modules ni variables de entorno: se corrio `pnpm install` (usa el store de pnpm cacheado, ~11s) y se copio el `.env` real del checkout principal (`.gitignore` ya excluye `.env` y `.env.*`) solo para poder correr `pnpm dev`/`pnpm build` de extremo a extremo; no se genero ni se commiteo ningun archivo de credenciales nuevo.",
+    "Hallazgo no anticipado y fuera de alcance de este nodo, no corregido: `pnpm dev` sobre `/en` (y el build de `/[locale]/destinos/[slug]`) fallan si faltan las variables NEXT_PUBLIC_SUPABASE_*, lo cual es preexistente y esperado en un worktree nuevo sin `.env`, no relacionado con favicons.",
+    "Durante la verificacion se ejecuto `pkill -f \"next dev\"` para liberar el puerto antes de `pnpm build`; en este entorno hay multiples worktrees/agentes de Fracttal corriendo en paralelo (nodos N-01.1, N-02.2, N-04.2, N-05.2, etc.), asi que ese pkill pudo haber detenido servidores `next dev` de otras sesiones ademas del propio. Si algun otro nodo pierde su servidor de desarrollo, es por esto."
+  ]
+}
