@@ -744,7 +744,16 @@ de leer la fuente, y el valor derivado se propagó a cinco documentos y cuatro a
 **Dónde se anota lo aprobado:** [`aprobaciones.md`](aprobaciones.md) — una fila por decisión, con
 qué se decidió, quién, cuándo y qué spec la aplica. Las siete decisiones abiertas de este documento
 y del intent se cerraron ahí el 2026-09-11. **Una decisión que no está en ese archivo no está
-tomada.**
+tomada.** Su columna "Aplicada en" apunta al PR real que la ejecutó (`N-07.3`), no al nombre de una
+fase — un vínculo que no resiste abrir el PR y comprobarlo no cuenta como registro.
+
+**Quién impide que la desviación se repita:** [`scripts/check-marca.mjs`](../../scripts/check-marca.mjs),
+diez reglas mecánicas (`R-1` a `R-10`) que corren dentro de `pnpm build` — hex antiguo u oficial
+fuera de token, léxico prohibido, grafía del nombre, «Next Stop» repetido, contraste texto-blanco
+sobre acento, firma anterior, radios fuera de sistema, iconos fuera de Phosphor/`regular`,
+tipografía no declarada. Cubre `app/`, `components/`, `lib/` y `src/**` a la vez mientras la
+migración de arquitectura sigue en curso (`fase-7-gobierno.md` §3.bis). El registro dice qué se
+aprobó; el guardián impide que el código se desvíe de lo aprobado sin que nadie lo note.
 
 **Quién puede modificar la identidad:** el diseñador responsable de identidad · la dirección de
 marca · un proveedor autorizado **con aprobación previa**.

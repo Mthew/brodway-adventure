@@ -1,0 +1,18 @@
+{
+  "id": "N-07.4",
+  "titulo": "sistema-de-identidad.md §7 enlaza el registro y el guardián",
+  "estado": "cerrado",
+  "commit_base": "main (post N-07.1, PR #61)",
+  "rama": "fase-1/marca-n-07-4-enlazar-guardian",
+  "objetivo": "docs/brand/sistema-de-identidad.md §7 enlaza tanto aprobaciones.md (el registro de decisiones) como scripts/check-marca.mjs (el guardián mecánico), explicando qué reglas cubre cada uno.",
+  "artefactos": ["docs/brand/sistema-de-identidad.md §7"],
+  "verificacion": {
+    "como": "Leer §7: ya enlazaba aprobaciones.md desde antes (párrafo 'Dónde se anota lo aprobado'); se agregó un párrafo nuevo 'Quién impide que la desviación se repita' con el enlace relativo correcto a scripts/check-marca.mjs y un resumen de las 10 reglas (R-1..R-10) y la cobertura dual app/components/lib/src.",
+    "pnpm_build": "EXIT=0"
+  },
+  "falso_verde_descartado": "El enlace puede apuntar al archivo por nombre sin explicar qué reglas cubre — el párrafo nuevo nombra las 10 reglas por categoría (hex, léxico, grafía, Next Stop, contraste, firma anterior, radios, iconos, tipografía), no solo 'existe un script'.",
+  "notas": [
+    "También se reforzó la frase existente sobre aprobaciones.md: su columna 'Aplicada en' apunta a un PR real (N-07.3, ya mergeado), no al nombre de una fase.",
+    "No se tocó CURRENT.md en este PR — se consolida por separado (PR #63)."
+  ]
+}
