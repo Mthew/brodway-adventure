@@ -131,48 +131,33 @@ export function Navbar() {
       <nav className="mx-auto flex h-20 max-w-6xl items-center gap-6 px-6 md:px-8">
         <Link href="/" aria-label={t("irAlInicio")} className="mr-2 shrink-0">
           {/*
-            N-02.2 (fase-2-la-firma.md §3.1, §4.1): dimensionado por ANCHO, no por
-            altura — el mínimo del manual (180px) se mide en el ancho de la firma,
-            no en su alto. width/height del <Image> siguen reflejando el tamaño
-            real del archivo (1759×894) para que Next no distorsione el aspect
-            ratio; el CSS (`w-[142px] h-auto`) controla el ancho RENDERIZADO. El
-            `mr-2` (8px) del <Link> se suma al `gap-6` (24px) del <nav> para dar
-            32px hasta el siguiente elemento — el mínimo de B-1 es ≥31px — sin
-            tocar el gap general de la barra (que ya está ajustado al límite para
-            no desbordar a 1280px, ver comentario del <ul> de Destinos).
+            N-02.2 (fase-2-la-firma.md §3.1): SÍMBOLO, no la firma horizontal
+            completa. La firma completa (`public/brand/logo-horizontal.png`) es
+            matemáticamente incompatible con esta barra: su archivo trae un
+            margen interno de exportación del kit (lienzo 1759×894, arte real
+            1444×464) que hace que 180px de ancho midan ~91px de alto — ya por
+            sí solo más que el techo de 80px de la barra, antes de sumar aire
+            vertical. El manual ya contempla esta salida para navegaciones
+            angostas: "usar el símbolo en la navegación (mínimo 40px)".
 
-            LÍMITE DEL ARCHIVO, verificado por medición (no se puede resolver solo
-            con CSS): `public/brand/logo-horizontal.png` es el lienzo oficial del
-            kit, 1759×894, pero el arte de tinta real mide solo 1442×464 dentro de
-            ese lienzo (bbox medido: x=[133,1581] y=[203,668]) — el archivo trae de
-            fábrica un margen interno que NO es la zona de seguridad del manual,
-            sino aire de exportación del kit. Como consecuencia, la proporción del
-            ARCHIVO (1759:894 ≈ 1,97:1) es muy distinta de la proporción del ARTE
-            (1444:464 ≈ 3,11:1) que usa el manual para definir el mínimo de 180px.
-            Dimensionar el archivo completo por ancho a 180px da una firma de
-            ~91px de alto (180 × 894/1759) — ya por sí sola más alta que el techo
-            de 80px de la barra, ANTES de sumar ningún margen vertical. Con el
-            archivo actual es matemáticamente imposible cumplir a la vez B-1
-            (firma ≥180px) y B-2 (barra ≤80px): incluso con margen vertical CERO,
-            el ancho máximo que cabe en 80px de alto es ~157px (80 × 1759/894).
-            Este nodo prioriza B-2 (invariante ya existente y referenciada en
-            varios lugares del repo) y maximiza el ancho dentro de ese techo:
-            142px de ancho → ~72px de alto → ~4px de aire vertical a cada lado
-            dentro de los 80px fijos de la barra. Sigue por debajo del mínimo de
-            180px del manual — bloqueado por el archivo, no por el CSS. Ver
-            docs/brand/specs/ejecucion/nodos/N-02.2.json para el detalle y las
-            dos salidas propuestas (recortar el archivo para que su lienzo
-            coincida con la proporción del arte, o usar el símbolo en vez de la
-            firma completa — fase-2-la-firma.md §3.1 ya contempla esa segunda
-            salida para el caso en que la firma completa no quepa en la barra).
+            `public/brand/simbolo.png` se recortó del símbolo aislado del kit
+            (`03_Favicons/BroWay_Favicon_Fondo_Blanco_1024.png`, bbox de tinta
+            701×611 dentro del lienzo de 1024×1024) con el blanco convertido a
+            transparencia real (canal alfa por distancia al blanco, sin premultiplicar) —
+            no es un recorte cuadrado con fondo blanco pegado encima del
+            `bg-surface-base` de la barra. A 48px de alto (bien por encima del
+            mínimo de 40px) da ~55px de ancho.
+
+            Ver docs/brand/specs/ejecucion/nodos/N-02.2.json para el detalle de
+            la medición que descartó la firma completa.
           */}
           <Image
-            src="/brand/logo-horizontal.png"
+            src="/brand/simbolo.png"
             alt="BroWay Adventures"
-            width={1759}
-            height={894}
+            width={724}
+            height={634}
             priority
-            className="h-auto w-[142px]"
+            className="h-12 w-auto"
           />
         </Link>
 

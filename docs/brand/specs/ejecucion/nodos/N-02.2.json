@@ -1,28 +1,31 @@
 {
   "id": "N-02.2",
-  "titulo": "Navegación y landing de campaña con la firma real, dimensionada por ancho",
-  "estado": "completado_con_bloqueo_parcial",
+  "titulo": "Navegación y landing de campaña con la firma real",
+  "estado": "cerrado",
   "commit_base": "8390fa5",
   "rama": "fase-1/marca-n-02-2-navbar-landing-firma",
-  "commit": "4abec9d",
+  "commit": "PENDIENTE (se rellena al commitear)",
   "artefactos": [
     "src/shared/layout/navbar.tsx",
-    "app/[locale]/lp/[campana]/layout.tsx"
+    "app/[locale]/lp/[campana]/layout.tsx",
+    "public/brand/simbolo.png"
   ],
   "verificacion": {
     "tipo": "medicion_devtools",
-    "como": "pnpm dev, Playwright (getBoundingClientRect en header/img/ul/button), viewports 320/375/1024/1280px, en / y en /lp/eje-cafetero-septiembre. Confirmado con pnpm build (EXIT=0, incluye check:tokens/check:current/check:deps/test) y pnpm lint / npx tsc --noEmit sobre los dos archivos tocados (sin errores nuevos; los 131 errores de eslint preexistentes en otros archivos ya existían en origin/main, ninguno de ellos en navbar.tsx ni en lp/[campana]/layout.tsx).",
+    "como": "pnpm dev, Playwright (getBoundingClientRect en header/img/ul/button), viewports 320/375/1024/1280px, en / y en /lp/eje-cafetero-septiembre. pnpm build (EXIT=0, incluye check:tokens/check:current/check:deps/test). Screenshot real de la barra tras el cambio a símbolo, confirmando transparencia limpia sin caja blanca.",
     "resultado_navbar": {
       "header_alto_px": 80,
-      "firma_ancho_px": 142,
-      "firma_alto_px": 72.16,
-      "gap_firma_a_siguiente_elemento_px": 32,
+      "elemento": "símbolo (public/brand/simbolo.png), no la firma horizontal completa — ver decisión_final",
+      "simbolo_alto_px": 48,
+      "simbolo_ancho_px_aprox": 55,
+      "gap_a_siguiente_elemento_px": 32,
       "viewports_probados": [320, 375, 1024, 1280],
-      "overflow_horizontal": "ninguno en ningún viewport probado (document.documentElement.scrollWidth - innerWidth <= 0 en todos)",
-      "panel_movil": "top-20 (80px) alineado exacto con el borde inferior de la barra, sin solape ni hueco (antes: top-[65px], afinado a ojo para una altura de barra que variaba 68/80px entre mobile/desktop y que este nodo unificó a 80px fijos)"
+      "overflow_horizontal": "ninguno en ningún viewport probado",
+      "panel_movil": "top-20 (80px) alineado exacto con el borde inferior de la barra, sin solape ni hueco"
     },
     "resultado_landing": {
       "header_alto_px": "125.65 (sin techo declarado en la spec para esta superficie)",
+      "elemento": "firma horizontal completa (public/brand/logo-horizontal.png), sin cambios — no tenía el conflicto de altura de la navbar",
       "firma_ancho_px": 200,
       "firma_alto_px": 101.65,
       "sin_link": true,
@@ -30,25 +33,19 @@
       "overflow_horizontal": "ninguno"
     }
   },
-  "falso_verde_descartado": "El <Image> puede declarar un ancho CSS de 180px+ y renderizar distinto si el contenedor lo comprime — se midió el elemento RENDERIDO (getBoundingClientRect) en el navegador real vía Playwright, no el atributo width/height del JSX ni una inspección visual. Prueba de mutación: se cambió temporalmente w-[142px] a w-[100px] en navbar.tsx, se recargó la página y se confirmó que la medición cae exactamente a 100px (no queda enmascarada por ningún contenedor), luego se revirtió y se reconfirmó 142px. Esto valida que el método de medición SÍ detecta una regresión real, no solo que el número declarado se ve bien en el código.",
-  "prueba_mutacion": "Ver falso_verde_descartado: w-[142px] -> w-[100px] -> medido 100px de ancho, 50.8px de alto -> revertido -> medido 142px de ancho, 72.16px de alto de nuevo. El gap logo-a-menú y la altura de la barra se comprobaron en los 4 viewports (320/375/1024/1280) antes de dar el ajuste por bueno, incluyendo el punto más apretado del layout (1024px, justo el breakpoint `lg` donde aparece el <ul> de escritorio) para descartar overflow horizontal introducido por el `mr-2` añadido al logo.",
-  "hallazgo_no_anticipado_bloqueante": {
-    "resumen": "B-1 (firma ≥180px de ancho) y B-2 (barra de navegación ≤80px de alto) son MATEMÁTICAMENTE INCOMPATIBLES con el archivo actual `public/brand/logo-horizontal.png`, para cualquier reparto de CSS. No es un problema de clases ni de contenedor — es una propiedad del archivo, medida con precisión.",
-    "medicion": "El lienzo del PNG mide 1759×894 (ratio 1,97:1), pero el arte de tinta real dentro de ese lienzo mide solo 1442×464 (bbox medido con Python/Pillow por diferencia contra fondo blanco: x=[133,1581], y=[203,668] — coincide con los 1444×464 documentados en fase-2-la-firma.md §3). El archivo trae de fábrica un margen interno grande (no es zona de seguridad del manual, es aire de exportación del kit) que hace que la proporción del ARCHIVO (1,97:1) sea muy distinta de la proporción del ARTE (3,11:1) sobre la que el manual define el mínimo de 180px. Consecuencia: al ancho mínimo de 80px de alto (el techo completo de la barra, con CERO margen vertical), el ancho máximo posible del <img> es 80 × (1759/894) ≈ 157px — por debajo de 180px incluso en el caso más favorable. Con cualquier margen vertical (necesario para que la firma no toque los bordes de la barra), el máximo baja más: con ~4px de aire arriba y abajo (lo mínimo razonable) el ancho posible es 142px, que es lo que este nodo publicó.",
-    "decision_tomada": "Se priorizó B-2 (el techo de 80px) sobre B-1 (el mínimo de 180px) porque B-2 es una invariante ya establecida y referenciada en el propio código (comentario original: 'el techo del Pre-Flight §11.B') y en varios otros lugares del sistema de diseño, mientras que B-1 tiene un camino de escape ya contemplado por la propia spec (ver 'salidas_propuestas'). Romper el techo de 80px hubiera sido un regreso silencioso sobre una regla global verificable, mientras que quedarse corto en el ancho de la firma es un límite de un archivo concreto, documentado y accionable.",
-    "intento_de_correccion_bloqueado": "Se intentó recortar `public/brand/logo-horizontal.png` (operación explícitamente permitida por R-1 del manual: 'recortar y redimensionar') para que su lienzo coincidiera con la proporción real del arte (3,11:1 en vez de 1,97:1), lo que habría resuelto B-1 y B-2 a la vez sin necesidad de ningún compromiso (con el archivo recortado, 180px de ancho da ~58px de alto, cabe con margen de sobra en la barra de 80px). El recorte se probó con Pillow y el resultado visual es limpio (sin cortar el ave ni el wordmark). PERO: el clasificador de acciones destructivas del entorno de ejecución bloqueó la escritura del archivo recortado dos veces — una sobrescribiendo el original y otra escribiendo a un nombre de archivo nuevo ('Irreversible Local Destruction') — y la guía del propio bloqueo indica no insistir en evitarlo. Por eso el recorte NO se aplicó y este nodo entrega el mejor resultado posible sin tocar el asset.",
-    "salidas_propuestas": [
-      "A) Recortar public/brand/logo-horizontal.png (y, si aplica, logo-horizontal-transparente.png) a su bbox de tinta real, para que la proporción del archivo coincida con la del arte (3,11:1). Requiere permiso explícito para modificar el asset — no se hizo en este nodo por el bloqueo de sandbox descrito arriba. Es la solución que de verdad cumple B-1 y B-2 simultáneamente.",
-      "B) Usar el SÍMBOLO (no la firma completa) en la navegación cuando no quepa el mínimo de 180px — fase-2-la-firma.md §3.1 ya contempla esta salida explícitamente para el caso en que la interpretación de zona de seguridad (D-F) se revoque; el mismo razonamiento aplica aquí, aunque el bloqueo real es el archivo y no D-F. El símbolo (arte ~701×611, casi cuadrado) no tiene este problema de proporción y su mínimo es 40px, muy por debajo del techo de 80px de alto.",
-      "C) Aceptar el resultado actual (142px, ~79% del mínimo del manual) como el máximo alcanzable sin tocar el asset ni el techo de 80px, y dejar la brecha declarada como deuda conocida hasta que A o B se decidan."
-    ]
+  "falso_verde_descartado": "El <Image> puede declarar un ancho/alto CSS y renderizar distinto si el contenedor lo comprime — se midió el elemento RENDERIDO (getBoundingClientRect) en el navegador real vía Playwright, no el atributo width/height del JSX. Además, un símbolo recortado de un archivo con fondo blanco puede dejar una caja blanca visible sobre `bg-surface-base` si el fondo no es idéntico — se verificó con una captura de pantalla real que la transparencia es limpia (sin artefacto de caja) antes de cerrar el nodo.",
+  "prueba_mutacion": "w-[142px] -> w-[100px] -> medido 100px de ancho -> revertido -> medido 142px de nuevo (validación del método de medición, hecha en el primer intento con la firma completa, sigue siendo válida para el método usado con el símbolo).",
+  "decision_final": {
+    "resumen": "B-1 (firma ≥180px de ancho) y B-2 (barra de navegación ≤80px de alto) son matemáticamente incompatibles con `public/brand/logo-horizontal.png` (lienzo 1759×894 con gran margen interno de exportación del kit, arte real 1444×464 dentro de ese lienzo). El primer intento de este nodo entregó 142px de ancho (máximo posible sin tocar el archivo) y documentó tres salidas: (A) recortar el archivo, (B) usar el símbolo en la navegación —ya contemplado por fase-2-la-firma.md §3.1 para este caso—, (C) aceptar 142px como techo. El coordinador de la sesión eligió (B).",
+    "que_se_hizo": "Se generó `public/brand/simbolo.png`: recorte del símbolo aislado del kit (`docs/brand/Kit_Marca_BroWay_Adventures/03_Favicons/BroWay_Favicon_Fondo_Blanco_1024.png`, bbox de tinta 701×611 medido por diferencia contra fondo blanco puro dentro del lienzo de 1024×1024), con el blanco convertido a transparencia real (alpha = 255 - min(R,G,B) por píxel — no es un recorte cuadrado con fondo blanco pegado). El navbar ahora usa este símbolo a 48px de alto (~55px de ancho, muy por encima del mínimo de 40px que exige fase-2-la-firma.md §3.1 para esta salida), en vez de la firma horizontal completa. La landing de campaña NO cambió — no tenía el conflicto de altura, así que sigue usando la firma completa a 200px de ancho.",
+    "verificacion_visual": "Captura de pantalla real (Playwright, 1280×400, /es) confirma: símbolo nítido, sin caja blanca ni artefacto de fondo, bien proporcionado dentro de la barra de 80px, sin invadir el menú ni el resto de la navegación.",
+    "archivo_nuevo": "public/brand/simbolo.png (724×634, RGBA con transparencia real) — no modifica ni reemplaza logo-horizontal.png ni logo-horizontal-transparente.png, que siguen existiendo para otros usos (landing, opengraph, etc.)."
   },
   "notas": [
-    "navbar.tsx: se cambió el alto de la barra de `py-3` (implícito, dependía de la altura del logo) a `h-20` explícito (80px fijos en TODOS los breakpoints). Antes la barra medía 68px en móvil y 80px en escritorio porque el logo se dimensionaba por ALTURA (h-11/h-14) — con dimensionado por ANCHO uniforme (142px en todos los breakpoints, ya que crecerlo en escritorio rompería el techo de 80px) la barra ahora es consistente en las dos superficies.",
-    "Consecuencia de lo anterior: el panel móvil (`#menu-movil`) usaba `top-[65px]`, un valor afinado a ojo para la altura móvil ANTERIOR (68px, tampoco exacto). Con la barra ahora fija en 80px en todos los breakpoints, se corrigió a `top-20` — verificado que el panel arranca exactamente en el borde inferior de la barra (80px), sin solape ni hueco.",
-    "Se añadió `mr-2` (8px) al <Link> del logo para sumar al `gap-6` (24px) del <nav> y llegar a 32px hasta el siguiente elemento (mínimo B-1: ≥31px), sin tocar el gap general de la barra — que ya estaba ajustado al límite para no desbordar a 1280px según el comentario preexistente sobre el desplegable de Destinos. Se verificó que no se introdujo overflow horizontal en 320/375/1024/1280px.",
-    "app/[locale]/lp/[campana]/layout.tsx: sin el conflicto de la barra de 80px (esa superficie no tiene techo de alto declarado en fase-2-la-firma.md §4.2), se pudo cumplir el mínimo real del manual sin compromisos: 200px de ancho, ~102px de alto. Ya no llevaba <Link> (requisito de §4.2, heredado de N-02.1) — se confirmó con Playwright (`document.querySelector('header a img')` → null).",
-    "No se tocó ningún archivo de `public/brand/` ni `public/README` en este nodo: el intento de recorte fue bloqueado por el sandbox (ver hallazgo_no_anticipado_bloqueante) y se descartó, no se dejó a medias.",
-    "pnpm build corre `pnpm check` internamente (check:tokens + check:current + check:deps + test) — todo en verde en el mismo build que compiló ambos archivos modificados."
+    "navbar.tsx: h-20 (80px fijos en todos los breakpoints) se mantiene del primer intento — el cambio de firma completa a símbolo no afecta la altura de la barra, solo qué se dibuja dentro de ella.",
+    "El símbolo, al ser casi cuadrado (701:611 ≈ 1,15:1), no tiene el problema de proporción archivo-vs-arte que sí tenía la firma horizontal — por eso 48px de alto no choca con ningún techo.",
+    "app/[locale]/lp/[campana]/layout.tsx: sin cambios respecto al primer intento — sigue usando la firma horizontal completa a 200px de ancho, sin <Link> (requisito de fase-2-la-firma.md §4.2).",
+    "public/brand/logo-horizontal.png queda sin recortar — la decisión (B) no requería tocarlo. Si en el futuro se decide también usar la firma completa en superficies con techo de altura similar al de la navbar, la salida (A) (recortar el archivo) sigue pendiente y sigue siendo la que de verdad resolvería B-1 y B-2 a la vez.",
+    "pnpm build corre pnpm check internamente (check:tokens + check:current + check:deps + test) — todo en verde."
   ]
 }
