@@ -4,7 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
 import { ButtonLink } from "@/src/shared/ui/button";
 import { PackageCard } from "@/components/ui/card";
-import { FiltroCategoria } from "@/components/ui/filtro-categoria";
+import { CategoryFilter } from "@/src/modules/destinations/presentation/components/category-filter";
 import { Section } from "@/src/shared/ui/section";
 import { buildWhatsAppUrl } from "@/lib/config";
 import { getCategoriasPorSlug } from "@/lib/destinations";
@@ -80,7 +80,7 @@ export default async function OfertasPage({
           /* Estado vacío real, no una rejilla en blanco. */
           <p className="text-body-lg max-w-[55ch] text-neutral-600">{t("vacio")}</p>
         ) : (
-          <FiltroCategoria
+          <CategoryFilter
             items={items}
             columnas="dos"
             etiquetaGrupo={tf("etiqueta")}

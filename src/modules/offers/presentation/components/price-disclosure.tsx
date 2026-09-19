@@ -28,7 +28,7 @@ export async function PriceDisclosure({
     maximumFractionDigits: 0,
   });
 
-  const validadaEl = format.dateTime(new Date(offer.validadaEl), {
+  const validatedOn = format.dateTime(new Date(offer.validadaEl), {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -53,7 +53,7 @@ export async function PriceDisclosure({
       </p>
 
       <p className="text-caption text-neutral-600">
-        {t("verificadaEl", { fecha: validadaEl })} {t("consultaCondiciones")}{" "}
+        {t("verificadaEl", { fecha: validatedOn })} {t("consultaCondiciones")}{" "}
         {/* TODO: VERIFICAR dato legal real antes de publicar */}
         RNT {RNT_NUMBER}
       </p>

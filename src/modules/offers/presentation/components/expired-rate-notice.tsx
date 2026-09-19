@@ -16,11 +16,11 @@ import type { Offer } from "@/lib/types/offer";
  * OJO, esto NO es urgencia falsa: la fecha es un dato real y verificable, no un
  * contador que se reinicia. Los contadores siguen prohibidos por marca.
  */
-export async function TarifaVencida({ offer }: { offer: Offer }) {
+export async function ExpiredRateNotice({ offer }: { offer: Offer }) {
   const t = await getTranslations("ofertas");
   const format = await getFormatter();
 
-  const vigenciaHasta = format.dateTime(new Date(offer.vigenciaHasta), {
+  const validUntil = format.dateTime(new Date(offer.vigenciaHasta), {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -36,7 +36,7 @@ export async function TarifaVencida({ offer }: { offer: Offer }) {
       <h2 className="text-h3 text-brand-navy">{t("vencidaTitulo")}</h2>
 
       <p className="text-body text-neutral-700">
-        {t("vencidaTexto", { fecha: vigenciaHasta })}
+        {t("vencidaTexto", { fecha: validUntil })}
       </p>
 
       <ButtonLink

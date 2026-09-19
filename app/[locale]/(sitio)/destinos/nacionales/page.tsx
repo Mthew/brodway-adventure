@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 
 import {
-  ListadoCategoria,
+  CategoryList,
   metadataDeCategoria,
-} from "@/components/destinos/listado-categoria";
+} from "@/src/modules/destinations/presentation/components/category-list";
 
 /**
  * Destinos Nacionales (`estructura-funcional-cliente.md` §12).
  *
  * Ruta estática a propósito: gana sobre `/destinos/[slug]`, y por eso "nacionales"
  * es un slug reservado (ver `lib/destinations/categorias.ts`). Toda la estructura
- * está en `ListadoCategoria`, compartida con las otras dos categorías.
+ * está en `CategoryList`, compartida con las otras dos categorías.
  */
 
 export async function generateMetadata({
@@ -28,5 +28,5 @@ export default async function Page({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  return <ListadoCategoria locale={locale} tipo="nacional" />;
+  return <CategoryList locale={locale} tipo="nacional" />;
 }
