@@ -1,0 +1,79 @@
+{
+  "id": "N-03.2",
+  "titulo": "Copy del panel revisado contra la voz",
+  "fuente": "fase-3-identidad-verbal.md §3.3, §4 (V-1..V-7), §5 C-4 · sistema-de-identidad.md §3.1",
+  "estado": "hecho",
+  "commit_base": "8390fa5",
+  "rama": "fase-1/marca-n-03-2-copy-panel",
+  "commit": "71d625c",
+  "alcance_recorrido": [
+    "src/modules/offers/presentation/admin/campos.tsx",
+    "src/modules/offers/presentation/admin/editar/formulario.tsx",
+    "src/modules/offers/presentation/admin/editar/pantalla.tsx",
+    "src/modules/offers/presentation/admin/editar/seccion-avanzada.tsx",
+    "src/modules/offers/presentation/admin/fotos/comprimir.ts",
+    "src/modules/offers/presentation/admin/fotos/pantalla.tsx",
+    "src/modules/offers/presentation/admin/fotos/subir.tsx",
+    "src/modules/offers/presentation/admin/listado.tsx",
+    "src/modules/offers/presentation/admin/nueva/destino-rapido.tsx",
+    "src/modules/offers/presentation/admin/nueva/formulario.tsx",
+    "src/modules/offers/presentation/admin/nueva/pantalla.tsx",
+    "src/modules/offers/presentation/admin/publicar/formulario.tsx",
+    "src/modules/offers/presentation/admin/publicar/pantalla.tsx",
+    "src/modules/offers/presentation/admin/secciones/formulario.tsx",
+    "src/modules/offers/presentation/admin/secciones/pantalla.tsx",
+    "src/modules/destinations/presentation/admin/campos.tsx",
+    "src/modules/destinations/presentation/admin/editar/formulario.tsx",
+    "src/modules/destinations/presentation/admin/editar/pantalla.tsx",
+    "src/modules/destinations/presentation/admin/editar/subir-imagen.tsx",
+    "src/modules/destinations/presentation/admin/listado.tsx",
+    "src/modules/destinations/presentation/admin/nueva/formulario.tsx",
+    "src/modules/destinations/presentation/admin/nueva/pantalla.tsx",
+    "src/platform/admin/admin-shell.tsx",
+    "src/platform/admin/menu.tsx",
+    "src/platform/admin/piezas.tsx"
+  ],
+  "cambios_aplicados": [
+    {
+      "archivo": "src/modules/offers/presentation/admin/fotos/subir.tsx",
+      "categoria": "errores_y_validaciones",
+      "antes": "e instanceof Error ? `No se pudo subir: ${e.message}` : \"No se pudo subir la foto.\"",
+      "despues": "\"No se pudo subir la foto. Revisa tu conexión e inténtalo de nuevo.\" (detalle técnico a console.error, no a pantalla)",
+      "regla": "fase-3 §3.3 prioridad 1 (que expliquen QUÉ HACER, no qué se hizo mal) y V-1 clara — el mensaje del driver de Supabase es técnico y en inglés en muchos casos, no dice ninguna acción"
+    },
+    {
+      "archivo": "src/modules/destinations/presentation/admin/editar/subir-imagen.tsx",
+      "categoria": "errores_y_validaciones",
+      "antes": "e instanceof Error ? `No se pudo subir: ${e.message}` : \"No se pudo subir la foto.\"",
+      "despues": "\"No se pudo subir la foto. Revisa tu conexión e inténtalo de nuevo.\" (detalle técnico a console.error, no a pantalla)",
+      "regla": "mismo criterio que subir.tsx, mismo componente-patrón duplicado para destinos"
+    },
+    {
+      "archivo": "src/modules/offers/presentation/admin/editar/pantalla.tsx",
+      "categoria": "etiquetas_y_ayudas",
+      "antes": "\"Vuelve a verse en el sitio si su vigencia sigue vigente.\"",
+      "despues": "\"Vuelve a verse en el sitio, salvo que su vigencia ya haya vencido por fecha.\"",
+      "regla": "V-1 clara — la redacción anterior repetía vigencia/vigente de forma confusa; la nueva describe la única condición real que bloquea la reactivación (vencimiento por fecha, ver lib/admin/ofertas.ts:reactivarOfertaExistente)"
+    }
+  ],
+  "verificacion": {
+    "grep_formalidad": "grep -rniE \"usted|su cuenta|por favor,\" src/modules/*/presentation/admin src/platform/admin → EXIT=1, cero resultados",
+    "grep_lexico_prohibido": "grep -rniE de las ocho promesas prohibidas (§3.5) sobre el mismo alcance → EXIT=1, cero resultados",
+    "grep_mensaje_error_crudo": "grep -rn \"\\.message\" src/modules/*/presentation/admin src/platform/admin → tras el cambio, sólo quedan los `throw new Error(x.message)` internos (nunca llegan a pantalla); los dos `setError` con interpolación de e.message ya no existen",
+    "pnpm_build": "EXIT=0. Requirió `pnpm install` (node_modules no existía en este worktree) y copiar .env del checkout principal a .env.local (autorizado explícitamente por el encargo del nodo ante bloqueo de credenciales) para que next build pudiera generar /destinos/[slug] y /ofertas/[slug]. pnpm check (tokens, CURRENT.md, deps, vitest) y next build completos en verde.",
+    "runtime_no_autenticado": "Verificado en navegador real (Playwright, next dev en localhost:3000) contra las dos rutas públicas del panel: /admin/entrar (estado base, ?error=enlace_invalido, y envío real del formulario con credenciales inexistentes → 'No pudimos entrar con esos datos. Revísalos e inténtalo otra vez.') y /admin/olvide (estado base y envío con correo de prueba → 'Si ese correo tiene una cuenta, llegó un enlace. Revisa tu bandeja de entrada.'). Las tres cadenas renderizaron exactamente como en el código fuente.",
+    "runtime_autenticado_bloqueado": "No se pudo iniciar sesión real de Supabase en las 11 rutas restantes del panel (dashboard, listados y asistente de ofertas/destinos): el .env copiado sólo trae NEXT_PUBLIC_SUPABASE_URL/PUBLISHABLE_KEY y SUPABASE_PASS (contraseña de la base de datos, no una cuenta de usuario admin), y no hay ningún email/clave de admin disponible en este worktree ni en el encargo. Por protección de datos, no se intentó adivinar ni crear una cuenta. Esas 11 rutas se verificaron SOLO por lectura de código (líneas citadas en cambios_aplicados y en 'alcance_recorrido'), no en runtime."
+  },
+  "hallazgos_relacionados_no_tocados": [
+    {
+      "detalle": "El mismo patrón de error crudo (\"No se pudo guardar/crear/publicar: ${error.message}\") existe también fuera de la ruta de presentación asignada a este nodo, en app/admin/acciones/sesion.ts:94 (\"No se pudo cambiar la contraseña: ${error.message}\") y en lib/admin/ofertas.ts:72,103,154,209 y lib/admin/destinos.ts:45,87,129 (todas 'No se pudo guardar/crear/publicar: ${error.message}').",
+      "por_que_no_se_tocaron": "El encargo de este nodo acota el copy del panel a src/modules/*/presentation/admin/** y src/platform/admin/**, y pide los artefactos 'en su ubicación real de src/'. Esos archivos viven en app/ y lib/, fuera de esa frontera declarada, y fase-3-identidad-verbal.md §1.bis documenta una colisión activa (H-5) por editar archivos que otro PR de migración puede estar tocando en paralelo — no se amplió el alcance para evitar ese riesgo.",
+      "recomendacion": "Nodo de seguimiento (o ampliación de un N-03.x futuro) para aplicar el mismo criterio V-1/prioridad-1 a esos 7 puntos: mover el error.message a log de servidor y devolver un mensaje que diga qué hacer."
+    },
+    {
+      "detalle": "app/admin/{entrar,olvide,restablecer,page.tsx} y app/admin/entrar/formulario.tsx, app/admin/restablecer/formulario.tsx no están migrados por N-01.0b (siguen en app/admin/, no en src/modules/ ni src/platform/admin/) pese a que el encargo de este nodo describía el panel completo como ya migrado a src/.",
+      "por_que_no_se_tocaron": "No estaba en el alcance declarado, pero SÍ se leyeron y auditaron por ser rutas reales del panel (login, recuperar clave, restablecer clave, dashboard) — no tenían violaciones: cumplen los seis atributos, incluida la frase que fase-3 cita como ejemplo bueno ('Ese enlace ya no es válido. Pide uno nuevo.'). Se deja constancia de la discrepancia entre la descripción de ubicación del encargo y el estado real del repo para que un futuro nodo de migración (o el propio N-01.0b si se reabre) no lo pase por alto."
+    }
+  ],
+  "notas": "13 rutas del panel: 2 verificadas en runtime real (entrar, olvide) + lectura de código, 11 verificadas solo por lectura de código por falta de credenciales de admin en este worktree. No se internacionalizó ni se movió nada a messages/ (decisión explícita de fase-3 §3.3: 'eso es otro trabajo y no es de marca'). CURRENT.md no se tocó, según instrucción del encargo."
+}
