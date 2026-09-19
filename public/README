@@ -1,0 +1,66 @@
+# Procedencia de los assets de marca en public/
+
+Este README documenta de dónde sale cada archivo de marca publicado en `public/`, para
+que nadie tenga que adivinarlo ni volver a extraer un color de una captura de pantalla.
+Fuente completa y contrato de cada archivo: `docs/brand/specs/fase-2-la-firma.md` §2.
+Nodo de ejecución que hizo esta copia: `docs/brand/specs/ejecucion/nodos/N-02.1.json`.
+
+## public/brand/logo-horizontal.png
+
+- **Origen:** `docs/brand/Kit_Marca_BroWay_Adventures/01_Logo_Principal/BroWay_Logo_Principal_Azul_Naranja.png`
+  (kit oficial entregado por el cliente el 2026-09-15).
+- **Qué es:** firma horizontal oficial de BroWay Adventures. Lienzo 1759×894, arte
+  1444×464 (ratio 3,11:1). Navy `#0F3962` / naranja `#FE8201` medidos en el archivo (a un
+  par de puntos del oficial `#0D3B66`/`#FF8A00` — variación de exportación, no de token).
+- **Fondo:** blanco opaco, **sin canal alfa**.
+- **Úsalo:** sobre fondo blanco/`surface-alt` — navbar, encabezado de landing de
+  campaña. NO lo uses sobre foto, arena o gris: se ve el rectángulo blanco.
+
+## public/brand/logo-horizontal-transparente.png
+
+- **Origen:** `docs/brand/Kit_Marca_BroWay_Adventures/logo.png` (añadido al kit el
+  2026-09-15, después del resto).
+- **Qué es:** la misma firma, recortada a su caja de tinta (1200×441, arte 1119×358,
+  ratio 3,13:1), con canal alfa real (verificado: esquina en alpha=0, tinta en
+  alpha≈253). Mismo navy/naranja que la versión opaca.
+- **Úsalo:** donde haga falta transparencia sobre foto, arena o superficies grises.
+  NO resuelve navy: el trazo "Bro" sigue en navy y se funde con un fondo navy (pie de
+  página, panel) — eso sigue bloqueado, ver más abajo.
+
+## app/favicon.ico
+
+- **Origen:** `docs/brand/Kit_Marca_BroWay_Adventures/03_Favicons/BroWay_Favicon.ico`.
+  Copiado tal cual — es la fuente directa según el kit. Multi-resolución (16/32/48 px
+  entre otras, verificado con `file`).
+- **Qué es:** el símbolo aislado (paloma), no el logo completo reducido.
+
+## app/icon.png
+
+- **Origen:** `docs/brand/Kit_Marca_BroWay_Adventures/03_Favicons/BroWay_Favicon_Fondo_Blanco_512.png`.
+- **Qué es:** el símbolo aislado, navy/naranja exactos al oficial, sobre blanco opaco. 512×512.
+
+## app/apple-icon.png
+
+- **Origen:** `docs/brand/Kit_Marca_BroWay_Adventures/03_Favicons/BroWay_Favicon_Fondo_Blanco_1024.png`.
+- **Qué es:** el mismo símbolo a mayor resolución (1024×1024), para que Safari/iOS lo
+  escale hacia abajo sin perder nitidez. El tamaño exacto (180px es el estándar Apple)
+  y la verificación cross-browser quedan para N-02.3 — este nodo (N-02.1) solo garantiza
+  que el archivo es el símbolo del kit, no el logo horizontal reducido.
+
+## Qué NO está aquí, y por qué
+
+- **`public/logo-broway.png` ya no existe.** Era el sello circular (1254×1254) de la
+  identidad ANTERIOR. Ningún código debe referenciarlo — si reaparece una referencia,
+  es un regreso a un archivo borrado, no un archivo nuevo con el mismo nombre.
+- **Variación turquesa** (`02_Variacion_Turquesa/`) — existe en el kit pero NO se copia
+  a `public/` por defecto. Es una alternativa autorizada, no la firma por defecto
+  (`LEEME.txt` del kit). Si algún contexto la necesita explícitamente, se copia entonces.
+- **Perfiles sociales** (`04_Perfiles_Sociales/`) — son para quien administra las redes
+  sociales de la marca, no para este repo. No sirven como `opengraph-image` (necesitan
+  1200×630, estas miden 2048×2048/1080×1080). No se copian a `public/`.
+- **Vertical, monocromática blanca (para navy) y SVG de todo el logo — siguen sin
+  existir.** El kit oficial es 100% raster (PNG/JPG/ICO) y no las trae. Es un bloqueo
+  externo declarado (EXT-2 / decisión D-C en `docs/brand/aprobaciones.md`): no se
+  fabrican ni se recolorea el logo a mano para simularlas (principio P-2 del manual —
+  ver `docs/brand/sistema-de-identidad.md`). Por esto la firma sigue sin resolver sobre
+  fondo navy (pie de página, panel de administración).

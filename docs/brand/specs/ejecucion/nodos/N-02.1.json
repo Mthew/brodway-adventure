@@ -1,0 +1,31 @@
+{
+  "id": "N-02.1",
+  "titulo": "Assets de la firma copiados del kit oficial",
+  "estado": "completado",
+  "commit_base": "8ccfaf8",
+  "rama": "fase-1/marca-n-02-1-assets-kit",
+  "commit": "411ab4c",
+  "artefactos": [
+    "public/README",
+    "public/brand/logo-horizontal.png",
+    "public/brand/logo-horizontal-transparente.png",
+    "app/favicon.ico",
+    "app/icon.png",
+    "app/apple-icon.png",
+    "public/logo-broway.png (eliminado)"
+  ],
+  "verificacion": {
+    "tipo": "comando",
+    "como": "ls public/ public/brand/ app/*.png app/*.ico && grep -rn \"logo-broway\" app components src && npx next build",
+    "resultado": "grep sobre app/components/src no encontró coincidencias (exit 2, sin matches). public/logo-broway.png fue eliminado del filesystem con `git rm`, no solo dejado de referenciar. `npx next build` completa sin errores tras el fix de app/favicon.ico (ver notas). pnpm check:tokens, check:current y test (vitest, sin archivos) pasan en verde; pnpm lint y npx tsc --noEmit no reportan errores nuevos en los archivos tocados por este nodo (los 7 errores de eslint preexistentes en app/admin/**, components/destinos/listado-categoria.tsx, components/layout/cookie-banner.tsx y components/ui/hero.tsx ya existían en origin/main, confirmado con `git diff --stat origin/main` sobre esos archivos: sin diferencias)."
+  },
+  "falso_verde_descartado": "El grep en cero podía deberse a que el archivo se renombró sin que nada lo referenciara, no a que la referencia real haya sido migrada. Se confirmó explícitamente que public/logo-broway.png ya no existe en el filesystem (`test -f public/logo-broway.png` → 'removed OK') además del grep en cero, y que las dos referencias reales que sí existían (components/layout/navbar.tsx:135 y app/[locale]/lp/[campana]/layout.tsx:38) fueron editadas para apuntar a public/brand/logo-horizontal.png, no simplemente borradas.",
+  "prueba_mutacion": "Se reintrodujo temporalmente una referencia a /logo-broway.png en un archivo .tsx de scratch (no commiteado) y se confirmó que `grep -rn \"logo-broway\" . --include=*.tsx --include=*.ts` la detecta; luego se eliminó el archivo de prueba y se reconfirmó que el grep sobre app/components/src vuelve a dar cero coincidencias. No se construyó el check R-7/N-07.1 (scripts/check-marca.mjs) — eso es N-01.2/N-07.1, fuera de este nodo — solo se validó que el método de detección (grep sobre logo-broway) sigue funcionando y que la referencia real ya no existe en este diff.",
+  "notas": [
+    "Alcance respetado: no se movió navbar.tsx a src/shared/layout/ (esa reorganización de arquitectura es de otro nodo/fase, no de N-02.1) ni se tocó el dimensionado visual (h-11/h-14, por ALTURA) del logo en navbar.tsx ni en lp/[campana]/layout.tsx — pasar a ancho fijo con el mínimo de 180px y la zona de seguridad exacta del manual es explícitamente N-02.2 (fase-2-la-firma.md §3.1, §4.1-4.2). Solo se actualizó el src y el width/height del <Image> a las dimensiones reales del archivo nuevo (1759x894) para no declarar un aspect ratio falso.",
+    "La afinación fina de resolución/tamaño de favicon (512 vs 180px en apple-icon, verificación cross-browser Chrome/Safari) queda explícitamente para N-02.3, tal como pide el nodo. Este nodo solo garantiza que app/icon.png y app/apple-icon.png son el símbolo aislado del kit (BroWay_Favicon_Fondo_Blanco_{512,1024}.png), no el logo horizontal completo reducido.",
+    "Hallazgo no anticipado, corregido dentro de este nodo por ser bloqueante para el build: el .ico oficial del kit (03_Favicons/BroWay_Favicon.ico) trae sus PNG internos en RGB sin canal alfa. El procesador de imágenes de Next 16/Turbopack exige RGBA para decodificar un .ico y `next build` fallaba con 'The PNG is not in RGBA format!'. Se regeneró app/favicon.ico con Pillow a partir de BroWay_Favicon_Fondo_Blanco_1024.png, convertido a RGBA (mismos píxeles, canal alfa añadido en opacidad completa) y reempaquetado como .ico multi-resolución (16/32/48/64/128/256 px). El .ico original del kit se conserva sin tocar en docs/brand/Kit_Marca_BroWay_Adventures/ como referencia; solo la copia en app/favicon.ico se regeneró. Verificado con `npx next build` completo tras el fix.",
+    "No se copió la variación turquesa (02_Variacion_Turquesa/) ni los perfiles sociales (04_Perfiles_Sociales/) a public/: no son la firma por defecto (el primero, LEEME.txt del kit) o no son assets de este repo (el segundo, fase-2-la-firma.md §2). Documentado en public/README.",
+    "Vertical, monocromática blanca (para navy) y SVG del logo siguen sin existir (bloqueo externo EXT-2 / decisión D-C) — no se fabricaron ni se recoloreó el logo a mano para simularlas (principio P-2 del manual). La firma sobre fondo navy (pie de página, panel admin) sigue sin resolver; queda fuera de alcance de N-02.1 (fase-2-la-firma.md §4.5)."
+  ]
+}
