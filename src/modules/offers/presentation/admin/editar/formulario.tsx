@@ -8,10 +8,10 @@ import {
   BarraAccion,
   BotonPrincipal,
   Error as ErrorFormulario,
-} from "@/app/admin/piezas";
+} from "@/src/platform/admin/piezas";
 import type { CamposOfertaValores } from "@/lib/admin/campos";
 
-import { CamposOferta } from "../../campos";
+import { CamposOferta } from "../campos";
 
 import { SeccionAvanzada } from "./seccion-avanzada";
 

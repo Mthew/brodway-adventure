@@ -61,6 +61,15 @@ export default {
     },
   ],
   options: {
+    // Hallazgo de N-01.0b: sin esto, `depcruise src` sigue resolviendo hacia
+    // `node_modules` (Next.js, Supabase…) y reporta CIENTOS de "no-circular" que no
+    // tienen nada que ver con este repo — el propio código interno de esos paquetes
+    // tiene ciclos. La regla `no-circular` de este archivo es sobre `src/**`, no
+    // sobre las dependencias de terceros, así que `depcruise` nunca debió atravesarlas.
+    // Quedó sin detectar hasta ahora porque `pnpm check:deps` sólo corre `if [ -d src
+    // ]`, y `src/` no existía todavía cuando se escribió este archivo (ADR-0002).
+    doNotFollow: { path: "node_modules" },
+    exclude: { path: "node_modules" },
     tsPreCompilationDeps: true,
     tsConfig: { fileName: "tsconfig.json" },
     enhancedResolveOptions: {

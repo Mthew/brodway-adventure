@@ -3,7 +3,7 @@
 import { useActionState, useEffect, useRef } from "react";
 
 import { crearDestinoRapido } from "@/app/admin/acciones/destinos";
-import { BotonPrincipal, Campo, ENTRADA, Error as ErrorFormulario } from "@/app/admin/piezas";
+import { BotonPrincipal, Campo, ENTRADA, Error as ErrorFormulario } from "@/src/platform/admin/piezas";
 
 /**
  * Diálogo de creación rápida de destino, invocado desde el Paso 1 del asistente de

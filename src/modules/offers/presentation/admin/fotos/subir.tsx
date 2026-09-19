@@ -4,7 +4,7 @@ import { createBrowserClient } from "@supabase/ssr";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { BotonPrincipal, Error as ErrorFormulario } from "@/app/admin/piezas";
+import { BotonPrincipal, Error as ErrorFormulario } from "@/src/platform/admin/piezas";
 import type { Database } from "@/lib/supabase/database.types";
 
 import { comprimirImagen } from "./comprimir";

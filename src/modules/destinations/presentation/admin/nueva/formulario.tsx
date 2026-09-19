@@ -7,8 +7,9 @@ import {
   BarraAccion,
   BotonPrincipal,
   Error as ErrorFormulario,
-} from "@/app/admin/piezas";
-import { CamposDestino } from "@/app/admin/destinos/campos";
+} from "@/src/platform/admin/piezas";
+
+import { CamposDestino } from "../campos";
 
 export function FormularioNuevoDestino() {
   const [estado, accion, enviando] = useActionState(crearDestino, null);

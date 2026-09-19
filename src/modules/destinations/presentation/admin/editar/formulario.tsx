@@ -3,13 +3,14 @@
 import { useActionState } from "react";
 
 import { actualizarDestino } from "@/app/admin/acciones/destinos";
-import { CamposDestino } from "@/app/admin/destinos/campos";
 import {
   BarraAccion,
   BotonPrincipal,
   Error as ErrorFormulario,
-} from "@/app/admin/piezas";
+} from "@/src/platform/admin/piezas";
 import type { CamposDestinoValores } from "@/lib/admin/campos";
+
+import { CamposDestino } from "../campos";
 
 export function FormularioEditarDestino({
   destinoId,

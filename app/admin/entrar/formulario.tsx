@@ -9,7 +9,7 @@ import {
   Campo,
   ENTRADA,
   Error as ErrorFormulario,
-} from "@/app/admin/piezas";
+} from "@/src/platform/admin/piezas";
 
 export function FormularioEntrar({ errorEnlace }: { errorEnlace?: string }) {
   const [estado, accion, enviando] = useActionState(entrar, null);

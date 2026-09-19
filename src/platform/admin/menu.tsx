@@ -9,7 +9,7 @@ import { salir } from "@/app/admin/acciones/sesion";
 /**
  * Menú del panel: un único punto de navegación entre Panel, Destinos y Salir.
  *
- * Vive en `AdminLayout` (sólo si hay sesión, ver ahí), así que aparece en TODAS las
+ * Vive en `AdminShell` (sólo si hay sesión, ver ahí), así que aparece en TODAS las
  * pantallas del backoffice — incluidas las del asistente de ofertas, que hasta ahora
  * no tenían ninguna forma de saltar a otra sección sin editar la URL a mano.
  *

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { Error as ErrorFormulario } from "@/app/admin/piezas";
+import { Error as ErrorFormulario } from "@/src/platform/admin/piezas";
 import type { Database } from "@/lib/supabase/database.types";
 
 /** Las dos fotos únicas de un destino: la de tarjeta (listados) y la de cabecera (hero). */
@@ -20,7 +20,7 @@ const ETIQUETAS: Record<CampoImagenDestino, { titulo: string; aspecto: string }>
  * Sube (o reemplaza) una de las dos fotos únicas del destino: `imagen` (tarjeta de
  * listado) o `imagen_hero` (cabecera de `/destinos/[slug]`).
  *
- * Mismo patrón que `ofertas/[id]/fotos/subir.tsx`: sube directo del navegador a
+ * Mismo patrón que `ofertas/fotos/subir.tsx`: sube directo del navegador a
  * Storage, sin pasar por una Server Action (el cuerpo de una petición en Vercel no
  * aguanta una foto de teléfono). La diferencia es que aquí es un slot único, no una
  * galería: no hay tabla `imagenes` de por medio, se escribe directo en la columna que
