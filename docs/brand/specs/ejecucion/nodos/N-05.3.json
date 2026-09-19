@@ -1,0 +1,58 @@
+{
+  "id": "N-05.3",
+  "titulo": "Ayuda de direccion fotografica en el punto de carga del panel",
+  "estado": "completado",
+  "fecha": "2026-09-18",
+  "rama": "fase-1/marca-n-05-3-ayuda-carga-panel",
+  "objetivo": "Las 2 pantallas de carga de fotos del panel (galeria de ofertas y las dos fotos unicas de un destino) muestran, junto al campo de subida, que se pide, que se rechaza y en que ratio se publica cada foto y que parte se recorta — fase-5-fotografia.md §6, criterio F-5.",
+  "artefactos": [
+    "src/platform/admin/piezas.tsx (nuevas piezas compartidas CriteriosFoto y NotaRecorte)",
+    "src/modules/offers/presentation/admin/fotos/subir.tsx (CriteriosFoto + NotaRecorte junto al campo de subida de la galeria)",
+    "src/modules/destinations/presentation/admin/editar/subir-imagen.tsx (NotaRecorte por campo: ratio y recorte propios de tarjeta y de cabecera)",
+    "src/modules/destinations/presentation/admin/editar/pantalla.tsx (CriteriosFoto una sola vez, antes de los dos puntos de carga)"
+  ],
+  "decision_de_diseno": {
+    "problema": "La pantalla de editar destino tiene DOS puntos de carga en la misma vista (SubirImagenDestino se renderiza dos veces: campo 'imagen' y campo 'imagen_hero'). Poner el bloque completo de que-se-pide/que-se-rechaza dentro de cada instancia lo habria duplicado palabra por palabra en la misma pantalla.",
+    "resolucion": "Se partio la ayuda en dos piezas: CriteriosFoto (que se pide / que se rechaza, sin variacion por campo) se muestra UNA vez por pantalla; NotaRecorte (ratio y que se recorta, que SI varia por campo) se muestra junto a cada punto de carga. La galeria de ofertas tiene un solo punto de carga y usa ambas piezas juntas.",
+    "por_que_no_duplicar": "fase-3-identidad-verbal.md documenta como falso-verde repetir una aclaracion palabra por palabra en la misma pantalla ('se lee como texto legal, no como voz de marca'); duplicar CriteriosFoto en las dos instancias de SubirImagenDestino habria caido en el mismo patron."
+  },
+  "contenido_agregado": {
+    "criterios_foto_que_buscamos": [
+      "Personas y un momento reconocible — así se siente el viaje, no solo se ve",
+      "Luz natural — nada de cielos grises ni fotos subexpuestas",
+      "Espacio libre donde va el texto — que no compita con el titular",
+      "El destino reconocible",
+      "Sin filtros — color real, tal como se ve"
+    ],
+    "criterios_foto_que_no_entra": [
+      "Fotos con marca de agua del mayorista",
+      "Collages o texto incrustado",
+      "Capturas de flyer",
+      "Fotos con logo de otra agencia"
+    ],
+    "nota_recorte_galeria_ofertas": {
+      "ratio": "4:3, 16:10 y 1:1",
+      "recorte": "El foco va centrado: la miniatura cuadrada recorta los lados, así que nada importante debe quedar en los bordes."
+    },
+    "nota_recorte_destino_tarjeta": {
+      "ratio": "4:3",
+      "recorte": "El foco va centrado; no pongas nada importante en el borde inferior, que es donde caen el precio y las etiquetas."
+    },
+    "nota_recorte_destino_cabecera": {
+      "ratio": "16:9",
+      "recorte": "El texto va abajo a la izquierda: deja ese tercio limpio y ubica el sujeto a la derecha o al centro."
+    }
+  },
+  "tono": "Se evito la forma 'se prohíbe subir imágenes con...'. 'Qué buscamos' y 'Qué no entra' explican en una línea por qué cada criterio importa (el momento, no solo el lugar; el titular, no una imagen llena) en vez de listar una prohibición seca, siguiendo los seis atributos de voz de fase-3-identidad-verbal.md (clara, cercana, serena, inspiradora, honesta, útil) y su regla de que el panel informa y ayuda a operar, no regaña.",
+  "verificacion": {
+    "lint": "pnpm lint sobre el arbol completo: 135 problemas (131 errores, 4 warnings) ANTES de estos cambios (working tree limpio via git stash) e igual numero DESPUES — cero errores nuevos introducidos. Los 131 errores preexistentes son de ADR-0004 (identificadores en espanol) en archivos no tocados por este nodo.",
+    "build": "pnpm build con EXIT=0, tras copiar .env del checkout principal al worktree (el worktree no traia NEXT_PUBLIC_SUPABASE_URL/KEY).",
+    "runtime_verificado": "Se levanto 'pnpm dev' (puerto 3001, el 3000 estaba ocupado por otra sesion) con el .env real copiado. /admin/entrar respondio 200 sin errores de consola. No fue posible autenticar una sesion real de Supabase: el .env copiado no trae credenciales de un usuario admin (existe SUPABASE_PASS pero no un email asociado, y no hay script de seed ni credenciales de prueba documentadas en el repo) — por lo tanto NO se pudo recorrer /admin/ofertas/[id]/fotos ni /admin/destinos/[id]/editar ya autenticado.",
+    "runtime_no_verificado": "El copy final tal como se ve renderizado detras del login (color, salto de linea, orden con el resto de la pantalla) no se confirmo visualmente en el navegador. Verificado en su lugar por lectura de codigo: JSX de CriteriosFoto/NotaRecorte usa las mismas clases (text-caption, text-neutral-600, font-display) que el resto de piezas.tsx ya usadas en produccion en las mismas pantallas (Error, Campo), y la posicion (justo despues de ErrorFormulario, antes del recuadro de subida / antes de la imagen actual) sigue el mismo patron que el resto del archivo.",
+    "pendiente_para_quien_retome": "Recorrer ambas pantallas con una sesion real de Supabase (usuario en la tabla de admins) para confirmar visualmente el resultado, ya que este nodo no pudo hacerlo por falta de credenciales en el entorno del worktree."
+  },
+  "notas": [
+    "No se toco CURRENT.md (instruccion explicita del encargo).",
+    "Es copy y ayuda contextual, no validacion automatica — no se agrego ninguna regla que bloquee la subida de una foto que incumpla los criterios, tal como pide fase-5-fotografia.md §6."
+  ]
+}

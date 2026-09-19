@@ -5,15 +5,30 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { Error as ErrorFormulario } from "@/src/platform/admin/piezas";
+import { Error as ErrorFormulario, NotaRecorte } from "@/src/platform/admin/piezas";
 import type { Database } from "@/lib/supabase/database.types";
 
 /** Las dos fotos únicas de un destino: la de tarjeta (listados) y la de cabecera (hero). */
 export type CampoImagenDestino = "imagen" | "imagen_hero";
 
-const ETIQUETAS: Record<CampoImagenDestino, { titulo: string; aspecto: string }> = {
-  imagen: { titulo: "Foto de tarjeta", aspecto: "aspect-[4/3]" },
-  imagen_hero: { titulo: "Foto de cabecera", aspecto: "aspect-[16/9]" },
+const ETIQUETAS: Record<
+  CampoImagenDestino,
+  { titulo: string; aspecto: string; ratio: string; recorte: string }
+> = {
+  imagen: {
+    titulo: "Foto de tarjeta",
+    aspecto: "aspect-[4/3]",
+    ratio: "4:3",
+    recorte:
+      "El foco va centrado; no pongas nada importante en el borde inferior, que es donde caen el precio y las etiquetas.",
+  },
+  imagen_hero: {
+    titulo: "Foto de cabecera",
+    aspecto: "aspect-[16/9]",
+    ratio: "16:9",
+    recorte:
+      "El texto va abajo a la izquierda: deja ese tercio limpio y ubica el sujeto a la derecha o al centro.",
+  },
 };
 
 /**
@@ -41,7 +56,7 @@ export function SubirImagenDestino({
   const router = useRouter();
   const [subiendo, setSubiendo] = useState(false);
   const [error, setError] = useState<string>();
-  const { titulo, aspecto } = ETIQUETAS[campo];
+  const { titulo, aspecto, ratio, recorte } = ETIQUETAS[campo];
 
   const supabase = createBrowserClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -90,6 +105,8 @@ export function SubirImagenDestino({
       <p className="text-body-sm font-display font-semibold text-neutral-700">{titulo}</p>
 
       <ErrorFormulario mensaje={error} />
+
+      <NotaRecorte ratio={ratio} recorte={recorte} />
 
       {valorActual ? (
         <div className={`relative w-full overflow-hidden rounded-lg bg-neutral-100 ${aspecto}`}>

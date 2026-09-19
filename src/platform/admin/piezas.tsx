@@ -177,3 +177,66 @@ export function Error({ mensaje }: { mensaje?: string }) {
     </p>
   );
 }
+
+/**
+ * Qué se pide y qué se rechaza en una foto de catálogo.
+ *
+ * `fase-5-fotografia.md` §6: el catálogo se alimenta desde el panel, no desde el repo, así
+ * que si la guía del manual no llega a este punto, no llega a la foto que ve la mayoría de
+ * quien visita el sitio. Es copy, no validación — el sistema no puede juzgar una foto, pero
+ * sí puede decir qué se espera antes de subirla.
+ *
+ * Explica el porqué en una línea por criterio en vez de listar una prohibición seca: la voz
+ * del panel informa y ayuda a operar, no regaña (`fase-3-identidad-verbal.md`). Va sola, sin
+ * `NotaRecorte` (abajo): en una pantalla con más de un punto de carga —como las dos fotos de
+ * un destino— repetir esta lista completa por campo se leería como texto legal en vez de voz
+ * de marca, así que se muestra una sola vez y cada campo añade solo su propia nota de encuadre.
+ */
+export function CriteriosFoto() {
+  return (
+    <div className="text-caption flex flex-col gap-2 text-neutral-600">
+      <div>
+        <p className="font-display font-semibold text-neutral-700">Qué buscamos</p>
+        <ul className="list-disc pl-4">
+          <li>Personas y un momento reconocible — así se siente el viaje, no solo se ve</li>
+          <li>Luz natural — nada de cielos grises ni fotos subexpuestas</li>
+          <li>Espacio libre donde va el texto — que no compita con el titular</li>
+          <li>El destino reconocible</li>
+          <li>Sin filtros — color real, tal como se ve</li>
+        </ul>
+      </div>
+      <div>
+        <p className="font-display font-semibold text-neutral-700">Qué no entra</p>
+        <ul className="list-disc pl-4">
+          <li>Fotos con marca de agua del mayorista</li>
+          <li>Collages o texto incrustado</li>
+          <li>Capturas de flyer</li>
+          <li>Fotos con logo de otra agencia</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Ratio de publicación y qué parte se recorta, para un campo de foto en concreto.
+ *
+ * Va junto a `CriteriosFoto`, no dentro: el ratio y el recorte cambian por campo —la
+ * tarjeta de un destino no recorta igual que su cabecera—, así que cada punto de carga
+ * trae la suya mientras los criterios de arriba se muestran una sola vez.
+ */
+export function NotaRecorte({
+  ratio,
+  recorte,
+}: {
+  /** Ej. "4:3" o "16:9". Puede combinar varios si el mismo archivo alimenta más de un uso. */
+  ratio: string;
+  /** Qué borde se pierde en el recorte y dónde va el sujeto para no perderlo ahí. */
+  recorte: string;
+}) {
+  return (
+    <p className="text-caption text-neutral-600">
+      Esta foto se publica en {ratio}. {recorte}
+    </p>
+  );
+}
