@@ -113,9 +113,9 @@ innecesarios. Español de Colombia, hablando de "tú".
 
 | | Código | Para qué |
 |---|---|---|
-| Azul marino | `#003062` | Color principal: fondos oscuros, títulos, texto sobre blanco |
-| Turquesa | `#00AAC3` | Secundario: acentos, íconos, subrayados, bordes activos |
-| Naranja | `#FF6A03` | Acento: botón principal, destacados |
+| Azul marino | `#0D3B66` | Color principal: fondos oscuros, títulos, texto sobre blanco |
+| Turquesa | `#16B4C6` | Secundario: acentos, íconos, subrayados, bordes activos |
+| Naranja | `#FF8A00` | Acento: botón principal, destacados |
 | Verde WhatsApp | `#25D366` | **Solo** el botón de WhatsApp, porque la gente reconoce ese verde |
 
 Los neutros son una escala de grises **fríos**, con matiz azulado, en armonía con el azul

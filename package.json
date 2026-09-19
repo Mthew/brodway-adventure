@@ -7,9 +7,10 @@
     "build": "pnpm check && next build",
     "start": "next start",
     "lint": "eslint",
-    "check": "pnpm check:tokens && pnpm check:current && pnpm check:deps && pnpm test",
+    "check": "pnpm check:tokens && pnpm check:current && pnpm check:marca && pnpm check:deps && pnpm test",
     "check:tokens": "node scripts/check-font-size-tokens.mjs",
     "check:current": "node scripts/check-current-length.mjs",
+    "check:marca": "node scripts/check-marca.mjs",
     "check:deps": "if [ -d src ]; then depcruise --config .dependency-cruiser.mjs src; fi",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage"

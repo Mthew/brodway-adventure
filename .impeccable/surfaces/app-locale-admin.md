@@ -54,7 +54,7 @@ lo esquiva.
 
 ## Restricciones heredadas
 
-- Identidad fija: navy `#003062`, turquesa `#00aac3`, naranja `#ff6a03`, Montserrat/Lato, mínimo
+- Identidad fija: navy `#0D3B66`, turquesa `#16B4C6`, naranja `#FF8A00`, Montserrat/Lato, mínimo
   14px y 44px de área táctil.
 - El sitio público lee con `persistSession: false` a propósito. **El panel necesita un cliente
   distinto**, con `@supabase/ssr` y cookies, acotado a `/admin`.

@@ -60,7 +60,7 @@ REGLAS DE VERSIÓN — NO uses patrones viejos:
 - Tailwind v4 se configura EN CSS, no en JS. NO generes tailwind.config.ts ni
   tailwind.config.js. NO uses @tailwind base/components/utilities. Usa:
       @import "tailwindcss";
-      @theme { --color-brand-navy: #003062; ... }
+      @theme { --color-brand-navy: #0d3b66; ... }
   Los tokens declarados en @theme ya quedan disponibles como clase utilitaria
   (bg-brand-navy) y como var(--color-brand-navy). No los dupliques.
 - Next.js 16: `params` y `searchParams` son PROMESAS. Toda página/layout que los use es
@@ -81,20 +81,21 @@ IDENTIDAD DE MARCA
 Nombre oficial: "BroWay Adventures" — B y W en mayúscula, siempre junto. NUNCA escribas
 "Bro Way", "Broway", "Bro-Way", "BRO WAY", "Brodway" ni "Broadway".
 
-Colores exactos (extraídos del logo oficial):
-  --brand-navy:      #003062   (primario: fondos oscuros, títulos, texto sobre blanco)
-  --brand-turquoise: #00AAC3   (secundario: acentos, íconos, subrayados, bordes activos)
-  --brand-orange:    #FF6A03   (acento: CTA primario, destacados)
-  --whatsapp:        #25D366   (SOLO el botón de WhatsApp, por reconocimiento del canal)
+Colores exactos (manual de marca §15, docs/brand/sistema-de-identidad.md §4.5):
+  --brand-navy:      #0D3B66   (primario: fondos oscuros, títulos, texto sobre blanco)
+  --brand-turquoise: #16B4C6   (secundario: acentos, íconos, subrayados, bordes activos)
+  --brand-orange:    #FF8A00   (acento: CTA primario, destacados)
+  --whatsapp:        #25D366   (SOLO el botón de WhatsApp, por reconocimiento del canal —
+                                 no es color de marca, es color de canal)
 
 REGLAS DE CONTRASTE — verificadas, no negociables (requisito AA del spec):
-  ❌ Naranja #FF6A03 con texto BLANCO = 2.87:1 → FALLA AA. No lo uses nunca.
-  ✅ Naranja #FF6A03 con texto NAVY #003062 = 4.57:1 → botón CTA primario correcto.
-  ❌ Verde WhatsApp #25D366 con texto blanco = 1.98:1 → FALLA. Usa texto navy (6.62:1).
-  ✅ Navy #003062 con texto blanco = 13.13:1 → botón secundario / secciones oscuras.
-  ✅ Turquesa #00AAC3 con texto navy = 4.71:1.
-  ⚠️ Turquesa y naranja NO sirven como color de texto pequeño sobre blanco (2.8:1).
-     Para texto naranja sobre blanco usa #C24A00; para turquesa usa #006B7D.
+  ❌ Naranja #FF8A00 con texto BLANCO = 2.36:1 → FALLA AA. No lo uses nunca.
+  ✅ Naranja #FF8A00 con texto NAVY #0D3B66 = 4.84:1 → botón CTA primario correcto.
+  ❌ Verde WhatsApp #25D366 con texto blanco = 1.98:1 → FALLA. Usa texto navy (5.77:1).
+  ✅ Navy #0D3B66 con texto blanco = 11.45:1 → botón secundario / secciones oscuras.
+  ✅ Turquesa #16B4C6 con texto navy = 4.57:1.
+  ⚠️ Turquesa y naranja NO sirven como color de texto pequeño sobre blanco (~2.4-2.5:1).
+     Para texto naranja sobre blanco usa #A34400; para turquesa usa #006B7D.
 
 VERIFICA CONTRA LA SUPERFICIE REAL, NO SÓLO CONTRA BLANCO.
 Este brief decía antes #007D91 para el turquesa de texto, y es correcto sobre
@@ -437,7 +438,7 @@ TAREA: el layout global en `components/layout/`, más `app/[locale]/layout.tsx`.
   transparente sobre el hero.
 
 2) FOOTER (`Footer.tsx`)
-Fondo navy #003062, texto blanco. Cuatro columnas en desktop, acordeón/apilado en móvil:
+Fondo navy #0D3B66, texto blanco. Cuatro columnas en desktop, acordeón/apilado en móvil:
 - Marca: logo en blanco + una línea de propósito ("Hacer que viajar se sienta más claro,
   cercano y posible").
 - Destinos y Paquetes (links).
@@ -515,7 +516,7 @@ Una frase corta por bloque, redactada como beneficio para el viajero, no como pa
 suelta.
 
 5) FRANJA "NEXT STOP"
-Sección de ancho completo con fondo turquesa #00AAC3 y texto navy. Titular:
+Sección de ancho completo con fondo turquesa #16B4C6 y texto navy. Titular:
 "¿Cuál será tu Next Stop?" (esta es la ÚNICA aparición de "Next Stop" en toda la página).
 CTA "Planeemos tu viaje".
 

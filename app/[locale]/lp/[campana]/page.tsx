@@ -122,8 +122,12 @@ export default async function LandingCampanaPage({
             className="-z-10 object-cover"
           />
         )}
-        {/* navy/70: medido contra el peor caso, una foto blanca debajo. */}
-        <div className="bg-brand-navy/70 absolute inset-0 -z-10" />
+        {/*
+          navy/75: medido contra el peor caso, una foto blanca debajo. Con el
+          navy oficial (#0D3B66) navy/70 cae a 4.76:1 sin colchón; navy/75
+          recupera 5.50:1 (fase-1-paleta-y-superficies.md §4.3).
+        */}
+        <div className="bg-brand-navy/75 absolute inset-0 -z-10" />
 
         <div className="mx-auto w-full max-w-6xl px-6 py-20 md:px-8 md:py-28">
           <div className="flex max-w-2xl flex-col gap-5">

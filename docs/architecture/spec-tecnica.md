@@ -170,9 +170,9 @@ heredados y aquí no aplica, porque el proyecto arranca en v4.
 @import "tailwindcss";
 
 @theme {
-  --color-brand-navy: #003062;
-  --color-brand-turquoise: #00aac3;
-  --color-brand-orange: #ff6a03;
+  --color-brand-navy: #0d3b66;
+  --color-brand-turquoise: #16b4c6;
+  --color-brand-orange: #ff8a00;
   --color-whatsapp: #25d366;
   /* tipografía, espaciado, radios, breakpoints… */
 }
