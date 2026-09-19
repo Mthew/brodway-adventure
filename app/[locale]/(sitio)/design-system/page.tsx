@@ -202,6 +202,23 @@ const TYPE_SCALE = [
   { token: "text-caption", label: "Caption" },
 ] as const;
 
+/**
+ * Pesos de Manrope realmente cargados, no los que podría tener la familia.
+ *
+ * `app/[locale]/layout.tsx` y `src/platform/admin/admin-shell.tsx` piden
+ * exactamente estos cinco vía `next/font/google` (`weight: [...]`) — ni uno
+ * más. Verificado contra el CSS servido por `pnpm dev` (no contra el JSX,
+ * fase-6-tipografia.md §1.2): 31 reglas `@font-face`, todas de Manrope o de
+ * su fallback métrico "Manrope Fallback", cero de Montserrat/Lato/Caveat.
+ */
+const FONT_WEIGHTS = [
+  { value: 400, token: "--font-weight-normal", label: "Regular", uso: "Párrafos, cuerpo de interfaz" },
+  { value: 500, token: "--font-weight-medium", label: "Medium", uso: "Cuerpo con énfasis" },
+  { value: 600, token: "--font-weight-semibold", label: "SemiBold", uso: "H4, botones" },
+  { value: 700, token: "--font-weight-bold", label: "Bold", uso: "H2, H3" },
+  { value: 800, token: "--font-weight-extrabold", label: "ExtraBold", uso: "H1" },
+] as const;
+
 function Block({
   title,
   description,
@@ -443,19 +460,102 @@ export default async function DesignSystemPage({
 
         <Block
           title="Tipografía"
-          description="Escala mobile-first: los tamaños crecen con clamp(). Redimensiona la ventana para verlo."
+          description="Manrope, aplicado: una sola familia en los dos layouts del repo (sitio y panel), no solo decidida en el manual de marca. docs/brand/sistema-de-identidad.md §4.6/§5.2/§8.1 registra la ejecución."
         >
-          <div className="flex flex-col gap-4">
-            {TYPE_SCALE.map((item) => (
-              <div key={item.token} className="flex flex-col gap-1">
-                <span className="text-caption font-mono text-neutral-500">
-                  {item.token}
-                </span>
-                <span className={`${item.token} text-brand-navy`}>
-                  {item.label} — Tu próxima parada
-                </span>
+          <div className="flex flex-col gap-6">
+            <div className="max-w-2xl rounded-md border border-neutral-200 bg-neutral-50 p-4">
+              <p className="text-body-sm text-neutral-700">
+                <span className="font-semibold text-brand-navy">Familia:</span>{" "}
+                <code className="font-mono">Manrope</code> — pesos{" "}
+                <code className="font-mono">400 · 500 · 600 · 700 · 800</code>.
+                Sin Montserrat, sin Lato, sin Caveat: las tres salieron del
+                sistema con esta fase.
+              </p>
+              <p className="text-body-sm mt-2 text-neutral-700">
+                <span className="font-semibold text-brand-navy">
+                  Cadena de respaldo:
+                </span>{" "}
+                <code className="font-mono">
+                  Manrope, Arial, Helvetica, sans-serif
+                </code>{" "}
+                — la que declara el manual vivo, no la genérica{" "}
+                <code className="font-mono">ui-sans-serif, system-ui</code>{" "}
+                que había antes.
+              </p>
+              <p className="text-caption mt-2 text-neutral-500">
+                Verificado en el CSS servido por{" "}
+                <code className="font-mono">pnpm dev</code> el 2026-09-18, no
+                en el JSX (
+                <code className="font-mono">
+                  docs/brand/specs/fase-6-tipografia.md
+                </code>{" "}
+                §1.2 explica por qué el JSX no basta): la variable de{" "}
+                <code className="font-mono">next/font</code> resuelve a{" "}
+                <code className="font-mono">
+                  &quot;Manrope&quot;, &quot;Manrope Fallback&quot;
+                </code>
+                , y las 31 reglas <code className="font-mono">@font-face</code>{" "}
+                emitidas son todas de Manrope o de su fallback métrico —
+                ninguna de Montserrat, Lato o Caveat.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <span className="text-caption font-mono text-neutral-500">
+                Pesos cargados
+              </span>
+              <div className="overflow-hidden rounded-md border border-neutral-200">
+                <table className="text-body-sm w-full">
+                  <thead>
+                    <tr className="bg-neutral-50 text-left">
+                      <th className="p-2 font-semibold text-brand-navy">
+                        Peso
+                      </th>
+                      <th className="p-2 font-semibold text-brand-navy">
+                        Muestra
+                      </th>
+                      <th className="p-2 font-semibold text-neutral-500">
+                        Uso
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {FONT_WEIGHTS.map((weight) => (
+                      <tr key={weight.value} className="border-t border-neutral-200">
+                        <td className="p-2 font-mono text-neutral-600">
+                          {weight.value} · {weight.label}
+                        </td>
+                        <td
+                          className="p-2 text-brand-navy"
+                          style={{ fontWeight: weight.value }}
+                        >
+                          Tu próxima parada
+                        </td>
+                        <td className="p-2 text-neutral-500">{weight.uso}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            ))}
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <span className="text-caption font-mono text-neutral-500">
+                Escala — mobile-first: los tamaños crecen con clamp(). Redimensiona la ventana para verlo.
+              </span>
+              <div className="flex flex-col gap-4">
+                {TYPE_SCALE.map((item) => (
+                  <div key={item.token} className="flex flex-col gap-1">
+                    <span className="text-caption font-mono text-neutral-500">
+                      {item.token}
+                    </span>
+                    <span className={`${item.token} text-brand-navy`}>
+                      {item.label} — Tu próxima parada
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </Block>
 

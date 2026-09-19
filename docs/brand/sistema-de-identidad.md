@@ -509,7 +509,16 @@ Las dos declaraciones son incompatibles. **Resuelto el 2026-09-11 a favor de Man
 en [`aprobaciones.md`](aprobaciones.md)): una sola familia, pesos 400-800, y **Caveat sale del
 sistema** porque «Next Stop» deja de firmarse en cursiva. La escala, los pesos por nivel y las diez
 restricciones de §4.7 **no cambian**: valen con cualquier familia, y Manrope tiene por primera vez
-los cinco pesos que la jerarquía del manual pide —Lato no tenía SemiBold—. Lo aplica la Fase 6.
+los cinco pesos que la jerarquía del manual pide —Lato no tenía SemiBold—.
+
+**Aplicado en código, no solo decidido.** `N-06.1` ([`specs/fase-6-tipografia.md`](specs/fase-6-tipografia.md)
+§3.1) ejecutó el cambio en los dos layouts (`app/[locale]/layout.tsx` y
+`app/admin/layout.tsx`/`src/platform/admin/admin-shell.tsx`): los dos cargan únicamente Manrope
+400-800, Caveat se retiró por completo (carga, token `--font-accent` y fallback) y la cadena de
+respaldo pasó a `Arial, Helvetica, sans-serif`. Verificado en el CSS servido por `pnpm dev`
+(2026-09-18): `--font-manrope: "Manrope", "Manrope Fallback"`, `--font-display` y `--font-body`
+resuelven a `var(--font-manrope), Arial, Helvetica, sans-serif`, y ninguna de las 31 reglas
+`@font-face` emitidas nombra Montserrat, Lato o Caveat.
 
 ### 4.7 Escala y restricciones tipográficas *(F2 §19 — vigente con cualquier familia)*
 
@@ -634,6 +643,8 @@ avioncito quedan **fuera del sistema**.
 
 **Gana F1: Manrope.** Decidido y ratificado el 2026-09-11 (D-A). Es el único camino en el que logo,
 color y tipografía vienen del mismo sistema. La escala del manual v2.0 sobrevive intacta.
+**Aplicado en código por `N-06.1`**: los dos layouts (sitio y panel) cargan solo Manrope 400-800 —
+ya no es una decisión pendiente de ejecutar, ver §4.6 y §8.1.
 
 ### 5.3 Caveat pierde su justificación
 
@@ -641,7 +652,9 @@ Caveat entró al sistema porque el logo anterior era cursivo y «Next Stop» se 
 logo nuevo no tiene ningún trazo manuscrito. **Resuelto el 2026-09-11 (D-B): Caveat sale.** La
 firma narrativa sigue existiendo sin cursiva y conserva todas sus reglas —una vez por pieza, sin
 traducir, sin combinarse con otras frases manuscritas—; lo que desaparece es la familia que la
-escribía, que hoy no usa ningún componente.
+escribía. Antes de `N-06.1` tenía cero usos en componentes pero **seguía cargándose** en los dos
+layouts; `N-06.1` retiró esa carga, su token `--font-accent` y su fallback — hoy no queda rastro de
+Caveat ni en el JSX ni en el CSS servido.
 
 ### 5.4 Arena: `#F6E7C3` (F2) vs. `#F6E7BE` (F1)
 
@@ -763,6 +776,14 @@ Lo estuvo hasta el **2026-09-11**, cuando dirección de marca ratificó **Manrop
 de **Caveat** (D-B). El razonamiento, las dos opciones que se compararon y la alternativa descartada
 quedan en [`aprobaciones.md`](aprobaciones.md) y en
 [`specs/fase-6-tipografia.md`](specs/fase-6-tipografia.md) §3.2.
+
+**Y no es solo la decisión: el código la cumple.** `N-06.1` ejecutó §3.1 de esa spec en los dos
+layouts (`app/[locale]/layout.tsx` y `src/platform/admin/admin-shell.tsx`, vía
+`app/admin/layout.tsx`): cargan Manrope 400-800 y nada más, con `Arial, Helvetica, sans-serif` como
+cadena de respaldo. Verificado contra el CSS que sirve `pnpm dev`, no contra el JSX (la lección de
+`fase-6-tipografia.md` §1.2): cero `@font-face` de Montserrat, Lato o Caveat, cero tokens
+`--font-accent`. La contradicción de §5.2/§5.3 queda cerrada en el código, no solo en el registro de
+la decisión.
 
 Las **siete** decisiones que este documento y el intent dejaron abiertas están cerradas y
 registradas. Lo que sigue pendiente no es criterio, es material: §8.3 y §8.4.
