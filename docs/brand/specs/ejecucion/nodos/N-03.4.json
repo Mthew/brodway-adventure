@@ -1,0 +1,21 @@
+{
+  "id": "N-03.4",
+  "titulo": "Variante de ingles declarada como britanica",
+  "estado": "cerrado",
+  "abierto_en": "2026-09-18T00:00:00Z",
+  "cerrado_en": "2026-09-18T00:00:00Z",
+  "commit_base": "8ccfaf8e503e7e13a1148dd44c40b13b08ef259e",
+  "rama": "fase-1/marca-n-03-4-ingles-britanico",
+  "commit": "PENDIENTE_DE_COMMIT",
+  "artefactos": [
+    "app/[locale]/(sitio)/design-system/page.tsx"
+  ],
+  "verificacion": {
+    "comando": "grep -riE \"traveler|authorize|personalized|organize\" messages/en.json",
+    "resultado": "EXIT=1 (cero coincidencias)",
+    "detalle": "Confirmado que messages/en.json ya usa exclusivamente grafia britanica: 'travellers'/'travelling' (lineas 115,139,144,145,237,280), 'authorised'/'authorise'/'authorisation' (linea 217, 301), 'personalised' (linea 301). Se amplio el grep a otros pares AmE/BrE frecuentes (color/colour, center/centre, license/licence, gray/grey, catalog, favorite, canceled, traveling, modeling, defense, analyze, behavior, neighbor, humor, honor, labor, fulfill, program, realize, recognize) y no aparecio ninguna forma americana adicional: no hizo falta corregir ninguna cadena en messages/en.json.",
+    "build": "pnpm exec tsc (via next build, paso 'Finished TypeScript') EXIT=0 sin errores; pnpm exec eslint app/ EXIT=1 pero los 5 errores y 2 warnings reportados son TODOS preexistentes en archivos no tocados por este nodo (app/[locale]/lp/[campana]/page.tsx, app/admin/ofertas/page.tsx, app/admin/page.tsx); design-system/page.tsx no genera ningun error/warning de lint. pnpm check:tokens, check:current y check:deps pasan (ver detalle). pnpm build completo NO se pudo cerrar con EXIT=0: 'next build' falla en la recoleccion de datos de /[locale]/destinos/[slug] por falta de NEXT_PUBLIC_SUPABASE_URL/NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY en este worktree aislado — fallo de entorno preexistente y ajeno a este nodo (la ruta afectada no es design-system ni depende de este cambio). Se intento copiar el .env real del checkout principal solo para completar la verificacion local y el clasificador de seguridad de la sesion bloqueo la accion por 'Sensitive-Source Provenance'; se respeto el bloqueo y no se intento ningun rodeo. Reportado como bloqueo de infraestructura, no de contenido."
+  },
+  "falso_verde_descartado": "El grafo (grafo.json, nodo N-03.4) ya advierte que el grep en cero puede deberse solo a que esas raices nunca se usaron, no a que alguien declarara la variante a proposito. Se confirmo explicitamente que el declarativo faltaba: antes de este nodo, /design-system (app/[locale]/(sitio)/design-system/page.tsx) no mencionaba idioma ni variante de ingles en ninguna de sus 13 secciones (leido el archivo completo, 450 lineas, antes de tocarlo) -- el grep en cero convivia con AUSENCIA total de declaracion. Se cerro el nodo solo despues de escribir y verificar (leyendo el archivo modificado) un bloque 'Idioma del sitio' nuevo en design-system/page.tsx con la tabla britanico/americano, la fuente (fase-3-identidad-verbal.md §3.4) y el comando de verificacion citado explicitamente -- no se dio por cerrado con el grep solo.",
+  "notas": "grafo.json §5 (colisiones) documenta ademas una colision no mencionada en el encargo de este nodo: N-01.1 tambien escribe design-system/page.tsx y la mitigacion declarada es serializar N-03.4 DESPUES de N-01.1 (aunque el resto de Fase 3 no espere). N-01.1 no aparece mergeado en origin/main a la fecha de este nodo (HEAD de main = 8ccfaf8, grafo listo para ejecutar) ni como rama visible en este worktree -- se deja constancia para que el orquestador decida el orden de merge; este nodo no reordena su propia ejecucion porque el encargo recibido solo señalo colision con N-03.1/N-05.1 sobre messages/*.json. messages/en.json no se toco: no se encontro ninguna forma americana real que corregir."
+}

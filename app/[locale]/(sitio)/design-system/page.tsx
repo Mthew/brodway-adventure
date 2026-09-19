@@ -143,6 +143,68 @@ export default async function DesignSystemPage({
         </header>
 
         <Block
+          title="Idioma del sitio"
+          description="El inglés de BroWay Adventures es británico y consistente, nunca americano. Esta sección lo declara para que la próxima cadena no rompa la consistencia por omisión."
+        >
+          <div className="flex max-w-2xl flex-col gap-3">
+            <p className="text-body-sm text-neutral-600">
+              <code className="font-mono">messages/en.json</code> usa siempre la
+              grafía británica. Antes de escribir una cadena nueva en inglés,
+              revisa esta tabla:
+            </p>
+            <div className="overflow-hidden rounded-md border border-neutral-200">
+              <table className="text-body-sm w-full">
+                <thead>
+                  <tr className="bg-neutral-50 text-left">
+                    <th className="p-2 font-semibold text-brand-navy">
+                      Británico (correcto)
+                    </th>
+                    <th className="p-2 font-semibold text-neutral-500">
+                      Americano (no usar)
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    ["traveller / travellers / travelling", "traveler / travelers / traveling"],
+                    ["authorise / authorised / authorisation", "authorize / authorized / authorization"],
+                    ["personalised", "personalized"],
+                    ["organise / organised", "organize / organized"],
+                  ].map(([britanico, americano]) => (
+                    <tr
+                      key={britanico}
+                      className="border-t border-neutral-200"
+                    >
+                      <td className="p-2 font-mono text-brand-navy">
+                        {britanico}
+                      </td>
+                      <td className="p-2 font-mono text-neutral-500 line-through">
+                        {americano}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-caption text-neutral-500">
+              Decidido en{" "}
+              <code className="font-mono">
+                docs/brand/specs/fase-3-identidad-verbal.md
+              </code>{" "}
+              §3.4: es el statu quo (15 marcadores británicos, cero
+              americanos hasta esta fase) y es coherente mantenerlo. Si
+              dirección de marca prefiere americano en el futuro, es un
+              cambio de 15 cadenas — se anota como decisión menor, no como
+              bloqueo. Verificación:{" "}
+              <code className="font-mono">
+                {"grep -riE \"traveler|authorize|personalized|organize\" messages/en.json"}
+              </code>{" "}
+              debe seguir devolviendo cero coincidencias.
+            </p>
+          </div>
+        </Block>
+
+        <Block
           title="Color de marca"
           description="El naranja y el turquesa de marca NO sirven como color de texto pequeño sobre blanco (~2.8:1). Para eso están sus variantes de texto."
         >
