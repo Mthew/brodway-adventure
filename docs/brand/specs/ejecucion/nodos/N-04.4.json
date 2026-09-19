@@ -1,0 +1,261 @@
+{
+  "id": "N-04.4",
+  "titulo": "Recorrido de composición: foco, ruta y acción por sección — cierre de Fase 4",
+  "estado": "cerrado",
+  "abierto_en": "2026-09-18T00:00:00Z",
+  "cerrado_en": "2026-09-18T00:00:00Z",
+  "commit_base": "1ba13db",
+  "rama": "fase-1/marca-n-04-4-recorrido-composicion",
+  "artefactos": [
+    "app/[locale]/(sitio)/ofertas/[slug]/page.tsx"
+  ],
+  "objetivo_primario_G_H": "Cada sección de las 18 rutas públicas tiene UN foco y COMO MUCHO UNA acción real (CTA). Verificado por recorrido escrito, contando botones/enlaces de acción y no de navegación.",
+  "recorrido_composicion": [
+    {
+      "ruta": "/",
+      "secciones": [
+        { "n": 1, "seccion": "Hero", "foco": "Propuesta de valor del viaje (titular + subtítulo)", "ruta_visual": "ninguna (foto en ciclo)", "ctas_reales": 2, "nota": "WhatsApp (sólido, primario) + 'Descubre opciones' (outline, secundario, hacia /destinos). Jerarquía por contraste de color, patrón de hero de home ya existente antes de Fase 4 — ver hallazgo H-1." },
+        { "n": 2, "seccion": "Franja de confianza", "foco": "Señales de credibilidad (RNT, verificable, tiempo de respuesta)", "ruta_visual": "ninguna", "ctas_reales": 0, "nota": "El enlace 'es verificable' es navegación informativa, no conversión" },
+        { "n": 3, "seccion": "Mejores ofertas", "foco": "Ofertas destacadas (rejilla asimétrica 1+resto)", "ruta_visual": "ninguna", "ctas_reales": 0, "nota": "'Ver todas' es navegación; cada tarjeta lleva su propio enlace único" },
+        { "n": 4, "seccion": "Cómo funciona", "foco": "Los 3 pasos del proceso", "ruta_visual": "espinazo vertical .line-draw-y con 3 nodos", "ctas_reales": 0 },
+        { "n": 5, "seccion": "Mejores playas y hoteles", "foco": "Hoteles curados (carril horizontal 3:4)", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 6, "seccion": "Por qué BroWay", "foco": "4 razones de confianza", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 7, "seccion": "Next Stop", "foco": "Invitación única a planear el viaje", "ruta_visual": "ninguna (franja turquesa)", "ctas_reales": 1 },
+        { "n": 8, "seccion": "Destinos internacionales", "foco": "3 destinos (1 grande + 2)", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 9, "seccion": "Destinos nacionales", "foco": "Destinos (carril horizontal)", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 10, "seccion": "Pueblos de Antioquia", "foco": "Lista editorial de pueblos", "ruta_visual": "borde-lista (border-l-2)", "ctas_reales": 0 },
+        { "n": 11, "seccion": "Testimonios", "foco": "1 destacado + 2", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 12, "seccion": "Confianza / anti-fraude", "foco": "Explicación + checklist de verificación", "ruta_visual": "borde-lista (border-l-2)", "ctas_reales": 0, "nota": "'Nosotros' y 'Legal' son enlaces de ampliar información, no acciones de conversión" },
+        { "n": 13, "seccion": "Cierre", "foco": "Conversión final: WhatsApp + formulario", "ruta_visual": "ninguna", "ctas_reales": 2, "nota": "WhatsApp (dominante) + envío de LeadForm (alternativa) — dualidad documentada como intencional en CLAUDE.md ('WhatsApp... dominant CTA; a short form... as fallback'). Ver hallazgo H-2." }
+      ]
+    },
+    {
+      "ruta": "/lp/[campana]",
+      "secciones": [
+        { "n": 1, "seccion": "Hero de campaña", "foco": "Mismo titular/oferta/imagen del anuncio (message match)", "ruta_visual": "ninguna", "ctas_reales": 1 },
+        { "n": 2, "seccion": "Prueba social", "foco": "Cita/dato de respaldo inmediato", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 3, "seccion": "Aviso de tarifa vencida (condicional)", "foco": "Transparencia sobre vigencia", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 4, "seccion": "Qué incluye", "foco": "Lista de inclusiones", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 5, "seccion": "CTA intermedio", "foco": "Reiteración de la única acción", "ruta_visual": "ninguna (franja navy)", "ctas_reales": 1 },
+        { "n": 6, "seccion": "Itinerario resumido", "foco": "Días de viaje resumidos", "ruta_visual": "borde-lista (border-l-2)", "ctas_reales": 0 },
+        { "n": 7, "seccion": "Formulario", "foco": "Captura alternativa", "ruta_visual": "ninguna", "ctas_reales": 1 },
+        { "n": 8, "seccion": "FAQ breve", "foco": "Objeciones de la campaña", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 9, "seccion": "CTA final", "foco": "Cierre", "ruta_visual": "ninguna (franja turquesa)", "ctas_reales": 1 }
+      ],
+      "nota_pagina": "Ejemplar: comentario propio de la página declara 'UNA sola idea y UN solo CTA, repetido 3 veces' y layout.tsx de la carpeta retira el cromo de navegación. Confirmado sobre el código real."
+    },
+    {
+      "ruta": "/destinos/[slug]",
+      "secciones": [
+        { "n": 1, "seccion": "Cabecera a sangre", "foco": "Nombre del destino + resumen", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 2, "seccion": "Introducción editorial", "foco": "Texto de posicionamiento SEO", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 3, "seccion": "Mejor época", "foco": "Cuándo viajar", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 4, "seccion": "Qué hacer", "foco": "Experiencias en el destino", "ruta_visual": "borde-lista (border-l-2)", "ctas_reales": 0 },
+        { "n": 5, "seccion": "Planes para este destino", "foco": "Ofertas del destino (o estado vacío)", "ruta_visual": "ninguna", "ctas_reales": 1, "nota": "1 CTA solo en el estado vacío (WhatsApp); con ofertas, cada PackageCard lleva su propio enlace" },
+        { "n": 6, "seccion": "FAQ (condicional)", "foco": "Preguntas del destino", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 7, "seccion": "CTA final", "foco": "Conversión", "ruta_visual": "ninguna (franja navy)", "ctas_reales": 1 }
+      ]
+    },
+    {
+      "ruta": "/ofertas/[slug]",
+      "secciones": [
+        { "n": 1, "seccion": "Cabecera + galería + conversión", "foco": "La oferta (precio, imágenes, propuesta)", "ruta_visual": "ninguna", "ctas_reales": 1, "nota": "CORREGIDO en este nodo: 'Ver itinerario' era un ButtonLink outline del mismo peso visual que 'Cotiza WhatsApp' — 2 CTAs reales compitiendo en la sección de mayor conversión del sitio. Se degradó a enlace de texto (mismo tratamiento que ENLACE_SECCION de la home). Ver hallazgo H-3 (corregido)." },
+        { "n": "sticky", "seccion": "Barra fija de conversión (móvil)", "foco": "Precio + CTA persistente", "ruta_visual": "ninguna", "ctas_reales": 1, "nota": "Oculta el flotante de WhatsApp mientras está visible a propósito — evita duplicar el mismo canal (comentario propio del componente)" },
+        { "n": 2, "seccion": "Lo mejor (highlights, condicional)", "foco": "Puntos destacados de la oferta", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 3, "seccion": "Itinerario día a día (condicional)", "foco": "Detalle del recorrido", "ruta_visual": "borde-lista (border-l-2)", "ctas_reales": 0 },
+        { "n": 4, "seccion": "Incluye / No incluye", "foco": "Gestión de expectativas", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 5, "seccion": "Formas de pago / cancelación", "foco": "Condiciones comerciales", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 6, "seccion": "Información adicional (condicional)", "foco": "Requisitos/documentación", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 7, "seccion": "FAQ (condicional)", "foco": "Preguntas de la oferta", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 8, "seccion": "Formulario", "foco": "Captura con offerId de contexto", "ruta_visual": "ninguna", "ctas_reales": 1 },
+        { "n": 9, "seccion": "Relacionados (condicional)", "foco": "Otras ofertas activas", "ruta_visual": "ninguna", "ctas_reales": 0 }
+      ],
+      "observacion_G_I": "Incluye/No incluye (2 col) y Formas de pago/cancelación (2 col) son dos secciones consecutivas de la misma familia visual (columnas de texto plano sin imagen); Información adicional es 3 columnas del mismo estilo. No llega a 3 SEGUIDAS del mismo patrón exacto (2 vs 3 columnas), pero es una repetición de familia que se deja documentada para un nodo de seguimiento, no se fuerza un rediseño aquí (fuera del alcance estricto de G-H)."
+    },
+    {
+      "ruta": "/ofertas",
+      "secciones": [
+        { "n": 1, "seccion": "Encabezado", "foco": "Qué son las mejores ofertas", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 2, "seccion": "Listado con filtro por categoría", "foco": "Catálogo curado", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 3, "seccion": "CTA final", "foco": "Conversión", "ruta_visual": "ninguna (franja navy)", "ctas_reales": 1 }
+      ]
+    },
+    {
+      "ruta": "/destinos",
+      "secciones": [
+        { "n": 1, "seccion": "Encabezado", "foco": "Qué son los destinos", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 2, "seccion": "Listado con filtro por categoría", "foco": "Todos los destinos", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 3, "seccion": "CTA final", "foco": "Conversión", "ruta_visual": "ninguna (franja navy)", "ctas_reales": 1 }
+      ]
+    },
+    {
+      "ruta": "/destinos/internacionales",
+      "secciones": [
+        { "n": 1, "seccion": "Encabezado", "foco": "Categoría internacional", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 2, "seccion": "Listado (o vacío)", "foco": "Destinos de la categoría", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 3, "seccion": "CTA final", "foco": "Conversión", "ruta_visual": "ninguna (franja navy)", "ctas_reales": 1 }
+      ],
+      "nota": "Vía CategoryList compartido con /destinos/nacionales y /destinos/pueblos-de-antioquia"
+    },
+    {
+      "ruta": "/destinos/nacionales",
+      "secciones": [
+        { "n": 1, "seccion": "Encabezado", "foco": "Categoría nacional", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 2, "seccion": "Listado (o vacío)", "foco": "Destinos de la categoría", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 3, "seccion": "CTA final", "foco": "Conversión", "ruta_visual": "ninguna (franja navy)", "ctas_reales": 1 }
+      ],
+      "nota": "Vía CategoryList compartido"
+    },
+    {
+      "ruta": "/destinos/pueblos-de-antioquia",
+      "secciones": [
+        { "n": 1, "seccion": "Encabezado", "foco": "Categoría pueblos", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 2, "seccion": "Listado (habitualmente vacío)", "foco": "Estado vacío real, no rejilla en blanco", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 3, "seccion": "CTA final", "foco": "Conversión", "ruta_visual": "ninguna (franja navy)", "ctas_reales": 1 }
+      ],
+      "nota": "Vía CategoryList compartido"
+    },
+    {
+      "ruta": "/playas-y-hoteles",
+      "secciones": [
+        { "n": 1, "seccion": "Encabezado", "foco": "Qué es esta selección curada", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 2, "seccion": "Listado de hoteles (o vacío)", "foco": "Hoteles/playas curados", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 3, "seccion": "CTA final", "foco": "Conversión", "ruta_visual": "ninguna (franja navy)", "ctas_reales": 1 }
+      ]
+    },
+    {
+      "ruta": "/nosotros",
+      "secciones": [
+        { "n": 1, "seccion": "Encabezado", "foco": "Título de la página", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 2, "seccion": "Historia", "foco": "Origen de la marca (imagen + texto)", "ruta_visual": "ninguna", "ctas_reales": 0, "nota": "Única sección de la página con patrón imagen-a-un-lado, por diseño (comentario propio)" },
+        { "n": 3, "seccion": "Propósito, misión, visión", "foco": "Texto corrido", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 4, "seccion": "Valores", "foco": "6 valores de marca", "ruta_visual": "borde-lista (border-t-2)", "ctas_reales": 0 },
+        { "n": 5, "seccion": "Legalidad", "foco": "RNT, NIT, dirección, afiliaciones", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 6, "seccion": "CTA final", "foco": "Conversión", "ruta_visual": "ninguna", "ctas_reales": 1 }
+      ]
+    },
+    {
+      "ruta": "/contacto",
+      "secciones": [
+        { "n": 1, "seccion": "Encabezado", "foco": "Título de la página", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 2, "seccion": "WhatsApp + datos / Formulario", "foco": "Cómo contactar", "ruta_visual": "ninguna", "ctas_reales": 2, "nota": "'Dos vías equilibradas' es la razón de ser declarada de la página (comentario propio): WhatsApp + formulario, mismo peso visual en columnas 1fr/1.1fr. Es el caso que más se acerca a un G-6 literal, pero es una página de contacto cuyo único propósito es ofrecer canales — no una sección narrativa con un solo foco de conversión. Ver hallazgo H-4 (documentado, no corregido)." }
+      ]
+    },
+    {
+      "ruta": "/como-pagar",
+      "secciones": [
+        { "n": 1, "seccion": "Encabezado", "foco": "Título de la página", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 2, "seccion": "Abono / saldo", "foco": "Los dos momentos del pago", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 3, "seccion": "Aclaración sobre cuotas", "foco": "No es financiación", "ruta_visual": "borde-lista (border-l-2)", "ctas_reales": 0 },
+        { "n": 4, "seccion": "Medios de pago", "foco": "Qué medios se aceptan (pendiente de verificar)", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 5, "seccion": "Después del pago", "foco": "Pasos siguientes", "ruta_visual": "borde-lista (border-l-2)", "ctas_reales": 0 },
+        { "n": 6, "seccion": "Seguridad / anti-fraude", "foco": "Cómo verificar la agencia", "ruta_visual": "ninguna", "ctas_reales": 1, "nota": "'Ver legal' es un enlace de ampliación, no compite con el único CTA de WhatsApp" }
+      ]
+    },
+    {
+      "ruta": "/faq",
+      "secciones": [
+        { "n": 1, "seccion": "Encabezado", "foco": "Título de la página", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 2, "seccion": "Acordeón de preguntas", "foco": "Objeciones transversales", "ruta_visual": "ninguna", "ctas_reales": 0 },
+        { "n": 3, "seccion": "CTA final", "foco": "Conversión", "ruta_visual": "ninguna (franja navy)", "ctas_reales": 1 }
+      ]
+    },
+    {
+      "ruta": "/legal",
+      "secciones": [
+        { "n": 1, "seccion": "Página completa (TOC + 6 subsecciones)", "foco": "Información legal por subsección (datos, términos, cancelación, ESCNNA, RNT, RNE)", "ruta_visual": "ninguna", "ctas_reales": 0, "nota": "Documento de referencia legal, no narrativa de conversión — cada subsección informa, ninguna compite por una acción" }
+      ]
+    },
+    {
+      "ruta": "/gracias",
+      "secciones": [
+        { "n": 1, "seccion": "Confirmación post-lead", "foco": "Qué sigue después de enviar el formulario", "ruta_visual": "borde-lista (border-l-2, pasos)", "ctas_reales": 1, "nota": "WhatsApp es la única acción; 'ver destinos'/'ver faq' son enlaces suaves de exploración documentados como tal en el propio código, no CTAs" }
+      ]
+    },
+    {
+      "ruta": "/demo-crm",
+      "secciones": [
+        { "n": 1, "seccion": "Guion completo de la demo", "foco": "N/A — herramienta interna de reunión, no indexada, sin objetivo de conversión", "ruta_visual": "ninguna", "ctas_reales": 0, "nota": "Fuera del alcance de G-H por naturaleza: es documentación operativa (guion + respuestas guardadas), igual que /design-system. No usa iconos de Phosphor." }
+      ]
+    },
+    {
+      "ruta": "/design-system",
+      "secciones": [
+        { "n": 1, "seccion": "Guía viva completa", "foco": "N/A — referencia interna de tokens, componentes y reglas de marca", "ruta_visual": "declara .line-draw / .line-draw-y / .borde-lista como documentación", "ctas_reales": 0, "nota": "No es una pieza de comunicación (spec §2, alcance 'Sistema de diseño'); es donde viven G-A y la tabla concepto→icono de G-D. Confirmado que sigue documentando ambas cosas." }
+      ]
+    }
+  ],
+  "confirmacion_criterios_previos": {
+    "G_A_ruta_documentada": {
+      "estado": "vigente",
+      "evidencia": "app/[locale]/(sitio)/design-system/page.tsx:600-700 (aprox.) documenta .line-draw / .line-draw-y / .borde-lista con sus dos colores según superficie, citando fase-4-sistema-grafico.md §3.2 (G-5)"
+    },
+    "G_B_una_ruta_dominante": {
+      "estado": "vigente",
+      "evidencia": "Ninguna sección del recorrido combina espinazo (.line-draw-y) con borde-lista (border-l-2/border-t-2) a la vez. Cada composición usa como mucho un tratamiento de línea."
+    },
+    "G_C_vocabulario_de_linea": {
+      "estado": "vigente",
+      "comando": "grep -rn \"line-draw\\|border-l-2\\|border-l-4\\|border-t-2\\b\" app components --include=\"*.tsx\"",
+      "resultado": "Solo dos tratamientos: .line-draw-y (home, 'Cómo funciona') y .borde-lista con border-l-2/border-t-2 (8 usos en 7 páginas + design-system). Cero border-l-4 sueltos.",
+      "nota_falso_verde": "Se corrió también un grep amplio de 'border-t\\b|border-t-|border-l\\b|border-l-' para detectar un tercer vocabulario colándose sin la clase `borde-lista`. Aparecen usos de `border-t border-neutral-200`/`border-white/*` (sin peso -2) en sticky-cta.tsx, cookie-banner.tsx, footer.tsx, contacto/page.tsx, demo-crm/page.tsx y tablas de design-system — son divisores estructurales de UI (1px, neutros, sin color de marca), no la gramática decorativa de 'ruta'/'lista destacada' que gobierna G-5. No se cuentan como un tercer tratamiento."
+    },
+    "G_D_iconos_maximo_dos_por_concepto": {
+      "estado": "vigente",
+      "comando": "grep de imports de @phosphor-icons/react en los 9 archivos + lectura de la tabla ICON_CONCEPTS en design-system/page.tsx:111-188",
+      "resultado": "13 iconos totales (CalendarBlank, Check, ChatCircleText, Clock, HourglassSimple, List, ListChecks, MapPin, Phone, ShieldCheck, Tag, UsersThree, X). 'Verificado/respaldo' es el único concepto con dos (Check + ShieldCheck), con criterio escrito en la tabla. 'Conversación' quedó en uno (ChatCircleText). Compass no aparece en ningún import.",
+      "nota": "List es exclusivo de backoffice (src/platform/admin/menu.tsx), consistente con el alcance §2 ('Backoffice: solo el repertorio de iconos, usa List')."
+    },
+    "G_E_maximo_5_iconos_y_weight_regular": {
+      "estado": "vigente",
+      "comando": "grep -rn 'weight=' app components src --include=\"*.tsx\" | grep -v 'weight=\"regular\"'",
+      "resultado": "0 coincidencias — todos los usos declaran weight=\"regular\"",
+      "conteo_por_seccion": "Máximo observado por sección narrativa: 4 (Por qué BroWay, home). Las listas de checklist (Incluye/No incluye en ofertas/[slug], highlights) repiten un mismo glifo (Check o X) una vez por ítem de contenido editable desde el backoffice — hoy el máximo real en datos (lib/mock/offers.ts) es 5 (Check en 'incluye'). Se documenta como lectura de icono-por-ítem-de-lista (no icono-decorativo-distinto) igual que estableció N-04.2; no hay techo estructural en el tipo de datos, así que un editor podría superarlo — se deja anotado para que un futuro nodo de contenido lo revise si crece."
+    },
+    "G_G_solo_tres_radios_mas_full": {
+      "estado": "vigente",
+      "comando": "grep -rn \"rounded-\" app components --include=\"*.tsx\" | grep -oE \"rounded-[a-z0-9]+\" | sort | uniq -c",
+      "resultado": "17 rounded-md, 12 rounded-lg, 6 rounded-full, 2 rounded-sm — ningún rounded-xl ni otro valor. N-04.3 sigue vigente."
+    },
+    "G_I_preflight_sin_familias_repetidas": {
+      "estado": "vigente_con_observacion",
+      "resultado": "Ninguna ruta encadena 3 secciones seguidas con el mismo patrón visual exacto. Única observación (no bloqueante): en /ofertas/[slug], dos secciones consecutivas de columnas de texto plano (Incluye/No incluye → Formas de pago/cancelación) comparten familia visual con la siguiente (Información adicional, 3 columnas) — ver observacion_G_I en el recorrido."
+    }
+  },
+  "hallazgos": [
+    {
+      "id": "H-1",
+      "seccion": "/ (Hero)",
+      "tipo": "2 CTAs reales (WhatsApp sólido + 'Descubre opciones' outline)",
+      "clasificacion": "documentado, no corregido",
+      "razon": "Patrón estándar de hero (primario de conversión + secundario de exploración) con jerarquía visual clara por contraste de color; preexistente a Fase 4 y no señalado por el spec original (fase-4-sistema-grafico.md §1) como parte del problema auditado. Corregirlo es una decisión de producto (retirar la vía de exploración desde el hero), no un ajuste de sistema gráfico."
+    },
+    {
+      "id": "H-2",
+      "seccion": "/ (Cierre)",
+      "tipo": "2 CTAs reales (WhatsApp + envío de formulario)",
+      "clasificacion": "documentado, no corregido",
+      "razon": "Dualidad WhatsApp-dominante/formulario-alternativa explícitamente decidida a nivel de producto (CLAUDE.md: 'WhatsApp... is the dominant CTA; a short form... as fallback'). Se repite igual en /ofertas/[slug] y /lp/[campana] como patrón consistente de sección de formulario junto a texto, no como dos focos narrativos compitiendo."
+    },
+    {
+      "id": "H-3",
+      "seccion": "/ofertas/[slug] (Cabecera + galería + conversión)",
+      "tipo": "2 CTAs reales del mismo peso (WhatsApp + 'Ver itinerario' como ButtonLink outline)",
+      "clasificacion": "corregido en este nodo",
+      "razon": "A diferencia de H-1/H-2, este botón no ofrecía un canal o intención distinta — era un salto de ancla DENTRO de la misma narrativa de conversión de la página de mayor impacto del sitio, con el mismo tratamiento visual (ButtonLink, size lg) que compite directamente con la única acción real. StickyCta.tsx ya documenta el principio contrario ('apilar dos CTAs al mismo canal es ruido'). Se degradó a enlace de texto (mismo tratamiento que ENLACE_SECCION de la home): mantiene la función (saltar a #itinerario) sin competir como acción.",
+      "archivo": "app/[locale]/(sitio)/ofertas/[slug]/page.tsx"
+    },
+    {
+      "id": "H-4",
+      "seccion": "/contacto",
+      "tipo": "2 CTAs reales de igual peso visual (WhatsApp + formulario, columnas 1fr/1.1fr)",
+      "clasificacion": "documentado, no corregido",
+      "razon": "Comentario propio de la página declara la dualidad como su razón de ser ('Dos vías equilibradas... Ninguna de las dos se esconde'). Es el caso más cercano a una violación literal de G-6, pero /contacto es una página cuyo único propósito funcional es listar canales de contacto, no una sección narrativa de una historia más larga. Forzar un único CTA ahí sería una decisión de producto (elegir un canal dominante en la página de contacto), fuera del alcance de un ajuste de sistema gráfico. Se deja documentado para que un nodo de producto lo revise si se decide."
+    }
+  ],
+  "verificacion": {
+    "build": "pnpm build",
+    "resultado_build": "EXIT=0 (check:tokens OK, check:current 43/50, check:marca 0 violaciones/230 archivos, check:deps sin violaciones, next build genera las rutas estáticas + dinámicas sin error)"
+  },
+  "notas": "No se tocó CURRENT.md por instrucción explícita del nodo. Los hallazgos H-1, H-2 y H-4 son dualidades de CTA documentadas y ya presentes en fases/nodos anteriores o en decisiones de producto explícitas (CLAUDE.md); se listan con transparencia por el criterio anti-falso-verde del propio nodo, pero no se fuerzan porque son cambios grandes o ambiguos (tocan arquitectura de conversión, no solo composición gráfica). Solo H-3 cumplía el criterio de 'pequeño y contenido' y se corrigió."
+}

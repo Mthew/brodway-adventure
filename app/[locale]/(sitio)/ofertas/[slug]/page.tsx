@@ -167,15 +167,21 @@ export default async function OfertaPage({
                 <PriceDisclosure offer={offer} />
 
                 {/*
-                  Apilados SIEMPRE, sin punto de ruptura a fila.
+                  UN SOLO BOTÓN, no dos.
 
-                  Esta columna ocupa ~490px en escritorio, y "Ver itinerario día
-                  a día" junto a "Cotiza por WhatsApp" no cabe: el texto se parte
-                  en dos líneas, que el Pre-Flight §11.B prohíbe. Se probó con
-                  `sm:` y con `xl:` y falla en ambos, porque el ancho disponible
-                  no depende del viewport sino de la rejilla de dos columnas.
+                  Corrección N-04.4 (fase-4-sistema-grafico.md §5, G-6): "Ver
+                  itinerario" vivía como `ButtonLink` outline, del mismo peso
+                  visual que "Cotiza por WhatsApp" — dos CTAs compitiendo en la
+                  sección de mayor conversión del sitio, justo lo que StickyCta
+                  evita a propósito para no duplicar el mismo canal (ver su
+                  comentario). Es un salto de ancla dentro de la misma página,
+                  no una segunda acción de conversión, así que baja a enlace de
+                  texto — mismo tratamiento que el resto del sitio usa para
+                  "ver más" (`ENLACE_SECCION` en la home). Esto también resuelve
+                  de paso el ajuste de ancho que forzaba el apilado: un enlace
+                  de texto no compite por línea con el botón.
                 */}
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col items-start gap-3">
                   <ButtonLink
                     href={whatsappHref}
                     variant="whatsapp"
@@ -187,9 +193,12 @@ export default async function OfertaPage({
                     {tc("cotizaWhatsapp")}
                   </ButtonLink>
 
-                  <ButtonLink href="#itinerario" variant="outline" size="lg">
+                  <a
+                    href="#itinerario"
+                    className="text-body text-brand-turquoise-text inline-flex min-h-11 items-center font-semibold underline-offset-4 hover:underline"
+                  >
                     {tc("verItinerario")}
-                  </ButtonLink>
+                  </a>
                 </div>
 
                 <p className="text-body-sm text-neutral-600">
