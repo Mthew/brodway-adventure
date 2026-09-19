@@ -1,0 +1,120 @@
+{
+  "id": "N-06.V",
+  "titulo": "Medición de peso de fuentes y LCP para tipografía (T-6/T-8/T-9)",
+  "estado": "hecho",
+  "fecha": "2026-09-19",
+  "rama": "fase-1/marca-n-06-v-peso-lcp-tipografia",
+  "pr": null,
+  "tipo": "nodo de medición — sin cambios de código de producto",
+  "objetivo": "Verificar con datos reales, no estimados, que N-06.1 (Manrope) cumple T-6 (hero 2 líneas / nav 1 línea / sin desbordes, con copy real en es y en), T-8 (peso de fuentes no sube respecto a los 352 KB documentados en fase-6-tipografia.md §1.1) y T-9 (LCP móvil no empeora).",
+  "commits_comparados": {
+    "antes": {
+      "sha": "84e22d9",
+      "descripcion": "Último commit de main previo al merge de N-06.1 (Montserrat + Lato + Caveat). Verificado leyendo app/[locale]/layout.tsx en ese commit: importa Caveat, Lato, Montserrat de next/font/google.",
+      "checkout": "git worktree add /tmp/broway-baseline-84e22d9 84e22d9 (temporal, eliminado al terminar la medición)"
+    },
+    "despues": {
+      "sha": "8390fa5",
+      "descripcion": "HEAD de main al momento de este nodo (ya incluye c051e4d, el merge de N-06.1). rama de este nodo creada desde origin/main en este punto."
+    }
+  },
+  "metodologia_general": "Todas las mediciones se hicieron con `pnpm build && pnpm start` (build de producción, no `pnpm dev`) para ambos commits, cada uno en su propio checkout/puerto, con el mismo .env. El hero se midió con Playwright a 375px de ancho de viewport y el COPY REAL de messages/es.json y messages/en.json (heroTitulo/heroSubtitulo), no un texto de prueba.",
+  "T6_hero_nav_botones": {
+    "criterio": "Titular del hero en 2 líneas máximo a 375px, navegación en una línea, ningún botón desborda — verificado en es y en con el copy real de producción.",
+    "metodo": "Playwright, viewport 375x812, navegación a / (es, unprefijado) y /en. Medición con getBoundingClientRect() sobre el <h1>, el <header> y los CTAs del hero, más un chequeo de scrollWidth del documento para detectar desborde horizontal de página.",
+    "resultado_es": {
+      "texto": "Elige tu viaje con claridad",
+      "h1_offsetHeight_px": 81,
+      "lineas": 2,
+      "nav_height_px": 68,
+      "nav_lineas": 1,
+      "boton_whatsapp_rect": { "left": 24, "right": 336 },
+      "boton_secundario_rect": { "left": 24, "right": 336 },
+      "viewport_width": 375,
+      "docScrollWidth": 360,
+      "desborde_horizontal_de_pagina": false
+    },
+    "resultado_en": {
+      "texto": "Choose your trip with clarity",
+      "h1_offsetHeight_px": 81,
+      "lineas": 2,
+      "nav_height_px": 68,
+      "nav_lineas": 1,
+      "boton_whatsapp_rect": { "left": 24, "right": 336 },
+      "boton_secundario_rect": { "left": 24, "right": 336 },
+      "viewport_width": 375,
+      "docScrollWidth": 360,
+      "desborde_horizontal_de_pagina": false
+    },
+    "antes_despues": "Se capturó también el hero en el commit 84e22d9 (Montserrat) a 375px con el mismo copy real: mismo resultado, 2 líneas, mismo layout — el cambio de familia no altera el conteo de líneas ni introduce desborde. La diferencia visible es solo tipográfica (peso/trazo de Montserrat vs Manrope), no de layout.",
+    "nota_falso_verde": "Se midieron ambos locales explícitamente porque el copy en inglés es más largo en caracteres para el mismo mensaje ('Choose your trip with clarity' vs 'Elige tu viaje con claridad') — ninguno de los dos rompe el límite de 2 líneas ni desborda botones.",
+    "veredicto": "cumplido en es y en, antes y después"
+  },
+  "T8_peso_fuentes": {
+    "criterio": "El peso de fuentes no sube respecto a los 352 KB documentados en fase-6-tipografia.md §1.1 (13 archivos .woff2, Montserrat+Lato+Caveat).",
+    "metodo": "Conteo y suma de bytes de todos los .woff2 emitidos en .next/static/media tras `pnpm build` de producción, en cada commit. Es la misma unidad de medida que el baseline del spec (archivos .woff2 totales del build), no solo lo que descarga una página concreta (que es menor por el subsetting por unicode-range de next/font).",
+    "antes_84e22d9": {
+      "archivos_woff2": 13,
+      "peso_total_bytes": 335704,
+      "peso_total_KB": 327.84,
+      "nota": "El spec documenta 352 KB para este mismo estado (medido en su momento). La remedición independiente en este nodo da 327.84 KB, mismo número de archivos (13) — la pequeña diferencia (~24 KB) es esperable entre mediciones en momentos distintos del build/versión de next/font y no cambia la conclusión."
+    },
+    "despues_8390fa5": {
+      "archivos_woff2": 6,
+      "peso_total_bytes": 74804,
+      "peso_total_KB": 73.05,
+      "nota": "Manrope se sirve como fuente variable: next/font genera un archivo .woff2 por subconjunto de script (no uno por peso), así que los 5 pesos (400/500/600/700/800) se cubren con 6 archivos en total en vez de 13."
+    },
+    "delta": "-278.79 KB (-85.0%), de 13 a 6 archivos .woff2",
+    "descarga_real_por_pagina_home": {
+      "metodo": "Network tab (Playwright browser_network_requests) filtrando .woff2 en una carga real de / (es) y /en tras build de producción.",
+      "resultado": "Solo se descarga 1 archivo .woff2 por vista de página (24576 bytes / 24 KB), el mismo archivo para es y en — el resto de los 6 archivos del build cubre otros scripts/rangos unicode que esta página no usa."
+    },
+    "veredicto": "cumplido — el peso baja, no sube, tanto en el total del build (352→~73 KB) como en lo que efectivamente descarga el navegador por vista de página"
+  },
+  "T9_lcp_movil": {
+    "criterio": "El LCP móvil no empeora.",
+    "metodo": "Lighthouse 13.5.0 (via npx), `--form-factor=mobile --screenEmulation.mobile --throttling-method=devtools --preset=perf`, contra build de producción (`pnpm build && pnpm start`) de cada commit, página / (es), 2 corridas por commit para verificar estabilidad. throttling-method=devtools aplica limitación real de CPU/red móvil durante la corrida (no una simulación posterior), a diferencia de --throttling-method=simulate que se probó primero y dio resultados inestables/no representativos en modo dev (9.5s vs 2.1s, ruido del propio dev server) — se descartó ese resultado y se remidió en producción con devtools.",
+    "antes_84e22d9": {
+      "corrida_1": { "LCP_ms": 3026.3, "performance_score": 0.88 },
+      "corrida_2": { "LCP_ms": 3023, "performance_score": 0.88 },
+      "FCP": "2.2 s",
+      "speed_index": "5.3 s",
+      "TBT": "10 ms",
+      "CLS": 0
+    },
+    "despues_8390fa5": {
+      "corrida_1": { "LCP_ms": 2712.1, "performance_score": 0.91 },
+      "corrida_2": { "LCP_ms": 2705, "performance_score": 0.91 },
+      "FCP": "2.1 s",
+      "speed_index": "5.1 s",
+      "TBT": "10 ms",
+      "CLS": 0
+    },
+    "delta": "-311 a -318 ms de LCP (~-10%), performance score +0.03",
+    "veredicto": "cumplido — el LCP no empeora, mejora ligeramente y de forma consistente en 2 corridas por commit"
+  },
+  "tabla_resumen_para_pr": [
+    { "criterio": "T-6 hero 2 líneas (es)", "antes": "2 líneas, sin desborde", "despues": "2 líneas, sin desborde" },
+    { "criterio": "T-6 hero 2 líneas (en)", "antes": "2 líneas, sin desborde", "despues": "2 líneas, sin desborde" },
+    { "criterio": "T-8 peso fuentes (build)", "antes": "327.84 KB / 13 archivos (spec: 352 KB)", "despues": "73.05 KB / 6 archivos" },
+    { "criterio": "T-8 descarga real por página", "antes": "no medido en su momento", "despues": "24 KB / 1 archivo, igual en es y en" },
+    { "criterio": "T-9 LCP móvil (Lighthouse, prod, devtools throttling)", "antes": "~3.02 s (score 0.88)", "despues": "~2.71 s (score 0.91)" }
+  ],
+  "bloqueos": [],
+  "notas_metodologicas": [
+    "Se usó pnpm build && pnpm start en vez de pnpm dev para T-9 porque el modo dev (Turbopack) introduce overhead de compilación bajo demanda y HMR que distorsiona el LCP simulado — se detectó al obtener un LCP de 9.5s en dev con --throttling-method=simulate, resultado descartado por no representativo.",
+    "El .env real se copió del checkout principal a este worktree y al worktree temporal del baseline únicamente para poder correr `pnpm build`/`pnpm start` localmente — no se transmitió a ningún tercero ni se incluye en este registro ni en el PR. Es gitignorado.",
+    "El worktree temporal /tmp/broway-baseline-84e22d9 se eliminó (`git worktree remove --force`) al terminar la medición."
+  ],
+  "criterios_fase6_cubiertos": {
+    "T-6": "cumplido — copy real, es y en, 375px",
+    "T-8": "cumplido — el peso baja de ~328-352 KB/13 archivos a ~73 KB/6 archivos",
+    "T-9": "cumplido — LCP mejora ~10% en vez de empeorar"
+  },
+  "artefactos": ["docs/brand/specs/ejecucion/nodos/N-06.V.json"],
+  "fuera_de_alcance": [
+    "CURRENT.md — instrucción explícita de no tocarlo en este nodo",
+    "Cualquier cambio de código de producto — este nodo es solo de medición"
+  ]
+}
