@@ -1,0 +1,67 @@
+{
+  "id": "N-06.1",
+  "titulo": "Manrope en los dos layouts + tres correcciones independientes",
+  "estado": "hecho",
+  "fecha": "2026-09-18",
+  "rama": "fase-1/marca-n-06-1-manrope",
+  "pr": null,
+  "objetivo": "app/[locale]/layout.tsx y app/admin/layout.tsx cargan solo Manrope (400/500/600/700/800); Caveat se retira por completo (carga, --font-accent, fallback); las variables de next/font del panel no colisionan con los tokens del sistema; la cadena de respaldo es Manrope, Arial, Helvetica, sans-serif.",
+  "cambios": {
+    "app/[locale]/layout.tsx": "Reemplaza los imports Caveat/Lato/Montserrat por un único Manrope({ variable: \"--font-manrope\", weight: [\"400\",\"500\",\"600\",\"700\",\"800\"], display: \"swap\" }). className del <html> reducido a `${manrope.variable} h-full antialiased`.",
+    "app/admin/layout.tsx": "Reemplaza Lato/Montserrat por el mismo Manrope con los mismos 5 pesos. La variable de next/font pasa de llamarse `--font-display`/`--font-body` (colisión con los tokens del sistema, corrección independiente §2.2 de fase-6-tipografia.md) a `--font-manrope`, igual que en el layout del sitio.",
+    "app/globals.css": "`--font-display` y `--font-body` pasan de apuntar a `var(--font-montserrat)`/`var(--font-lato)` con fallback `ui-sans-serif, system-ui, sans-serif` a apuntar los dos a `var(--font-manrope)` con fallback `Arial, Helvetica, sans-serif` (corrección independiente §2.3). Se elimina por completo el bloque `--font-accent: var(--font-caveat), ui-serif, cursive` y su comentario."
+  },
+  "verificacion": {
+    "metodo": "CSS servido por `pnpm dev` (puerto 3411), no el código fuente — curl a las páginas y al bundle CSS que Next.js sirve en /_next/static/chunks/.",
+    "paginas_inspeccionadas": [
+      "http://localhost:3411/legal (sitio público, app/[locale]/layout.tsx)",
+      "http://localhost:3411/admin/entrar (panel, app/admin/layout.tsx)"
+    ],
+    "detalle": {
+      "html_class_sitio": "manrope_36101ca0-module__C0fBEq__variable h-full antialiased — sin montserrat/lato/caveat",
+      "html_class_panel": "manrope_d03eebae-module__eayucW__variable — sin montserrat/lato",
+      "conteo_font_face_sitio": 31,
+      "conteo_font_face_panel": 31,
+      "familias_en_font_face": ["Manrope", "Manrope Fallback"],
+      "font_display_computado": "--font-display: var(--font-manrope), Arial, Helvetica, sans-serif;",
+      "font_body_computado": "--font-body: var(--font-manrope), Arial, Helvetica, sans-serif;",
+      "font_manrope_valor": "--font-manrope: \"Manrope\", \"Manrope Fallback\";",
+      "grep_caveat_css_servido": 0,
+      "grep_font_accent_css_servido": 0,
+      "nota_conteo_baseline": "El baseline de fase-6-tipografia.md §1.1 (26 @font-face en el sitio, medido con Montserrat 3 pesos + Lato 2 pesos + Caveat 1 peso) no es comparable 1:1 con los 31 actuales: next/font fragmenta cada peso en varios unicode-range distintos y el número de fragmentos por peso lo decide la cobertura de glifos de cada familia, no el número de familias cargadas. Los 31 son de UNA sola familia (Manrope, 5 pesos) — antes eran 26 de TRES familias (6 pesos en total)."
+    },
+    "grep_repo_completo": "grep -rni \"caveat\\|font-accent\" app/ components/ lib/ → 0 resultados. grep -rni caveat sobre *.ts/*.tsx/*.css de todo el repo (excluyendo node_modules) → 0 resultados.",
+    "colision_variables": "grep -n \"variable:\" en los dos layouts confirma que ambos usan `--font-manrope` (no `--font-display`/`--font-body`) — cumple T-3."
+  },
+  "prueba_por_mutacion": {
+    "metodo": "Se creó temporalmente components/ui/__mutation-test-caveat.tsx con un comentario 'Caveat: ...' y <span className=\"font-accent\">Caveat firma narrativa</span> aplicado de verdad. Se corrió `pnpm check` (tokens/current/deps/test) y `pnpm lint`.",
+    "resultado": "Ninguno de los dos detectó la referencia a Caveat/font-accent: `pnpm check` pasó sus 3 verificaciones sin mencionar el archivo, y `pnpm lint` reportó 7 errores/4 warnings preexistentes en OTROS archivos (app/admin/page.tsx, components/destinos/listado-categoria.tsx, components/layout/cookie-banner.tsx, components/ui/hero.tsx), ninguno sobre el archivo de prueba.",
+    "conclusion": "Confirma lo que dice el nodo: el guardián que detectaría esto (R-10 de check-marca) es el nodo N-07.1, que todavía no existe. La prueba demuestra que HOY nada lo atrapa — no que algún script lo haga. El archivo de prueba se borró antes de terminar (no queda en el diff final).",
+    "archivo_borrado": "components/ui/__mutation-test-caveat.tsx"
+  },
+  "criterios_fase6_cubiertos": {
+    "T-1": "cumplido — CSS servido confirma solo Manrope en los dos layouts",
+    "T-2": "no aplica a esta ejecución: ambos layouts cargan los mismos 5 pesos por instrucción explícita del nodo (400-800), no un subconjunto reducido",
+    "T-3": "cumplido — las dos variables se llaman --font-manrope, sin colisión con --font-display/--font-body",
+    "T-4": "cumplido — fallback Arial, Helvetica, sans-serif verificado en el CSS servido",
+    "T-5": "cumplido — diff de app/globals.css no toca --text-*, --font-weight-* ni la escala; solo --font-display, --font-body y el retiro de --font-accent",
+    "T-7": "cumplido — grep de caveat y font-accent da cero en código (app/, components/, lib/) y en todo *.ts/*.tsx/*.css del repo",
+    "T-8_T-9": "NO medido en esta ejecución — bloqueado por un problema de infraestructura ajeno a este nodo (ver bloqueos)",
+    "T-10": "parcial — ver bloqueos: pnpm build falla por un motivo no relacionado con tipografía"
+  },
+  "bloqueos": [
+    {
+      "descripcion": "`pnpm build` no llega a EXIT=0: falla en 'Collecting page data' porque generateStaticParams de /destinos/[slug] y /ofertas/[slug] necesitan NEXT_PUBLIC_SUPABASE_URL/NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY reales y este entorno no tiene .env.local ni acceso de red al proyecto de Supabase.",
+      "evidencia_de_que_no_es_del_font": "TypeScript compila limpio ('Compiled successfully', 'Finished TypeScript') antes de llegar a ese paso. Con un .env.local con valores de prueba (URL inexistente), el error cambia de 'Faltan variables' a 'TypeError: fetch failed' — confirma que es un problema de conectividad/credenciales de Supabase, no de código ni de fuentes. Los archivos que fallan (lib/destinations/index.ts, lib/offers/index.ts, sus páginas [slug]) no están en el diff de este nodo.",
+      "accion_tomada": "No se generaron ni almacenaron credenciales reales (política de datos de la organización). Se documenta el bloqueo en vez de forzar el build con un mock silencioso, que ocultaría el problema real.",
+      "pendiente": "Correr `pnpm build` con un .env.local real (Supabase del proyecto) antes de mergear, y con eso completar T-8/T-9 (peso de fuentes y Lighthouse) que pide fase-6-tipografia.md §7 como entregable del PR de la fase completa."
+    }
+  ],
+  "artefactos": ["app/[locale]/layout.tsx", "app/admin/layout.tsx", "app/globals.css"],
+  "fuera_de_alcance_dejado_intacto": [
+    "components/ui/button.tsx: comentario que sigue mencionando Montserrat/Lato — no es parte de los 3 artefactos de este nodo",
+    "app/admin/layout.tsx: bloque de comentario THESIS/OWN-WORLD/STORY (provenance de diseño) — se dejó igual porque documenta la decisión original de diseño, no la carga de fuentes",
+    "/design-system y sistema-de-identidad.md §5.2/§5.3 — son N-06.2, nodo aparte, bloqueado por este",
+    "CURRENT.md — instrucción explícita de no tocarlo en este nodo"
+  ]
+}

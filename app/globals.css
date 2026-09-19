@@ -82,29 +82,30 @@
    * Así se perdió el `text-white` del botón navy y quedó en 1.19:1.
    * ------------------------------------------------------------- */
   /**
-   * TIPOGRAFÍAS OFICIALES DE MARCA. Confirmadas por el cliente el 2026-08-05.
+   * TIPOGRAFÍA OFICIAL DE MARCA. Manrope, una sola familia (D-A, decidido
+   * 2026-09-11, `docs/brand/aprobaciones.md`; ejecutado en fase-6-tipografia.md
+   * §3.1). Sustituye a las tres familias con función separada del manual v2.0.
    *
-   *   Montserrat  títulos, navegación, botones y etiquetas. SemiBold/Bold/ExtraBold.
-   *   Lato        párrafos, condiciones, FAQ y textos largos. Regular/Medium/SemiBold.
-   *   Caveat      firma narrativa. Ver `--font-accent`, que tiene sus propias reglas.
+   * `--font-display` y `--font-body` siguen existiendo como tokens separados
+   * y siguen usándose en `@layer base` (ver más abajo) — la distinción entre
+   * ambos ya no es de familia, es de peso: display usa los pesos altos de la
+   * escala (SemiBold/Bold/ExtraBold), body los bajos (Regular/Medium).
    *
-   * Las variables `--font-montserrat` / `--font-lato` / `--font-caveat` las inyecta
-   * next/font en `app/[locale]/layout.tsx`. Tienen que llamarse distinto del token:
-   * si next/font escribiera `--font-display` estaríamos declarando
-   * `--font-display: var(--font-display), …`, una autorreferencia sobre el mismo
-   * elemento (`<html>` ES `:root`) que anula la cadena de respaldo.
+   * La firma narrativa manuscrita sale del sistema (D-B): no queda su token
+   * de fuente ni su fallback — ver aprobaciones.md para el porqué.
+   *
+   * La variable `--font-manrope` la inyecta next/font en los dos layouts
+   * (`app/[locale]/layout.tsx` y `app/admin/layout.tsx`). Se llama distinto
+   * del token por el mismo motivo de antes: si next/font escribiera
+   * `--font-display` estaríamos declarando `--font-display: var(--font-display), …`,
+   * una autorreferencia sobre el mismo elemento (`<html>` ES `:root`) que
+   * anula la cadena de respaldo.
+   *
+   * Cadena de respaldo: `Arial, Helvetica, sans-serif`, la que declara el
+   * manual vivo — no la genérica `ui-sans-serif, system-ui` que había antes.
    */
-  --font-display: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
-  --font-body: var(--font-lato), ui-sans-serif, system-ui, sans-serif;
-
-  /**
-   * Caveat. NUNCA sostiene información principal.
-   *
-   * El manual lo restringe explícitamente: máximo 8-10 palabras, y prohibido en
-   * párrafos, precios, condiciones y mayúsculas sostenidas. Es una firma
-   * narrativa, no una tipografía de interfaz. Si dudas si usarla, no la uses.
-   */
-  --font-accent: var(--font-caveat), ui-serif, cursive;
+  --font-display: var(--font-manrope), Arial, Helvetica, sans-serif;
+  --font-body: var(--font-manrope), Arial, Helvetica, sans-serif;
 
   /* ---------------------------------------------------------------
    * Escala. Los máximos son los del manual de marca; los mínimos son los de

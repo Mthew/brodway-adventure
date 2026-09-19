@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Lato, Montserrat } from "next/font/google";
+import { Manrope } from "next/font/google";
 
 import "@/app/globals.css";
 
@@ -26,16 +26,22 @@ review, the verdict, DESIGN.md, and every shipping raster carrying its provenanc
 -->
 */
 
-const montserrat = Montserrat({
+/**
+ * Manrope — misma familia y mismos pesos que `app/[locale]/layout.tsx`
+ * (fase-6-tipografia.md §3.1): el panel comparte tipografía con el sitio, no
+ * la reinventa para uso interno.
+ *
+ * La variable se llama `--font-manrope`, NO `--font-display`/`--font-body`
+ * como antes. Nombrarla igual que los tokens de `globals.css` creaba una
+ * autorreferencia (`--font-display: var(--font-display), …`) que funcionaba
+ * de pura casualidad de cascada — `@layer theme` pierde contra una
+ * declaración sin capa — y no por una cadena de respaldo real
+ * (fase-6-tipografia.md §1.2 y §2.2).
+ */
+const manrope = Manrope({
   subsets: ["latin"],
-  variable: "--font-display",
-  display: "swap",
-});
-
-const lato = Lato({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-body",
+  variable: "--font-manrope",
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -72,7 +78,7 @@ export default async function AdminLayout({
   const usuario = await getUsuarioAdmin();
 
   return (
-    <html lang="es" className={`${montserrat.variable} ${lato.variable}`}>
+    <html lang="es" className={manrope.variable}>
       <body className="bg-surface-alt text-brand-navy min-h-svh antialiased">
         {usuario ? <MenuAdmin correo={usuario.email ?? ""} /> : null}
         {children}
