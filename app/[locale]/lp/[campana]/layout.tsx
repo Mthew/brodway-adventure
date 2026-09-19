@@ -33,12 +33,18 @@ export default async function LandingLayout({
     <>
       <header className="bg-surface-base shadow-[inset_0_-1px_0_var(--color-neutral-200)]">
         <div className="mx-auto flex max-w-6xl items-center px-6 py-3 md:px-8">
-          {/* Sin <Link>: identifica la marca, no navega. */}
+          {/*
+            Sin <Link>: identifica la marca, no navega. N-02.1 reemplaza el archivo
+            por la firma horizontal oficial del kit (public/README); las dimensiones
+            reales declaradas (fase-2-la-firma.md §4.2, en vez de 180×56 sobre el
+            sello cuadrado anterior) evitan que Next distorsione el aspect ratio. El
+            tamaño visual final (h-14) lo termina de ajustar N-02.2.
+          */}
           <Image
-            src="/logo-broway.png"
+            src="/brand/logo-horizontal.png"
             alt="BroWay Adventures"
-            width={180}
-            height={56}
+            width={1759}
+            height={894}
             priority
             className="h-14 w-auto"
           />

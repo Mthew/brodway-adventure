@@ -419,8 +419,11 @@ redefinas colores ni botones.
 TAREA: el layout global en `components/layout/`, más `app/[locale]/layout.tsx`.
 
 1) NAVBAR (`Navbar.tsx`)
-- Logo BroWay Adventures a la izquierda. Usa /logo-broway.png como src, ratio horizontal,
-  ancho mínimo 180px en desktop / 140px en móvil (respeta el mínimo del manual de marca).
+- Logo BroWay Adventures a la izquierda. Usa /brand/logo-horizontal.png como src (firma
+  horizontal oficial del kit de marca, ver `public/README` — reemplazó al sello circular
+  `/logo-broway.png` que este prompt pedía originalmente y que ya no existe), ratio
+  horizontal, ancho mínimo 180px en desktop / 140px en móvil (respeta el mínimo del manual
+  de marca).
   Zona de seguridad: deja un espacio libre alrededor equivalente a la mitad de la altura
   del logo. No lo pegues al borde.
 - Links: Destinos · Paquetes · Cómo pagar · Nosotros · Contacto.

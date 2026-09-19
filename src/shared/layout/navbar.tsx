@@ -125,17 +125,18 @@ export function Navbar() {
       <nav className="mx-auto flex max-w-6xl items-center gap-6 px-6 py-3 md:px-8">
         <Link href="/" aria-label={t("irAlInicio")} className="shrink-0">
           {/*
-            TODO: falta el logo HORIZONTAL. El único archivo disponible hoy es el
-            sello circular (1254x1254) — brief-v0.md §12 lo lista como pendiente de
-            marca junto con los vectoriales. Por eso aquí se dimensiona por ALTURA:
-            declarar una relación de aspecto que el archivo no tiene deforma el
-            layout. Al recibir el horizontal, cambia a ancho fijo.
+            N-02.1 solo reemplaza el archivo por la firma horizontal oficial del kit
+            (docs/brand/Kit_Marca_BroWay_Adventures/, ver public/README). El
+            dimensionado por ALTURA (h-11/h-14) es el mismo de antes a propósito:
+            pasar a ancho fijo con el mínimo de 180px del manual y la zona de
+            seguridad es alcance de N-02.2 (fase-2-la-firma.md §3.1, §4.1), no de
+            este nodo. width/height sí reflejan ya el tamaño real del archivo.
           */}
           <Image
-            src="/logo-broway.png"
+            src="/brand/logo-horizontal.png"
             alt="BroWay Adventures"
-            width={1254}
-            height={1254}
+            width={1759}
+            height={894}
             priority
             className="h-11 w-auto md:h-14"
           />
