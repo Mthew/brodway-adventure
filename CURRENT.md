@@ -12,13 +12,13 @@
 | Marca: fuente de verdad, 7 specs, 7 decisiones ([`007`](history/007-fuente-de-verdad-de-marca.md)) | ✅ Mergeado | PR #24 |
 | Arquitectura module-first: 5 ADR + guardrails deterministas en `docs/architecture/` | ✅ Mergeado | PR #23 |
 | Grafo de ejecución de marca (`docs/brand/specs/grafo.md`, 33 nodos) | ✅ Mergeado | PR #25, #26 |
-| **23/33 nodos del grafo ejecutados**: N-01.0a/0b/1/2, N-02.1/2/3, N-03.0/1/2/3/4, N-04.0/2, N-05.1/2/3/4/V, N-06.1/2/V, N-07.2 | ✅ Mergeado | PR #28-#51 |
+| **27/33 nodos del grafo ejecutados**: todo N-01/N-02.1-4/N-03/N-05/N-06/N-07.2-3, N-04.0-2 | ✅ Mergeado | PR #28-#56 |
 
-## Próximo paso: 10 nodos restantes del grafo
+## Próximo paso: 6 nodos restantes del grafo
 
-- **Listos para arrancar ya** (dependencias de artefacto cerradas): `N-02.4` (metadatos sociales), `N-03.5` (check-marca R-3/4/5), `N-04.1` (ruta de marca), `N-07.3` (aprobaciones.md → PR real).
-- `N-04.3` (radios normalizados) puede correr ahora que el grueso de Fase 4 mergeó, pero **sola, no en paralelo con otro nodo** — su reemplazo mecánico toca casi cualquier archivo con clases Tailwind (`docs/brand/specs/grafo.md` §5).
-- Encadenados detrás: `N-02.5`→`N-02.V` (esperan `N-02.4`), `N-04.4` (espera `N-04.1`+`N-04.3`), `N-07.1`→`N-07.4` (esperan `N-03.5`+`N-04.3`).
+- **Listos para arrancar ya**: `N-02.5` (og:image por página, espera `N-02.4` ✅), `N-04.3` (radios normalizados).
+- `N-04.3` corre **sola, no en paralelo con otro nodo** — su reemplazo mecánico toca casi cualquier archivo con clases Tailwind (`docs/brand/specs/grafo.md` §5).
+- Encadenados detrás: `N-02.V` (espera `N-02.5`), `N-04.4` (espera `N-04.3`), `N-07.1`→`N-07.4` (esperan `N-04.3`).
 - **La marca tiene un documento rector:** [`sistema-de-identidad.md`](docs/brand/sistema-de-identidad.md). Los hex del código ya son los de la marca (`#0D3B66`/`#16B4C6`/`#FF8A00`) — corregido en `N-01.1`. `pnpm check:marca` (R-1/R-2) corre dentro de `pnpm build` desde `N-01.1`/`N-01.2`.
 - **Navbar usa el símbolo, no la firma horizontal completa** — `logo-horizontal.png` es incompatible con la barra de 80px por el margen interno del archivo del kit (`N-02.2`). El símbolo vive en `public/brand/simbolo.png`.
 
