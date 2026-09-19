@@ -11,9 +11,9 @@ import { MenuAdmin } from "./menu";
 <!--
 THESIS: publicar una oferta es una secuencia, no un formulario; el panel refusa la
 tabla densa de escritorio que todo backoffice copia por defecto.
-OWN-WORLD: la identidad del sitio, sin inventar nada — navy #003062, turquesa
-#00aac3, naranja #ff6a03 para la acción que avanza, Montserrat en títulos y Lato en
-lectura, superficies blancas sobre #f4f7fa. Reconocible con el contenido tapado por
+OWN-WORLD: la identidad del sitio, sin inventar nada — navy #0d3b66, turquesa
+#16b4c6, naranja #ff8a00 para la acción que avanza, Montserrat en títulos y Lato en
+lectura, superficies blancas sobre #f2f4f7. Reconocible con el contenido tapado por
 sus objetivos táctiles enormes y su única columna.
 STORY: alguien del equipo llega con un flyer de mayorista en la mano, lo transcribe,
 le pone fotos, elige dónde aparece y lo publica, sin salir del pulgar.

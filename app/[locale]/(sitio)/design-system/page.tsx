@@ -25,21 +25,37 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+/**
+ * Los cinco hex del manual de marca (§15) — los únicos valores de color de
+ * marca del repo (docs/brand/specs/fase-1-paleta-y-superficies.md §2.1).
+ */
 const COLORS = [
-  { name: "brand-navy", hex: "#003062", contrast: "13.13:1 con texto blanco" },
-  { name: "brand-turquoise", hex: "#00AAC3", contrast: "4.71:1 con texto navy" },
-  { name: "brand-orange", hex: "#FF6A03", contrast: "4.57:1 con texto navy" },
-  { name: "whatsapp", hex: "#25D366", contrast: "6.62:1 con texto navy" },
+  { name: "brand-navy", hex: "#0D3B66", contrast: "11.45:1 con texto blanco" },
+  { name: "brand-turquoise", hex: "#16B4C6", contrast: "4.57:1 con texto navy" },
+  { name: "brand-orange", hex: "#FF8A00", contrast: "4.84:1 con texto navy" },
+  {
+    name: "surface-sand",
+    hex: "#F6E7C3",
+    contrast: "9.34:1 con texto navy — fondo editorial, nuevo en el sistema",
+  },
   {
     name: "brand-orange-text",
-    hex: "#C24A00",
-    contrast: "texto sobre claro — 5.98 blanco / 5.56 alt / 5.32 tinte",
+    hex: "#A34400",
+    contrast: "texto sobre claro — 6.21 blanco / 5.63 gris / 5.06 arena",
   },
   {
     name: "brand-turquoise-text",
     hex: "#006B7D",
-    contrast: "texto sobre claro — 6.18 blanco / 5.75 alt / 5.55 tinte",
+    contrast: "texto sobre claro — 6.18 blanco / 5.61 gris / 5.04 arena",
   },
+] as const;
+
+/**
+ * Color de canal, no de marca (D-E, docs/brand/aprobaciones.md, ratificado
+ * 2026-09-11): identifica un servicio externo, no a BroWay. No se re-deriva.
+ */
+const CHANNEL_COLORS = [
+  { name: "whatsapp", hex: "#25D366", contrast: "5.77:1 con texto navy" },
 ] as const;
 
 /**
@@ -206,10 +222,37 @@ export default async function DesignSystemPage({
 
         <Block
           title="Color de marca"
-          description="El naranja y el turquesa de marca NO sirven como color de texto pequeño sobre blanco (~2.8:1). Para eso están sus variantes de texto."
+          description="Los cinco hex del manual (§15) — los únicos valores de marca del repo. El naranja y el turquesa NO sirven como color de texto pequeño sobre blanco (~2.4-2.5:1); para eso están sus variantes de texto."
         >
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {COLORS.map((color) => (
+              <Card key={color.name} className="flex flex-col">
+                <div
+                  className="h-20 w-full"
+                  style={{ backgroundColor: color.hex }}
+                />
+                <div className="flex flex-col gap-1 p-4">
+                  <p className="text-body-sm text-brand-navy font-semibold">
+                    {color.name}
+                  </p>
+                  <p className="text-caption font-mono text-neutral-600">
+                    {color.hex}
+                  </p>
+                  <p className="text-caption text-neutral-500">
+                    {color.contrast}
+                  </p>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </Block>
+
+        <Block
+          title="Color de canal"
+          description="No es color de marca: identifica un servicio externo (D-E, docs/brand/aprobaciones.md). Se documenta aparte para que nadie lo cuente entre los cinco de la paleta."
+        >
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {CHANNEL_COLORS.map((color) => (
               <Card key={color.name} className="flex flex-col">
                 <div
                   className="h-20 w-full"
@@ -369,9 +412,9 @@ export default async function DesignSystemPage({
           </p>
           <p className="text-caption text-neutral-500">
             <strong>destinoOscuro existe por una razón medible.</strong> Sobre el
-            navy de un hero, la variante clara rinde 1.82:1 e ilegible, porque su
+            navy de un hero, la variante clara rinde 1.58:1 e ilegible, porque su
             texto está medido sobre superficies claras y no sobre esta. La variante
-            oscura rinde 8.46:1. Verifica siempre contra la superficie que el
+            oscura rinde 7.40:1. Verifica siempre contra la superficie que el
             componente pinta de verdad, no contra blanco.
           </p>
         </Block>

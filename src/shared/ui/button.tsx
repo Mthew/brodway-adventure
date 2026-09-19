@@ -5,12 +5,13 @@ import { cn } from "@/lib/utils";
 /**
  * Botón base.
  *
- * REGLAS DE CONTRASTE — verificadas, no negociables (brief-v0.md §2):
- *   ✅ naranja + texto navy     = 4.57:1
- *   ❌ naranja + texto blanco   = 2.87:1  → nunca
- *   ✅ WhatsApp + texto navy    = 6.62:1
+ * REGLAS DE CONTRASTE — verificadas, no negociables
+ * (docs/brand/specs/fase-1-paleta-y-superficies.md §4.2):
+ *   ✅ naranja + texto navy     = 4.84:1
+ *   ❌ naranja + texto blanco   = 2.36:1  → nunca
+ *   ✅ WhatsApp + texto navy    = 5.77:1
  *   ❌ WhatsApp + texto blanco  = 1.98:1  → nunca
- *   ✅ navy + texto blanco      = 13.13:1
+ *   ✅ navy + texto blanco      = 11.45:1
  *
  * React 19: `ref` es una prop normal, no hace falta `forwardRef`.
  */

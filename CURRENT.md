@@ -18,7 +18,7 @@
 - **Listo para arrancar.** `docs/brand/specs/grafo.md` no tiene pendientes — los 12 nodos día 1 (`N-01.0a`, `N-01.0b`, `N-03.0`, `N-04.0`, `N-01.2`, `N-02.1`, `N-03.1`, `N-03.4`, `N-04.3`, `N-05.1`, `N-06.1`, `N-07.2`) pueden empezar ya. Camino crítico: 5 nodos (`N-01.0b→N-01.1→N-02.4→N-02.5→N-02.V`).
 - **El grafo migra a `src/` solo lo que cada spec de marca ya toca** — no es una migración completa de arquitectura. `campaigns`, `demo-crm`, la capa de negocio (`domain/application/infrastructure`) de todos los módulos, y el paso atómico `app/`→`src/app/` quedan sin tocar por este grafo, a propósito (confirmado con el usuario 2026-09-18). No ampliar el alcance de un nodo de migración más allá de lo que su spec de marca necesita.
 - **Cada fase de marca con cambio de código son dos PRs**: migración a `src/` primero (sin cambio de comportamiento), marca después — `docs/brand/intent.md` §0.bis.
-- **La marca tiene un documento rector:** [`sistema-de-identidad.md`](docs/brand/sistema-de-identidad.md). Los hex del código siguen sin ser los de la marca (`#003062`/`#00aac3`/`#ff6a03` → `#0D3B66`/`#16B4C6`/`#FF8A00`) — se corrige en `N-01.1`.
+- **La marca tiene un documento rector:** [`sistema-de-identidad.md`](docs/brand/sistema-de-identidad.md). Los hex del código ya son los de la marca (`#0D3B66`/`#16B4C6`/`#FF8A00`) — corregido en `N-01.1`.
 
 ## Lo que hay que saber para no romper nada
 

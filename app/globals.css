@@ -14,32 +14,37 @@
   /* ---------------------------------------------------------------
    * Color de marca
    * ------------------------------------------------------------- */
-  --color-brand-navy: #003062;
-  --color-brand-turquoise: #00aac3;
-  --color-brand-orange: #ff6a03;
+  /**
+   * Paleta oficial del manual de marca (§15). Confirmada por muestreo directo
+   * del logo real — no se re-derivan (docs/brand/sistema-de-identidad.md §4.5).
+   */
+  --color-brand-navy: #0d3b66;
+  --color-brand-turquoise: #16b4c6;
+  --color-brand-orange: #ff8a00;
   --color-whatsapp: #25d366;
 
   /**
    * Variantes accesibles para TEXTO sobre fondo claro.
-   * El naranja y el turquesa de marca rinden ~2.8:1 sobre blanco: no sirven como
-   * color de texto pequeño. Estas dos sí.
+   * El naranja y el turquesa de marca rinden ~2.4-2.5:1 sobre blanco: no sirven
+   * como color de texto pequeño. Estas dos sí.
    *
-   * Medidos sobre blanco / sobre surface-alt / sobre su propio tinte al 10%:
-   *   orange-text     #C24A00 → 5.98 / 5.56 / 5.32
-   *   turquoise-text  #006B7D → 6.18 / 5.75 / 5.55
+   * Medidos sobre blanco / gris `#F2F4F7` / arena `#F6E7C3`
+   * (docs/brand/specs/fase-1-paleta-y-superficies.md §4.1):
+   *   orange-text     #A34400 → 6.21 / 5.63 / 5.06
+   *   turquoise-text  #006B7D → 6.18 / 5.61 / 5.04  (sin cambio de valor)
    *
-   * El turquesa de texto era #007D91: pasaba sobre blanco (4.84) pero fallaba
-   * dentro del badge `destino`, que lo pinta sobre un tinte del propio turquesa
-   * (4.35 < 4.5). Un tinte ACLARA el fondo, así que verificar sólo contra blanco
-   * no alcanza — hay que verificar contra la superficie real del componente.
+   * `#c24a00` (el orange-text anterior) medía 4.91 / 4.57 / 4.50: pasaba AA por
+   * 0.07 y fallaba sobre gris y arena en cuanto esas dos superficies entraron al
+   * sistema. `#A34400` pasa en las cinco superficies de la matriz de fase 1.
    */
-  --color-brand-orange-text: #c24a00;
+  --color-brand-orange-text: #a34400;
   --color-brand-turquoise-text: #006b7d;
 
   /* ---------------------------------------------------------------
    * Neutros fríos — matiz azulado en armonía con el navy, no grises puros
    * ------------------------------------------------------------- */
-  --color-neutral-50: #f4f7fa;
+  /* Mismo valor que --color-surface-alt: se mueven juntos o el duplicado reaparece. */
+  --color-neutral-50: #f2f4f7;
   --color-neutral-100: #e7edf3;
   --color-neutral-200: #d0dae5;
   --color-neutral-300: #aebccc;
@@ -54,7 +59,14 @@
 
   /* Superficies */
   --color-surface-base: #ffffff;
-  --color-surface-alt: #f4f7fa;
+  --color-surface-alt: #f2f4f7;
+  /**
+   * "Arena cálida" del manual (§15), fondo editorial. Entra al sistema en
+   * N-01.1 (fase-1-paleta-y-superficies.md §2.3): se declara y se documenta,
+   * pero ninguna sección existente cambia de fondo todavía — eso es criterio
+   * de composición de una fase posterior.
+   */
+  --color-surface-sand: #f6e7c3;
 
   /* ---------------------------------------------------------------
    * Estados
@@ -202,9 +214,9 @@
   /* ---------------------------------------------------------------
    * Sombras — suaves y con tinte azulado, nunca negro puro
    * ------------------------------------------------------------- */
-  --shadow-sm: 0 1px 2px 0 rgb(0 48 98 / 0.06), 0 1px 3px 0 rgb(0 48 98 / 0.08);
-  --shadow-md: 0 4px 6px -1px rgb(0 48 98 / 0.08), 0 2px 4px -2px rgb(0 48 98 / 0.06);
-  --shadow-lg: 0 12px 20px -4px rgb(0 48 98 / 0.1), 0 4px 8px -4px rgb(0 48 98 / 0.06);
+  --shadow-sm: 0 1px 2px 0 rgb(13 59 102 / 0.06), 0 1px 3px 0 rgb(13 59 102 / 0.08);
+  --shadow-md: 0 4px 6px -1px rgb(13 59 102 / 0.08), 0 2px 4px -2px rgb(13 59 102 / 0.06);
+  --shadow-lg: 0 12px 20px -4px rgb(13 59 102 / 0.1), 0 4px 8px -4px rgb(13 59 102 / 0.06);
 
   /* ---------------------------------------------------------------
    * Breakpoints — mobile-first. El 83% del tráfico es móvil.

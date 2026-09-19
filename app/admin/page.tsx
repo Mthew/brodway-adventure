@@ -70,7 +70,7 @@ export default async function AdminPage({
 
       <Link
         href="/admin/ofertas/nueva"
-        className="bg-brand-orange text-body font-display flex h-14 items-center justify-center rounded-lg font-semibold text-white active:scale-[0.99]"
+        className="bg-brand-orange text-body font-display flex h-14 items-center justify-center rounded-lg font-semibold text-brand-navy active:scale-[0.99]"
       >
         Cargar una oferta nueva
       </Link>

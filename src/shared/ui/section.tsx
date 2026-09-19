@@ -15,6 +15,12 @@ const sectionVariants = cva("w-full", {
       alt: "bg-surface-alt text-neutral-900",
       navy: "bg-brand-navy text-white",
       turquoise: "bg-brand-turquoise text-brand-navy",
+      /**
+       * "Arena cálida" del manual — fondo editorial (fase-1-paleta-y-superficies.md
+       * §2.3). Entra al sistema aquí; ninguna sección existente la usa todavía,
+       * decidir qué bloque la merece es criterio de composición de otra fase.
+       */
+      sand: "bg-surface-sand text-brand-navy",
     },
     spacing: {
       normal: "py-16 md:py-24",

@@ -125,7 +125,7 @@ export function BotonPrincipal({
     <button
       {...props}
       className={cn(
-        "bg-brand-orange text-body h-14 w-full rounded-lg font-display font-semibold text-white",
+        "bg-brand-orange text-body h-14 w-full rounded-lg font-display font-semibold text-brand-navy",
         "transition-colors active:scale-[0.99]",
         "disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:text-neutral-500",
         props.className,

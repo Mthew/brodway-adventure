@@ -72,7 +72,7 @@ export function CookieBanner() {
       aria-label={t("titulo")}
       className={[
         "bg-surface-base fixed inset-x-0 bottom-0 z-[60]",
-        "border-t border-neutral-200 shadow-[0_-4px_16px_rgba(0,48,98,0.10)]",
+        "border-t border-neutral-200 shadow-[0_-4px_16px_rgba(13,59,102,0.10)]",
         "pb-[env(safe-area-inset-bottom)]",
       ].join(" ")}
     >

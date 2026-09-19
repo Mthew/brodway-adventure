@@ -127,7 +127,7 @@ export function Navbar() {
    * más abajo, que dependía de la altura variable anterior.
    */
   return (
-    <header className="bg-surface-base sticky top-0 z-50 shadow-[inset_0_-1px_0_var(--color-neutral-200),0_1px_2px_rgba(0,48,98,0.06)]">
+    <header className="bg-surface-base sticky top-0 z-50 shadow-[inset_0_-1px_0_var(--color-neutral-200),0_1px_2px_rgba(13,59,102,0.06)]">
       <nav className="mx-auto flex h-20 max-w-6xl items-center gap-6 px-6 md:px-8">
         <Link href="/" aria-label={t("irAlInicio")} className="mr-2 shrink-0">
           {/*

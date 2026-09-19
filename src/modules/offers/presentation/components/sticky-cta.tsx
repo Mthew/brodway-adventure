@@ -84,7 +84,7 @@ export function StickyCta({ offer }: { offer: Offer }) {
       <div
         className={[
           "bg-surface-base fixed inset-x-0 bottom-0 z-50 border-t border-neutral-200 md:hidden",
-          "pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_rgba(0,48,98,0.08)]",
+          "pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_rgba(13,59,102,0.08)]",
           "transition-transform duration-200 motion-reduce:transition-none",
           visible ? "translate-y-0" : "translate-y-full",
         ].join(" ")}
