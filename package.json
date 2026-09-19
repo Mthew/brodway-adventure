@@ -12,6 +12,7 @@
     "check:current": "node scripts/check-current-length.mjs",
     "check:marca": "node scripts/check-marca.mjs",
     "check:deps": "if [ -d src ]; then depcruise --config .dependency-cruiser.mjs src; fi",
+    "check:marca": "node scripts/check-marca.mjs",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage"
   },

@@ -1,0 +1,57 @@
+{
+  "id": "N-01.2",
+  "titulo": "scripts/check-marca.mjs — reglas R-1/R-2 (hex)",
+  "estado": "completado",
+  "fecha": "2026-09-18",
+  "rama": "fase-1/marca-n-01-2-check-marca-hex",
+  "objetivo": "pnpm check falla si los tres hex antiguos reaparecen fuera de history/ y docs/brand/**, y falla si cualquiera de los cinco hex oficiales aparece fuera de app/globals.css (con la unica excepcion declarada de design-system/page.tsx).",
+  "artefactos": [
+    "scripts/check-marca.mjs",
+    "package.json (script check:marca, agregado a la cadena de check)",
+    "scripts/__fixtures__/check-marca/clean/** (fixture sintetico, 0 violaciones)",
+    "scripts/__fixtures__/check-marca/mutated-r1/** (fixture con hex antiguo insertado en components/Bad.tsx, fuera de whitelist)",
+    "scripts/__fixtures__/check-marca/mutated-r2/** (fixture con hex oficial hardcodeado en lib/theme.ts, fuera de app/globals.css)"
+  ],
+  "implementacion": {
+    "r1": "Recorre TODO el repo (excluyendo node_modules/.git/.next/dist/build/coverage/.vercel/.turbo/out/__fixtures__ y extensiones binarias) buscando los tres hex antiguos (#003062/#00aac3/#ff6a03), con o sin '#', case-insensitive. Whitelist exacta: prefijos de ruta 'history/' y 'docs/brand/'.",
+    "r2": "Recorre SOLO 'app/', 'components/', 'lib/' y 'src/' (cobertura dual, fase-7 §3.bis) buscando los cinco hex oficiales (#0D3B66/#16B4C6/#FF8A00/#F6E7C3/#F2F4F7) con '#', case-insensitive. Excepciones: cualquier archivo 'app/globals.css' (o su equivalente bajo 'src/') y cualquier archivo que termine en 'design-system/page.tsx'.",
+    "modo_prueba": "Variable de entorno CHECK_MARCA_ROOT=<ruta> reemplaza la raiz de escaneo por un directorio de fixtures aislado, sin tocar el repo real.",
+    "auto_exclusion": "El propio scripts/check-marca.mjs se excluye a si mismo del recorrido (tiene que citar los hex literalmente para definirlos) y el directorio scripts/__fixtures__/ se excluye siempre del modo normal, para que el script no se marque falsos positivos a si mismo ni a sus fixtures de prueba."
+  },
+  "verificacion": {
+    "tipo": "comando",
+    "como": "pnpm check:marca",
+    "resultado_fixture_limpio": "CHECK_MARCA_ROOT=scripts/__fixtures__/check-marca/clean pnpm exec node scripts/check-marca.mjs → 0 violaciones, exit 0",
+    "resultado_fixture_mutado_r1": "CHECK_MARCA_ROOT=scripts/__fixtures__/check-marca/mutated-r1 node scripts/check-marca.mjs → 1 violacion (components/Bad.tsx:3, #003062), exit 1",
+    "resultado_fixture_mutado_r2": "CHECK_MARCA_ROOT=scripts/__fixtures__/check-marca/mutated-r2 node scripts/check-marca.mjs → 1 violacion (lib/theme.ts:2, #0D3B66), exit 1",
+    "cobertura_dual_probada": "Se probo ademas (sin dejar el fixture en el repo) un archivo bajo src/modules/.../presentation/OfferBadge.tsx con #FF8A00 hardcodeado: el script lo detecto igual que bajo lib/, confirmando que el patron dual app/components/lib/src no tiene el 'falso verde' que describe grafo.json para este nodo.",
+    "resultado_repo_real_hoy": {
+      "comando": "pnpm check:marca (equivalente: node scripts/check-marca.mjs)",
+      "exit_code": 1,
+      "violaciones_r1": 27,
+      "archivos_r1": [
+        "CLAUDE.md",
+        "CURRENT.md",
+        "app/[locale]/(sitio)/design-system/page.tsx",
+        "app/admin/layout.tsx",
+        "app/globals.css",
+        "docs/README.md",
+        "docs/architecture/spec-tecnica.md",
+        "docs/design/brief-v0-producto.md",
+        "docs/design/brief-v0.md"
+      ],
+      "violaciones_r2": 0,
+      "detalle": "Los 9 archivos con hex antiguo fuera de whitelist coinciden exactamente con el inventario de fase-1-paleta-y-superficies.md §9 (A-1, medido 2026-09-16). Son violaciones REALES, no ruido del propio patron: cada linea reportada contiene efectivamente #003062/#00aac3/#ff6a03 (o su variante de casing) citado como valor vigente, no como defecto corregido (CLAUDE.md y CURRENT.md los citan como aviso, pero ninguno de los dos esta en la whitelist de R-1, que es exclusivamente history/ y docs/brand/** — ver fase-1 §1.4, corregido 2026-09-18). Se resuelven cuando N-01.1 (migracion de los hex a los oficiales + limpieza de CLAUDE.md/CURRENT.md) mergee; este nodo NO modifico esos archivos. R-2 da 0 violaciones porque app/globals.css todavia tiene los hex ANTIGUOS, no los oficiales — una vez que N-01.1 los reemplace, R-2 pasara a ser la regla que vigile que no se reintroduzcan hardcodeados fuera de globals.css."
+    }
+  },
+  "prueba_por_mutacion": {
+    "descrita_en_grafo": "Insertar #00aac3 en un archivo de docs/brand/aprobaciones.md (dentro de whitelist, no deberia fallar) — probar en cambio en un archivo fuera de cualquier whitelist.",
+    "ejecutada_como": "En vez de ensuciar el repo real (docs/architecture/README.md no existe), se uso el mecanismo de fixtures aislados: scripts/__fixtures__/check-marca/mutated-r1/components/Bad.tsx (hex antiguo) y mutated-r2/lib/theme.ts (hex oficial), corridos con CHECK_MARCA_ROOT apuntando a cada fixture. Confirmado que ambos fallan con archivo:linea correctos y que el fixture 'clean' equivalente pasa en 0 violaciones.",
+    "resultado": "OK — el script detecta ambas mutaciones y las reporta con archivo y numero de linea."
+  },
+  "falso_verde_evitado": "grafo.json advertia que el check podia pasar en verde si sus patrones solo cubrian app/ y components/ mientras el codigo ya vivia en src/. Se probo explicitamente (ver cobertura_dual_probada) insertando un hex oficial bajo src/modules/.../presentation/ y confirmando deteccion, ademas de bajo lib/ y components/.",
+  "notas": [
+    "No se toco CLAUDE.md ni CURRENT.md: su limpieza es responsabilidad de N-01.1, no de este nodo.",
+    "check:marca se agrego a la cadena 'check' en package.json (check:tokens && check:current && check:deps && check:marca && test), por lo que hoy 'pnpm check' y por tanto 'pnpm build' fallan hasta que N-01.1 mergee — es el comportamiento esperado y deseado del guardian."
+  ]
+}

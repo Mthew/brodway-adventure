@@ -22,12 +22,21 @@
  * La segunda regla es la que impide que la desviación se repita: comparar
  * solo contra los tres hex viejos no detecta que alguien escriba un cuarto
  * hex "parecido" directo en un componente en lugar de usar el token.
+ *
+ * MODO DE PRUEBA (N-01.2):
+ * `CHECK_MARCA_ROOT=<ruta>` reemplaza la raíz del repo por un fixture aislado
+ * (ver `scripts/__fixtures__/check-marca/`), para poder probar por mutación
+ * sin ensuciar el repo real. En modo normal (sin la variable) la raíz es el
+ * repo real.
  */
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, relative, sep } from "node:path";
 
-const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+const defaultRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
+const root = process.env.CHECK_MARCA_ROOT
+  ? join(process.cwd(), process.env.CHECK_MARCA_ROOT)
+  : defaultRoot;
 
 // Hex antiguos (la desviación que este nodo corrige). Case-insensitive.
 const HEX_ANTIGUOS = ["003062", "00aac3", "ff6a03"];
@@ -35,13 +44,16 @@ const HEX_ANTIGUOS = ["003062", "00aac3", "ff6a03"];
 // Los cinco hex oficiales del manual (§15).
 const HEX_OFICIALES = ["0d3b66", "16b4c6", "ff8a00", "f6e7c3", "f2f4f7"];
 
-// Directorios que no se recorren: dependencias, build, control de versiones.
+// Directorios que no se recorren: dependencias, build, control de versiones,
+// y los fixtures sintéticos de este mismo script (N-01.2) — contienen hex a
+// propósito para probar las reglas, no son código ni docs reales del repo.
 const DIRS_IGNORADOS = new Set([
   "node_modules",
   ".git",
   ".next",
   ".vercel",
   "coverage",
+  "__fixtures__",
   ".turbo",
 ]);
 
