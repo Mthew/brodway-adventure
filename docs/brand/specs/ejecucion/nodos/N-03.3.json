@@ -1,0 +1,86 @@
+{
+  "id": "N-03.3",
+  "titulo": "Auditoria de estructura del mensaje en los 6 bloques de conversion",
+  "fuente": "fase-3-identidad-verbal.md §3.5, §3.6, C-3 · grafo.json:N-03.3",
+  "fecha_ejecucion": "2026-09-18",
+  "rama": "fase-1/marca-n-03-3-auditoria-bloques",
+  "estado": "hecho",
+  "metodo": "Lectura de cada bloque EN ORDEN de aparicion (tal como lo ve un visitante), citando la frase concreta de cada uno de los 4 pasos (necesidad reconocible -> beneficio concreto -> informacion que reduce incertidumbre -> invitacion clara). Se corrige solo el bloque que empieza por la invitacion o que salta el paso 3, segun el mandato explicito del nodo. El contenido editorial dinamico (oferta/destino/campana) se audita con su dato real de lib/mock/*.ts, que es el mismo que sirve la pagina en ausencia de datos de Supabase.",
+  "auditoria_bloques": [
+    {
+      "bloque": "1. Hero home",
+      "archivo": "app/[locale]/(sitio)/page.tsx + messages.home / messages.cta",
+      "paso1_necesidad": "No hay una frase separada que nombre la duda o la friccion del visitante; queda fusionada con el paso 2 dentro del propio titular.",
+      "paso2_beneficio": "\"Elige tu viaje con claridad\" (heroTitulo) + \"Te acompañamos a comparar opciones reales\" (heroSubtitulo, primera clausula).",
+      "paso3_incertidumbre": "\"con el precio completo y sus condiciones\" (heroSubtitulo, segunda clausula) — concreto, no generico: promete precio completo y condiciones explicitas, no solo \"confianza\".",
+      "paso4_invitacion": "\"Cotiza por WhatsApp\" (cta.cotizaWhatsapp, variante de canal declarada en N-03.1) + \"Descubre las opciones\" (cta.descubreOpciones).",
+      "veredicto": "CUMPLE. No empieza por la invitacion ni salta el paso 3. El paso 1 esta fusionado con el 2 en vez de ser una frase propia, pero es un patron consistente en todo el sitio (ver bloques 3 y 4) y no es el criterio de correccion de este nodo (solo se corrige invitacion-primero o paso-3-saltado)."
+    },
+    {
+      "bloque": "2. Hero campaña",
+      "archivo": "app/[locale]/lp/[campana]/page.tsx + contenido de lib/mock/campaigns.ts (campana 'eje-cafetero-septiembre', la unica activa)",
+      "paso1_necesidad": "No hay frase de necesidad separada; el titular hace 'message match' con el anuncio, que es su restriccion funcional (no se puede acortar ni reescribir, ver comentario del propio archivo).",
+      "paso2_beneficio": "\"Cuatro días en el Eje Cafetero, con guía local\" (campaign.titular) + \"Fincas de café, Valle de Cocora y Salento.\" (primera clausula de campaign.subtitular).",
+      "paso3_incertidumbre": "\"Traslados y alojamiento resueltos.\" (segunda clausula de campaign.subtitular) — concreto: resuelve la duda logistica de quien llega desde un anuncio, antes del CTA.",
+      "paso4_invitacion": "\"Cotiza por WhatsApp\" (campaign.cta, la variante de canal).",
+      "veredicto": "CUMPLE. La informacion que reduce incertidumbre esta comprimida en la segunda mitad del subtitular pero es sustancia real ('resueltos'), no relleno, y aparece antes del CTA. No se toca campaign.* porque es contenido editorial de campaña (analogo a destino/oferta), fuera de messages/*.json."
+    },
+    {
+      "bloque": "3. Ficha de oferta",
+      "archivo": "app/[locale]/(sitio)/ofertas/[slug]/page.tsx + messages.ofertas / messages.cta + PriceDisclosure (messages.precio) + contenido de lib/mock/offers.ts (oferta 'eje-cafetero-4-dias')",
+      "paso1_necesidad": "No hay frase de necesidad separada antes del titulo; arranca con los badges de destino/duracion y el h1.",
+      "paso2_beneficio": "\"Eje Cafetero 4 días: café y naturaleza con guía local\" (offer.titulo) + \"Fincas cafeteras, Valle de Cocora y Salento, sin improvisar\" (offer.beneficioCorto).",
+      "paso3_incertidumbre": "PriceDisclosure: \"Desde $1.290.000 por persona\" + \"Saliendo desde Medellín · 3 noches · Ocupación doble\" + \"Verificada el [fecha] · Consulta condiciones · RNT [numero]\" — el bloque de informacion mas denso de todo el sitio, va justo antes de los CTA.",
+      "paso4_invitacion": "\"Cotiza por WhatsApp\" (cta.cotizaWhatsapp) + \"Ver itinerario día a día\" (cta.verItinerario, etiqueta de navegacion interna, no CTA de marca segun §3.1).",
+      "veredicto": "CUMPLE con holgura. Es el bloque mejor resuelto de los seis: el paso 3 es exhaustivo (precio, ciudad, noches, ocupacion, fecha de verificacion, RNT) y antecede directamente al CTA."
+    },
+    {
+      "bloque": "4. Ficha de destino",
+      "archivo": "app/[locale]/(sitio)/destinos/[slug]/page.tsx + messages.destinos / messages.cta + contenido de lib/mock/destinations.ts (destino 'eje-cafetero')",
+      "paso1_necesidad": "No hay frase de necesidad separada; arranca con el badge de tipo y el h1 del nombre del destino.",
+      "paso2_beneficio": "\"Eje Cafetero\" (destino.nombre) + \"Montaña, fincas de café y pueblos de colores, a una hora de vuelo de las grandes ciudades\" (destino.resumen) + parrafos de introduccion editorial.",
+      "paso3_incertidumbre": "Seccion \"Cuándo conviene ir\": \"Es un destino de todo el año... Diciembre a febrero y julio a agosto suelen ser los meses más secos y los más concurridos... abril, mayo y octubre son buenos meses y suelen salir más económicos\" (destino.mejorEpoca) — informacion concreta y accionable, no relleno.",
+      "paso4_invitacion": "Seccion final \"¿Te suena este destino?\" (destinos.ctaTitulo) + \"Cotiza por WhatsApp\" (cta.cotizaWhatsapp). En el estado vacio de planes, la invitacion es \"Planeemos tu viaje\" (cta.planeemosViaje) junto a destinos.sinPlanes, que ya es un estado vacio honesto con salida.",
+      "veredicto": "CUMPLE. El paso 3 (mejorEpoca + queHacer) aparece bien antes del CTA final, con contenido especifico (meses, clima, afluencia), no una frase generica de 'informacion util'."
+    },
+    {
+      "bloque": "5. Formulario",
+      "archivo": "src/modules/leads/presentation/components/lead-form.tsx + messages.formulario / messages.consentimiento",
+      "paso1_necesidad": "No tiene frase propia dentro del componente (la trae la pagina anfitriona: p.ej. home.cierreFormulario \"Prefiero dejar mis datos\" o campana.formulario \"¿Prefieres que te escribamos?\"), fuera del alcance de 'sus claves' de este bloque.",
+      "paso2_beneficio": "Los 4 campos con sus hints resuelven el beneficio implicito (cotizar sin llamar): \"Desde dónde viajas. El precio cambia según la ciudad\" (formulario.ciudadOrigenAyuda), \"Si aún no la tienes clara, déjala en blanco\" (formulario.fechaAproximadaAyuda).",
+      "paso3_incertidumbre": "El bloque de consentimiento, verbatim y completo, justo antes del boton: \"Autorizo a BroWay Adventures a tratar mis datos personales para gestionar mi solicitud, elaborar cotizaciones... conforme a la Política de Tratamiento de Datos\" + \"Puedo consultar, actualizar y suprimir mis datos, y revocar esta autorización...\" (consentimiento.texto + consentimiento.derechos) — reduce la incertidumbre legal antes de pedir el envio.",
+      "paso4_invitacion": "Boton \"Cuéntanos cómo quieres viajar\" (formulario.enviar, uno de los cinco CTA aprobados).",
+      "veredicto": "CUMPLE. El consentimiento (paso 3) precede al boton (paso 4) en el orden de lectura. Hallazgo menor, NO corregido: 'Te asesora un experto en viajes, no un bot' (formulario.microcopyEnvio) es tambien contenido de paso 3 (tranquiliza sobre quien responde) pero aparece DESPUES del boton de envio, no antes. No se corrige porque el paso 3 ya esta satisfecho por el consentimiento antes del boton — moverla se leeria como reescritura de estilo, no como arreglo de un bloque roto (fuera del criterio explicito de este nodo: solo se corrige invitacion-primero o paso-3-saltado)."
+    },
+    {
+      "bloque": "6. Página de gracias",
+      "archivo": "app/[locale]/(sitio)/gracias/page.tsx + messages.gracias",
+      "paso1_necesidad": "No aplica en sentido estricto: la necesidad ya se resolvio al enviar el formulario. El titulo confirma la accion: \"Listo, recibimos tu solicitud\" (gracias.titulo).",
+      "paso2_beneficio": "\"Te escribimos por WhatsApp entre 1 y 5 minutos, dentro del horario de atención. Un asesor revisa tu solicitud y te responde con opciones claras\" (gracias.expectativa).",
+      "paso3_incertidumbre": "Los tres pasos del <ol>: \"Un asesor revisa lo que nos contaste y arma opciones para tu viaje\" / \"Te escribe por WhatsApp con los precios y las condiciones completas\" / \"Si algo no encaja, lo ajustan juntos antes de separar nada\" (gracias.paso1/paso2/paso3) — muy concreto, dice exactamente que va a pasar.",
+      "paso4_invitacion": "ANTES: \"Habla con un asesor\" / \"Talk to an advisor\" (gracias.ctaWhatsapp) — CORREGIDO en este nodo a \"Planeemos tu viaje\" / \"Let's plan your trip\" (uno de los cinco CTA aprobados).",
+      "veredicto": "ROTO en el paso 4, CORREGIDO. El bloque no empieza por la invitacion ni salta el paso 3 (tiene el paso 3 mas rico de los seis bloques), asi que no dispara el criterio de correccion literal de este nodo por esa via. Pero su CTA era exactamente la frase que fase-3 §3.1 declaro 'invitacion generica que no dice que pasa despues' y mando sustituir en messages.cta.hablaConAsesor — aqui sobrevivia bajo una clave distinta (messages.gracias.ctaWhatsapp), fuera del namespace que N-03.1 audito con `grep de tc(` (usa `t()`, no `tc()`). N-03.1 dejo esto anotado explicitamente en 'hallazgos_relacionados_no_tocados' de docs/brand/specs/ejecucion/nodos/N-03.1.json para que un nodo posterior lo evaluara. Se corrigio aqui por ser el mismo texto banido, no una reescritura de estilo."
+    }
+  ],
+  "correcciones_aplicadas": [
+    {
+      "clave": "gracias.ctaWhatsapp",
+      "archivos": ["messages/es.json", "messages/en.json"],
+      "antes_es": "Habla con un asesor",
+      "despues_es": "Planeemos tu viaje",
+      "antes_en": "Talk to an advisor",
+      "despues_en": "Let's plan your trip",
+      "motivo": "Mismo texto que la CTA generica que fase-3 §3.1 mando sustituir (cta.hablaConAsesor, ya corregida por N-03.1); sobrevivia en una clave distinta fuera del grep de verificacion de N-03.1. Reemplazada por uno de los cinco CTA aprobados, coherente con el uso ya existente de 'Planeemos tu viaje' como CTA de WhatsApp para continuar la conversacion (home, ficha de destino)."
+    }
+  ],
+  "no_corregido_a_proposito": [
+    "hero de home / hero de campaña / ficha de oferta / ficha de destino / formulario: no tienen una frase de 'necesidad reconocible' separada del beneficio (esta fusionada). Es un patron consistente en todo el sitio, no un bloque roto puntual, y no dispara el criterio de correccion de este nodo (solo invitacion-primero o paso-3-saltado). Documentado, no corregido, para no convertir la auditoria en reescritura (riesgo advertido en fase-3-identidad-verbal.md §7).",
+    "formulario.microcopyEnvio aparece despues del boton de envio en vez de antes: es contenido de paso 3 duplicado/redundante en mal orden, pero el paso 3 ya esta satisfecho antes del boton por el bloque de consentimiento, asi que el bloque no esta 'roto' segun el criterio explicito de este nodo."
+  ],
+  "verificacion": {
+    "json_valido": "node -e JSON.parse(...) OK en messages/es.json y messages/en.json",
+    "grep_habla_con_un_asesor": "cero resultados en messages/, app/, components/, src/ tras la correccion; solo quedan menciones historicas en docs/brand/specs/*.md y en el propio N-03.1.json (que documenta el hallazgo original)",
+    "pnpm_build": "EXIT=0 (pnpm check + next build, 92 paginas estaticas generadas, sin errores de TypeScript)",
+    "diff_acotado": "unicamente messages/es.json y messages/en.json, una sola clave (gracias.ctaWhatsapp) por idioma; ningun otro archivo tocado"
+  }
+}
