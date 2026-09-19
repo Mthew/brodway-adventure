@@ -4,7 +4,7 @@
   "estado": "completado",
   "commit_base": "8ccfaf8",
   "rama": "fase-1/marca-n-02-1-assets-kit",
-  "commit": "pendiente-siguiente-commit",
+  "commit": "411ab4c",
   "artefactos": [
     "public/README",
     "public/brand/logo-horizontal.png",
