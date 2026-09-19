@@ -4,7 +4,12 @@ import { createBrowserClient } from "@supabase/ssr";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { BotonPrincipal, Error as ErrorFormulario } from "@/src/platform/admin/piezas";
+import {
+  BotonPrincipal,
+  CriteriosFoto,
+  Error as ErrorFormulario,
+  NotaRecorte,
+} from "@/src/platform/admin/piezas";
 import type { Database } from "@/lib/supabase/database.types";
 
 import { comprimirImagen } from "./comprimir";
@@ -86,6 +91,12 @@ export function SubirFotos({
   return (
     <div className="flex flex-col gap-3">
       <ErrorFormulario mensaje={error} />
+
+      <CriteriosFoto />
+      <NotaRecorte
+        ratio="4:3, 16:10 y 1:1"
+        recorte="El foco va centrado: la miniatura cuadrada recorta los lados, así que nada importante debe quedar en los bordes."
+      />
 
       <label className="text-body-sm flex min-h-28 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-neutral-300 bg-white px-4 text-center text-neutral-600">
         <span className="font-display font-semibold text-neutral-800">

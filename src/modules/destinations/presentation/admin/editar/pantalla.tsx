@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 
 import { getSupabaseAdmin, getUsuarioAdmin } from "@/lib/supabase/admin";
+import { CriteriosFoto } from "@/src/platform/admin/piezas";
 
 import { FormularioEditarDestino } from "./formulario";
 import { SubirImagenDestino } from "./subir-imagen";
@@ -48,6 +49,8 @@ export default async function EditarDestino({
         ) : null}
 
         <h1 className="text-h3 font-display">Editar destino</h1>
+
+        <CriteriosFoto />
 
         <SubirImagenDestino
           destinoId={id}
