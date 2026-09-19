@@ -1,0 +1,32 @@
+{
+  "id": "N-04.3",
+  "titulo": "Radios normalizados a los tres/cuatro del sistema",
+  "estado": "cerrado",
+  "abierto_en": "2026-09-18T00:00:00Z",
+  "cerrado_en": "2026-09-18T00:00:00Z",
+  "commit_base": "00b629e",
+  "rama": "fase-1/marca-n-04-3-radios-normalizados",
+  "commit": "2934f6d",
+  "artefactos": [
+    "src/modules/offers/presentation/admin/nueva/destino-rapido.tsx"
+  ],
+  "verificacion": {
+    "comando_conteo": "grep -rhoE \"rounded-[a-zA-Z0-9\\[\\]%._-]+\" app/ components/ src/ --include=\"*.tsx\" --include=\"*.css\" | sort | uniq -c | sort -rn",
+    "resultado_antes": "46 rounded-lg, 25 rounded-md, 9 rounded-full, 3 rounded-sm, 1 rounded-xl",
+    "resultado_despues": "47 rounded-lg, 25 rounded-md, 9 rounded-full, 3 rounded-sm — ningún otro valor",
+    "comando_arbitrarios": "grep -rn \"rounded-\\[\" app/ components/ src/ --include=\"*.tsx\" --include=\"*.css\"",
+    "resultado_arbitrarios": "sin coincidencias",
+    "css_directo": "grep -n \"border-radius\" app/globals.css — única aparición es un comentario explicando por qué NO se fuerza border-radius en el outline; no hay valores sueltos que normalizar",
+    "build": "pnpm build",
+    "resultado_build": "EXIT=0 (check:tokens OK, check:current 43/50, check:marca 0 violaciones/229 archivos, check:deps sin violaciones, next build 90+ páginas generadas)"
+  },
+  "falso_verde_descartado": "El grep original solo buscaba nombres conocidos de Tailwind (rounded-xl, rounded-2xl, etc.), lo que hubiera dado falso verde si alguien ya hubiera reemplazado la desviación por un valor arbitrario como rounded-[14px]. Se corrió además `grep -rn \"rounded-\\[\"` sobre los mismos directorios, con resultado vacío, antes de dar el nodo por cerrado.",
+  "prueba_mutacion": {
+    "accion_1": "Se creó un archivo temporal app/__mutation_test_rounded.tsx con className=\"rounded-2xl\" y se corrió el grep de conteo por valor",
+    "resultado_1": "El grep detectó 'rounded-2xl' en el listado de valores únicos; archivo de prueba borrado inmediatamente después",
+    "accion_2": "Se creó un archivo temporal app/__mutation_test_arbitrary.tsx con className=\"rounded-[14px]\" y se corrió `grep -rn \"rounded-\\[\"`",
+    "resultado_2": "El grep detectó la línea con rounded-[14px]; archivo de prueba borrado inmediatamente después",
+    "conclusion": "Ambos comandos de verificación (nombres conocidos y arbitrarios) detectan correctamente una desviación introducida deliberadamente"
+  },
+  "notas": "Única desviación real encontrada: destino-rapido.tsx usaba rounded-xl en el <dialog> del modal 'Crear destino nuevo'. Se normalizó a rounded-lg (no a rounded-md) tras confirmar que es el radio que usan otras superficies grandes/modales del repo: components/ui/card.tsx (Card base, rounded-lg) y src/platform/admin/menu.tsx (panel flotante de <details>, mismo criterio de superposición que un <dialog>, también rounded-lg). No se tocó CURRENT.md por instrucción explícita del nodo."
+}
