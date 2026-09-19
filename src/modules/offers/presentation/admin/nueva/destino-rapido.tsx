@@ -44,7 +44,7 @@ export function DestinoRapido({
         // `<dialog>`), porque no cae en ningún hijo. Cerrar ahí simula "click fuera".
         if (evento.target === evento.currentTarget) dialogRef.current?.close();
       }}
-      className="m-auto w-[min(28rem,calc(100vw-2rem))] max-h-[calc(100vh-2rem)] overflow-y-auto rounded-xl border-0 bg-white p-0 shadow-xl backdrop:bg-neutral-900/40"
+      className="m-auto w-[min(28rem,calc(100vw-2rem))] max-h-[calc(100vh-2rem)] overflow-y-auto rounded-lg border-0 bg-white p-0 shadow-xl backdrop:bg-neutral-900/40"
     >
       <form ref={formRef} action={accion} className="flex flex-col gap-4 p-5">
         <h2 id="destino-rapido-titulo" className="text-h3 font-display">
