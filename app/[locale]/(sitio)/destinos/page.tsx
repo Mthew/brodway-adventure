@@ -90,7 +90,7 @@ export default async function DestinosPage({
             rel="noopener noreferrer"
           >
             <WhatsAppIcon className="size-5" />
-            {tc("hablaConAsesor")}
+            {tc("cuentanosComoViajar")}
           </ButtonLink>
         </div>
       </Section>

@@ -23,7 +23,6 @@
   "cta": {
     "cotizaWhatsapp": "Cotiza por WhatsApp",
     "cotizaProximaParada": "Cotiza tu próxima parada",
-    "hablaConAsesor": "Habla con un asesor",
     "planeemosViaje": "Planeemos tu viaje",
     "descubreOpciones": "Descubre las opciones",
     "verItinerario": "Ver itinerario día a día",
@@ -238,7 +237,7 @@
   },
   "ofertas": {
     "tituloListado": "Mejores Ofertas",
-    "introListado": "Las promociones que destacamos por tarifa. Cada una trae su precio explicado, la ciudad de salida y lo que incluye.",
+    "introListado": "Una selección propia por tarifa, no un ranking ni un puntaje: cada oferta trae su precio explicado, la ciudad de salida y lo que incluye.",
     "vacio": "Por ahora no hay planes publicados. Escríbenos y armamos uno contigo.",
     "migaInicio": "Inicio",
     "migaOfertas": "Ofertas",
