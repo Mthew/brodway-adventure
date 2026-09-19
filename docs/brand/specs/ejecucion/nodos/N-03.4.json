@@ -6,7 +6,7 @@
   "cerrado_en": "2026-09-18T00:00:00Z",
   "commit_base": "8ccfaf8e503e7e13a1148dd44c40b13b08ef259e",
   "rama": "fase-1/marca-n-03-4-ingles-britanico",
-  "commit": "PENDIENTE_DE_COMMIT",
+  "commit": "8c81afc",
   "artefactos": [
     "app/[locale]/(sitio)/design-system/page.tsx"
   ],
