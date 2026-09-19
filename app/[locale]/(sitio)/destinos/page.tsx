@@ -5,7 +5,7 @@ import { ButtonLink } from "@/src/shared/ui/button";
 import { DestinationCard } from "@/components/ui/card";
 import { Section } from "@/src/shared/ui/section";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
-import { FiltroCategoria } from "@/components/ui/filtro-categoria";
+import { CategoryFilter } from "@/src/modules/destinations/presentation/components/category-filter";
 import { buildWhatsAppUrl } from "@/lib/config";
 import { getDestinationFromPrice, listDestinations } from "@/lib/destinations";
 
@@ -66,7 +66,7 @@ export default async function DestinosPage({
       </Section>
 
       <Section spacing="compact">
-        <FiltroCategoria
+        <CategoryFilter
           items={items}
           etiquetaGrupo={tf("etiqueta")}
           textoVacio={t("sinResultados")}

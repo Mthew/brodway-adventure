@@ -51,7 +51,7 @@ export async function metadataDeCategoria(
   return { title: t(k.titulo), description: t(k.intro) };
 }
 
-export async function ListadoCategoria({
+export async function CategoryList({
   locale,
   tipo,
 }: {
@@ -64,14 +64,14 @@ export async function ListadoCategoria({
   const tc = await getTranslations("cta");
   const k = claves(tipo);
 
-  const destinos = await listDestinationsByCategory(tipo);
+  const destinations = await listDestinationsByCategory(tipo);
 
   const tarjetas = await Promise.all(
-    destinos.map(async (destino) => {
-      const precio = await getDestinationFromPrice(destino.slug);
+    destinations.map(async (destination) => {
+      const precio = await getDestinationFromPrice(destination.slug);
       return (
         <DestinationCard
-          destino={destino}
+          destino={destination}
           precioDesde={precio?.precioDesde}
           moneda={precio?.moneda}
         />
@@ -103,8 +103,8 @@ export async function ListadoCategoria({
           <p className="text-body-lg max-w-[55ch] text-neutral-600">{t("vacio")}</p>
         ) : (
           <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {destinos.map((destino, i) => (
-              <li key={destino.slug}>{tarjetas[i]}</li>
+            {destinations.map((destination, i) => (
+              <li key={destination.slug}>{tarjetas[i]}</li>
             ))}
           </ul>
         )}

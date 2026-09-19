@@ -7,13 +7,13 @@ import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { Badge } from "@/src/shared/ui/badge";
 import { ButtonLink } from "@/src/shared/ui/button";
 import { PackageCard } from "@/components/ui/card";
-import { PriceDisclosure } from "@/components/ui/price-disclosure";
 import { Section } from "@/src/shared/ui/section";
 import { LeadForm } from "@/components/forms/lead-form";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
-import { Galeria } from "@/components/oferta/galeria";
 import { StickyCta } from "@/src/modules/offers/presentation/components/sticky-cta";
-import { TarifaVencida } from "@/components/oferta/tarifa-vencida";
+import { OfferGallery } from "@/src/modules/offers/presentation/components/offer-gallery";
+import { ExpiredRateNotice } from "@/src/modules/offers/presentation/components/expired-rate-notice";
+import { PriceDisclosure } from "@/src/modules/offers/presentation/components/price-disclosure";
 import { buildWhatsAppUrl, RNT_NUMBER, SITE_URL } from "@/lib/config";
 import { Link } from "@/lib/i18n/navigation";
 import { getOffer, listActiveOffers, listOfferSlugs } from "@/lib/offers";
@@ -121,7 +121,7 @@ export default async function OfertaPage({
         */}
         <div className="grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:items-start lg:gap-12">
           <div className="order-2 lg:order-1">
-            <Galeria imagenes={offer.imagenes} titulo={offer.titulo} />
+            <OfferGallery imagenes={offer.imagenes} titulo={offer.titulo} />
           </div>
 
           <div className="order-1 flex flex-col gap-5 lg:order-2">
@@ -139,7 +139,7 @@ export default async function OfertaPage({
             </p>
 
             {vencida ? (
-              <TarifaVencida offer={offer} />
+              <ExpiredRateNotice offer={offer} />
             ) : (
               <>
                 <PriceDisclosure offer={offer} />

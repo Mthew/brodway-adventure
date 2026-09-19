@@ -14,7 +14,7 @@ import type { ImagenOferta } from "@/lib/types/offer";
  * el comportamiento anterior. Las miniaturas usan su ALT si existe; si no, quedan
  * decorativas (`alt=""`) como antes.
  */
-export function Galeria({
+export function OfferGallery({
   imagenes,
   titulo,
 }: {

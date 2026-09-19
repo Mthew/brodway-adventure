@@ -30,7 +30,7 @@ export type ItemFiltrable = {
  * Las tarjetas llegan por props ya construidas (son Server Components con datos),
  * de modo que filtrar en cliente no obliga a que los datos crucen al navegador.
  */
-export function FiltroCategoria({
+export function CategoryFilter({
   items,
   etiquetas,
   etiquetaGrupo,
