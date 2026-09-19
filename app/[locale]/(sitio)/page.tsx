@@ -468,7 +468,7 @@ export default async function HomePage({
               {tarjetasPueblos.slice(0, 4).map(({ destino }) => (
                 <li
                   key={destino.slug}
-                  className="border-brand-turquoise/40 border-l-2 pl-5"
+                  className="borde-lista border-l-2 pl-5"
                 >
                   <Link href={`/destinos/${destino.slug}`} className="group">
                     <h3 className="text-h3 text-brand-navy group-hover:underline">
@@ -551,7 +551,7 @@ export default async function HomePage({
             {["check1", "check2", "check3"].map((clave) => (
               <li
                 key={clave}
-                className="border-brand-turquoise/40 text-body border-l-2 pl-5 text-neutral-700"
+                className="borde-lista text-body border-l-2 pl-5 text-neutral-700"
               >
                 {t(clave)}
               </li>

@@ -200,7 +200,7 @@ export default async function LandingCampanaPage({
         <h2 className="text-h2 text-brand-navy mb-8 max-w-[18ch]">
           {t("itinerario")}
         </h2>
-        <ol className="flex flex-col gap-6 border-l-2 border-neutral-200 pl-6">
+        <ol className="borde-lista flex flex-col gap-6 border-l-2 pl-6">
           {campaign.itinerarioResumen.map((dia) => (
             <li key={dia.titulo} className="flex flex-col gap-1">
               <h3 className="text-h3 text-brand-navy">{dia.titulo}</h3>

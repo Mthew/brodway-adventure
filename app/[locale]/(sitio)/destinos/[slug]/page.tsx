@@ -179,7 +179,7 @@ export default async function DestinoPage({
           {destino.queHacer.map((experiencia) => (
             <li
               key={experiencia.titulo}
-              className="border-brand-turquoise/40 flex flex-col gap-2 border-l-2 pl-5"
+              className="borde-lista flex flex-col gap-2 border-l-2 pl-5"
             >
               <h3 className="text-h3 text-brand-navy">{experiencia.titulo}</h3>
               <p className="text-body text-neutral-700">

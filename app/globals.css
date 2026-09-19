@@ -770,3 +770,42 @@ body[data-sticky-cta] [data-whatsapp-floating] {
     }
   }
 }
+
+/* =================================================================
+ * BORDE DE LISTA — la segunda (y última) variante del vocabulario de línea
+ * (docs/brand/specs/fase-4-sistema-grafico.md §3.2, G-5)
+ *
+ * Antes de este nodo (N-04.1) convivían cinco tratamientos para lo mismo:
+ * `.line-draw`/`.line-draw-y` (la RUTA, arriba — se queda igual, ya era
+ * consistente) y otros tres que marcaban "esto es un ítem dentro de un
+ * grupo" con grosor y color distintos en cada archivo: `border-l-2
+ * border-brand-turquoise/40` (4 usos reales — el audit de la spec decía 8,
+ * pero eso fue el 2026-09-11 y algunos ya migraron), `border-t-2
+ * border-brand-turquoise/40` (1 uso, la rejilla de "Valores" en /nosotros)
+ * y `border-l-4 border-brand-turquoise` sin opacidad (1 uso suelto en
+ * /como-pagar). Un cuarto caso que la spec no había catalogado apareció al
+ * auditar: `border-l-2 border-neutral-200` en la lista de pasos de
+ * /como-pagar — mismo grosor, color distinto, mismo propósito.
+ *
+ * `.borde-lista` fija SOLO el color (turquesa al 40%, el tratamiento con
+ * más usos reales de los cuatro). El grosor y el lado los sigue poniendo
+ * la utilidad de Tailwind que corresponde al layout — `border-l-2` para
+ * listas verticales (`<ul>`/`<ol>` de ítems apilados), `border-t-2` para
+ * rejillas de columnas (el borde superior de cada celda hace de separador
+ * horizontal entre filas). El lado no es un sexto tratamiento: es la razón
+ * geométrica por la que un borde "de lista" se dibuja del lado por el que
+ * el layout avanza — perpendicular al eje de la rejilla en vez de siempre
+ * a la izquierda. Preflight de Tailwind ya deja `border-style: solid` y
+ * `border-width: 0` en todos los lados, así que fijar el color aquí no
+ * dibuja nada hasta que el lado elegido reciba su propio ancho.
+ *
+ * El `rgba(...)` de abajo es el mismo `#16b4c6` al 40% escrito a mano:
+ * fallback sin `color-mix()`, para no depender en silencio de un navegador
+ * que no lo soporte (mismo criterio que el resto de este archivo con
+ * `@supports`, aunque aquí el peor caso es un borde con otro tono, no un
+ * elemento invisible para siempre).
+ */
+.borde-lista {
+  border-color: rgba(22, 180, 198, 0.4);
+  border-color: color-mix(in oklab, var(--color-brand-turquoise) 40%, transparent);
+}

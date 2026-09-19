@@ -114,7 +114,7 @@ export default async function NosotrosPage({
           {valores.map(([clave, texto]) => (
             <div
               key={clave}
-              className="border-brand-turquoise/40 flex flex-col gap-2 border-t-2 pt-4"
+              className="borde-lista flex flex-col gap-2 border-t-2 pt-4"
             >
               <dt className="text-h3 text-brand-navy">{t(clave)}</dt>
               <dd className="text-body text-neutral-700">{t(texto)}</dd>
