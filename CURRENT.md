@@ -12,14 +12,21 @@
 | Marca: fuente de verdad, 7 specs, 7 decisiones ([`007`](history/007-fuente-de-verdad-de-marca.md)) | ✅ Mergeado | PR #24 |
 | Arquitectura module-first: 5 ADR + guardrails deterministas en `docs/architecture/` | ✅ Mergeado | PR #23 |
 | Grafo de ejecución de marca (`docs/brand/specs/grafo.md`, 33 nodos) | ✅ Mergeado | PR #25, #26 |
-| **27/33 nodos del grafo ejecutados**: todo N-01/N-02.1-4/N-03/N-05/N-06/N-07.2-3, N-04.0-2 | ✅ Mergeado | PR #28-#56 |
+| **32/33 nodos del grafo ejecutados**: falta solo `N-07.4` | ✅ Mergeado | PR #28-#62 |
 
-## Próximo paso: 6 nodos restantes del grafo
+## ⚠️ Producción en Vercel congelada en PR #46 — no confundir con `main`
 
-- **Listos para arrancar ya**: `N-02.5` (og:image por página, espera `N-02.4` ✅), `N-04.3` (radios normalizados).
-- `N-04.3` corre **sola, no en paralelo con otro nodo** — su reemplazo mecánico toca casi cualquier archivo con clases Tailwind (`docs/brand/specs/grafo.md` §5).
-- Encadenados detrás: `N-02.V` (espera `N-02.5`), `N-04.4` (espera `N-04.3`), `N-07.1`→`N-07.4` (esperan `N-04.3`).
-- **La marca tiene un documento rector:** [`sistema-de-identidad.md`](docs/brand/sistema-de-identidad.md). Los hex del código ya son los de la marca (`#0D3B66`/`#16B4C6`/`#FF8A00`) — corregido en `N-01.1`. `pnpm check:marca` (R-1/R-2) corre dentro de `pnpm build` desde `N-01.1`/`N-01.2`.
+`main` tiene todo el trabajo de marca; **el sitio público (`browayadventures.com`/`*.vercel.app`) no**.
+`N-02.V` encontró y arregló un bug real (`lib/config.ts`, `??`→`||` ante `NEXT_PUBLIC_SITE_URL=""`
+en Vercel) que rompía el build desde `N-02.4`, pero el deploy a producción sigue sin dispararse
+incluso con el fix — la API de Vercel devolvió `402 api-deployments-free-per-day, remaining: 0`
+(cuota diaria agotada, probablemente por el volumen de ramas de esta sesión). Se resuelve solo
+(reset de cuota) o redesplegando a mano desde el dashboard — no es un problema de código.
+
+## Próximo paso: 1 nodo restante del grafo
+
+- `N-07.4` (`sistema-de-identidad.md` §7 enlaza `aprobaciones.md` y `check-marca.mjs`) — depende de `N-07.1` ✅, listo para arrancar.
+- **La marca tiene un documento rector:** [`sistema-de-identidad.md`](docs/brand/sistema-de-identidad.md). Los hex del código ya son los de la marca (`#0D3B66`/`#16B4C6`/`#FF8A00`). `pnpm check:marca` (10 reglas, R-1 a R-10) corre dentro de `pnpm build`.
 - **Navbar usa el símbolo, no la firma horizontal completa** — `logo-horizontal.png` es incompatible con la barra de 80px por el margen interno del archivo del kit (`N-02.2`). El símbolo vive en `public/brand/simbolo.png`.
 
 ## Lo que hay que saber para no romper nada
