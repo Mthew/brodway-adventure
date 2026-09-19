@@ -1,0 +1,58 @@
+{
+  "id": "N-07.1",
+  "titulo": "scripts/check-marca.mjs completo: reglas R-6 a R-10 (contraste, logo anterior, radios, iconografía, tipografía)",
+  "estado": "completado",
+  "commit_base": "1ba13db",
+  "rama": "fase-1/marca-n-07-1-check-marca-completo",
+  "artefactos": [
+    "scripts/check-marca.mjs — cabecera reescrita para documentar las diez reglas; nuevas constantes/regex de R-6 a R-10; nuevo bloque de evaluación en el loop principal; mensaje de ayuda final ampliado",
+    "scripts/__fixtures__/check-marca/mutated-r6/ (nuevo)",
+    "scripts/__fixtures__/check-marca/mutated-r7/ (nuevo)",
+    "scripts/__fixtures__/check-marca/mutated-r8/ (nuevo)",
+    "scripts/__fixtures__/check-marca/mutated-r9/ (nuevo)",
+    "scripts/__fixtures__/check-marca/mutated-r10/ (nuevo)",
+    "scripts/__fixtures__/check-marca/{clean,mutated-r1..r5}/components/Button.tsx — modificado (ver falso_verde_descartado)"
+  ],
+  "reglas_implementadas": {
+    "R-6": "`text-white` no convive con `bg-brand-orange` ni `bg-brand-turquoise` dentro del mismo literal de cadena (detección vía regex de literales `\"...\"`/`'...'`/`` `...` `` sobre el archivo sin comentarios, no línea por línea, para cubrir class-lists en template literals de varias líneas).",
+    "R-7": "referencia a `logo-broway.png`/`logo-broway-adventures.png` (o cualquier extensión de imagen) en código fuente dentro de messages/app/components/lib/src.",
+    "R-8": "`rounded-` fuera de sm/md/lg/full, con un grupo opcional de esquina (`t`,`r`,`b`,`l`,`tl`,`tr`,`bl`,`br`,`s`,`e`,`ss`,`se`,`es`,`ee`) para no dejar un lado ciego en `rounded-t-xl` o similares.",
+    "R-9": "(a) import de un paquete de iconos ajeno (lista blanca inversa: lucide-react, react-icons, @heroicons/react, @mui/icons-material, @radix-ui/react-icons, @ant-design/icons, react-feather, @fortawesome/react-fontawesome) por prefijo exacto de paquete o subruta; (b) prop `weight` explícito con un valor distinto de \"regular\".",
+    "R-10": "import de una familia distinta de \"Manrope\" vía `next/font/google` o `next/font/local`, con soporte para imports múltiples (`import { A, B } from ...`) y alias (`X as Y` resuelve sobre el nombre real `X`)."
+  },
+  "verificacion": {
+    "repo_real_sin_CHECK_MARCA_ROOT": "0 violaciones sobre 231 archivos (`node scripts/check-marca.mjs`), confirmado antes y después de cada regla nueva, y de nuevo al final.",
+    "pnpm_build": "EXIT=0 — check:tokens, check:current (43/50), check:marca (0/231), check:deps (70 módulos, 0 violaciones), vitest (sin tests), next build completo (~90 páginas). Se copió .env desde la raíz del repo y se corrió `pnpm install` porque el worktree no traía node_modules.",
+    "fixtures_viejos_sin_regresion": "clean y mutated-r1..r5 dan exactamente el mismo resultado (mismo exit code, misma regla, mismo archivo:línea) antes y después de este cambio — ver falso_verde_descartado para el único ajuste necesario (Button.tsx compartido).",
+    "fixtures_nuevos": {
+      "mutated-r6": "1 violación — [regla 6] components/BotonMalo.tsx:4",
+      "mutated-r7": "2 violaciones — [regla 4] y [regla 7] components/LogoViejo.tsx:10 (colisión real y esperada, ver falso_verde_descartado)",
+      "mutated-r8": "1 violación — [regla 8] components/Tarjeta.tsx:3",
+      "mutated-r9": "2 violaciones — [regla 9] components/Icono.tsx:10 (paquete ajeno) y :17 (weight=\"bold\")",
+      "mutated-r10": "1 violación — [regla 10] app/layout-fixture.tsx:3"
+    },
+    "prueba_mutacion_sobre_repo_real": "Además de los fixtures aislados, se introdujo cada uno de los cinco defectos DIRECTAMENTE en app/_mutation-test/ del repo real (no del fixture), uno a la vez, confirmando con `node scripts/check-marca.mjs` (sin CHECK_MARCA_ROOT) que el build falla con el archivo:línea correcto, y se revirtió (`rm`) antes de introducir el siguiente. Las cinco fallaron y las cinco se revirtieron limpiamente — `git status` al final no muestra rastro de app/_mutation-test/."
+  },
+  "falso_verde_descartado": [
+    {
+      "regla": "R-6",
+      "descripcion": "El fixture compartido `components/Button.tsx` (usado por clean y por mutated-r1..r5, escrito antes de que R-6 existiera) tenía literalmente `className=\"bg-brand-orange text-white\"` — con R-6 activa, esto es una violación REAL (mide 2.36:1, no un artefacto de la regla). No se ajustó el patrón de R-6 para ignorarlo: se corrigió el fixture, en las 6 carpetas donde vive, a `bg-brand-navy text-white` (combinación que sí cumple, igual que el resto del repo real usa). Se confirmó que clean y mutated-r1..r5 vuelven a dar exactamente el mismo resultado que antes de esta rama.",
+      "resuelto_tocando": "fixture compartido, no el repo real ni el patrón de la regla"
+    },
+    {
+      "regla": "R-7 / R-4",
+      "descripcion": "Cualquier referencia real a `logo-broway.png` dispara también R-4 (grafía incorrecta del nombre), porque el nombre de archivo contiene \"broway\" en minúsculas con límite de palabra a ambos lados (el guion antes de \"broway\", el punto de la extensión después) — la misma condición que ya haría match la Regla 4 (N-03.5, no tocada en este nodo). No es un defecto de R-7 ni de R-4: es una coincidencia real entre dos reglas mecánicas sobre el mismo texto, verificada también en el repo real vía la prueba de mutación (mismo resultado: 2 violaciones). Se documentó en el propio fixture `mutated-r7/components/LogoViejo.tsx` en vez de forzar el fixture a evadir R-4 artificialmente.",
+      "resuelto_tocando": "nada — se documentó el comportamiento, ambas reglas están funcionando correctamente"
+    },
+    {
+      "regla": "R-9",
+      "descripcion": "El fixture `mutated-r9/components/Icono.tsx` importa `lucide-react`, paquete no instalado en el repo (a propósito — no debería instalarse nunca). Sin ajuste, `pnpm build` fallaba el chequeo de TypeScript (TS2307) porque `tsconfig.json` no excluye `scripts/__fixtures__/**` de su `include` (los fixtures viejos ya convivían con esto porque nunca importaban un paquete inexistente). Se resolvió con un comentario `@ts-expect-error` sobre el import — check-marca.mjs detecta el import por texto, no por resolución de módulos, así que la regla se prueba igual y `pnpm build` vuelve a EXIT=0. No se tocó tsconfig.json (cambiar su `include`/`exclude` global por un fixture habría sido una modificación fuera del alcance de este nodo).",
+      "resuelto_tocando": "el fixture (comentario de supresión de tipos), no tsconfig.json ni el repo real"
+    }
+  ],
+  "limites_declarados": [
+    "R-6 compara texto y fondo dentro del MISMO literal de cadena. Clases repartidas entre argumentos distintos de `cn(...)` (p.ej. `cn(\"...\", condicion && \"bg-brand-turquoise\")` sin `text-white` en ningún argumento) no se combinan entre sí. Se verificó contra el repo real (`grep -rn brand-orange\\|brand-turquoise`) que ningún uso actual de esos fondos está fuera de una lista de clases resuelta con `text-brand-navy`, así que el límite no oculta ningún caso real hoy.",
+    "R-9(a) detecta paquetes de iconos ajenos por lista blanca inversa de nombres conocidos, no por análisis de tipos: un paquete de iconos nuevo que no esté en esa lista no se detecta hasta añadirlo."
+  ],
+  "notas": "Investigación previa a R-9 (pedida por el encargo): `grep -rn \"@phosphor-icons/react\" app/ src/ components/ lib/` muestra que TODOS los imports usan la subruta `/dist/ssr` (nunca el paquete a secas) y TODOS los usos de `weight=` en el repo son `weight=\"regular\"` — no hay ningún `weight` implícito sin la prop. `package.json` no tiene lucide-react/react-icons ni ningún otro paquete de iconos. Esto confirma que las reglas 9a/9b, tal como están escritas, dan 0 falsos positivos sobre el estado actual del repo. CURRENT.md no fue tocado, conforme a la instrucción del encargo."
+}
