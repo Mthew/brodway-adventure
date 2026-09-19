@@ -1,0 +1,60 @@
+{
+  "id": "N-01.1",
+  "titulo": "Paleta oficial: tokens de color, sombras, overlay y de-propagacion en docs",
+  "estado": "cerrado",
+  "abierto_en": "2026-09-18T00:00:00Z",
+  "cerrado_en": "2026-09-18T00:00:00Z",
+  "commit_base": "8390fa5468db4ebc37780cc0b3342788f1ac1edc",
+  "rama": "fase-1/marca-n-01-1-paleta-oficial",
+  "commit": "ff07670",
+  "artefactos": [
+    "app/globals.css",
+    "src/shared/ui/section.tsx",
+    "src/shared/ui/button.tsx",
+    "src/shared/layout/navbar.tsx",
+    "src/modules/tracking/presentation/components/cookie-banner.tsx",
+    "src/modules/offers/presentation/components/sticky-cta.tsx",
+    "app/[locale]/lp/[campana]/page.tsx",
+    "app/[locale]/(sitio)/design-system/page.tsx",
+    "app/admin/page.tsx",
+    "src/modules/destinations/presentation/admin/listado.tsx",
+    "src/modules/offers/presentation/admin/listado.tsx",
+    "src/platform/admin/piezas.tsx",
+    "src/platform/admin/admin-shell.tsx",
+    "docs/design/brief-v0-producto.md",
+    "docs/design/brief-v0.md",
+    "docs/architecture/spec-tecnica.md",
+    "CLAUDE.md",
+    "docs/README.md",
+    "CURRENT.md",
+    ".impeccable/surfaces/app-locale-admin.md",
+    "scripts/check-marca.mjs",
+    "package.json"
+  ],
+  "verificacion": {
+    "mecanica": {
+      "comando": "grep -rniE \"003062|00aac3|ff6a03\" (codigo + docs, excluyendo node_modules) y pnpm check:marca",
+      "resultado": "grep manual: 0 coincidencias fuera de history/ y docs/brand/** (mas la excepcion aceptada de scripts/check-marca.mjs, que contiene los hex antiguos como literales de deteccion — se excluye a si mismo del propio escaneo). pnpm check:marca: '0 violaciones sobre 209 archivos revisados', EXIT=0.",
+      "detalle": "Se encontraron y corrigieron 2 archivos fuera de la lista original del encargo: src/platform/admin/admin-shell.tsx:14-16 (comentario OWN-WORLD con los 3 hex antiguos, sucesor de app/admin/layout.tsx:13-15 tras N-01.0b) y .impeccable/surfaces/app-locale-admin.md:57 (doc de contexto de la skill 'impeccable', trackeado en git pese a estar en .gitignore, con 'Identidad fija: navy #003062...' como restriccion heredada)."
+    },
+    "medida_navegador": {
+      "url_1": "http://localhost:3111/es/design-system",
+      "url_2": "http://localhost:3111/es/lp/eje-cafetero-septiembre",
+      "metodo": "Playwright MCP, getComputedStyle + conversion OKLab->sRGB (Tailwind v4 serializa las utilidades de opacidad como oklab(...)) + formula de contraste WCAG 2.x, sobre el servidor de dev del propio worktree (puerto 3111 para no chocar con otras sesiones)",
+      "pares": [
+        { "combinacion": "h1 text-brand-navy sobre blanco", "esperado": "11.45:1", "medido": "11.45:1" },
+        { "combinacion": "badge trust (navy sobre navy/5%)", "esperado": "10.47:1", "medido": "10.49:1" },
+        { "combinacion": "badge destino (turquoise-text sobre turquesa/10%)", "esperado": "5.66:1", "medido": "5.64:1" },
+        { "combinacion": "boton primary (navy sobre naranja)", "esperado": "4.84:1", "medido": "4.84:1" },
+        { "combinacion": "boton whatsapp (navy sobre whatsapp)", "esperado": "5.77:1", "medido": "5.77:1" },
+        { "combinacion": "overlay hero de campana navy/75 sobre foto blanca (peor caso)", "esperado": ">=5.0:1 (spec: 5.50:1)", "medido": "5.51:1" }
+      ],
+      "hallazgo_no_listado_en_matriz": "badge destinoOscuro (blanco sobre blanco/15% compuesto sobre navy): con el navy anterior el propio /design-system documentaba 8.46:1; con el navy oficial mas claro mide 7.40:1 en navegador. Sigue pasando AA con margen (>4.5:1), no es una violacion de R-4, pero el comentario de la pagina citaba el numero viejo (8.46:1, y 1.82:1 para la variante clara sobre navy) — se recalculo (1.58:1 para la variante clara) y se corrigieron ambos numeros en el componente para no dejar un ratio heredado sin medir, que es exactamente el error que esta fase corrige."
+    },
+    "vista": "Recorrido con Playwright: home (/es), listado de ofertas (/es/ofertas), un destino (/es/destinos/cartagena), el hero de campana (/es/lp/eje-cafetero-septiembre) y el login del panel (/admin/entrar, que ya usa components Button con bg-brand-orange text-brand-navy). Los 4 botones especificos de piezas.tsx/admin listados requieren sesion autenticada de Supabase que este nodo no tiene credenciales para crear; su cambio es el mismo patron de clase (text-white -> text-brand-navy) ya verificado visualmente en el boton 'Entrar' del login, que usa la misma pareja de colores.",
+    "build": "pnpm build EXIT=0 (incluye check:tokens, check:current, check:marca, check:deps y pnpm test, todos en verde) tras pnpm install en el worktree y copiar .env (gitignored) del checkout principal."
+  },
+  "falso_verde_descartado": "El grep en cero por si solo no confirma que los hex oficiales solo vivan en globals.css: una primera version de check-marca.mjs con la regla 2 sin acotar dio 99 'violaciones' porque los propios hex oficiales, correctamente citados en prosa (docs/*.md, CLAUDE.md, comentarios THESIS de componentes), no son la desviacion que la regla busca prevenir -- la desviacion es un hex escrito a mano en el lugar de un token, no un documento explicando la paleta. Se acoto la regla 2 a extensiones de codigo que pintan (.ts/.tsx/.js/.jsx/.mjs/.cjs/.css), excluyendo docs/, history/ y .impeccable/, y se le quitaron los comentarios antes de buscar (un hex en un comentario documental no es un token mal usado). Verificado con dos mutaciones reales: (a) #003062 en un comentario de src/shared/ui/badge.tsx -> detectado por la regla 1 (EXIT=1, archivo y linea correctos); (b) #0D3B66 fuera de comentario en el mismo archivo -> detectado por la regla 2 (EXIT=1). Ambas mutaciones revertidas y confirmado el verde despues (diff vacio contra el respaldo).",
+  "prueba_mutacion": "src/shared/ui/badge.tsx, dos corridas: (1) linea de comentario '// mutacion temporal: #003062' -> pnpm check:marca EXIT=1, regla 1, badge.tsx:1; (2) 'const MUTACION_TEMPORAL = \"#0D3B66\";' -> EXIT=1, regla 2, badge.tsx:3. Revertido con diff vacio contra el archivo original; pnpm check:marca vuelve a EXIT=0 (0 violaciones sobre 209 archivos).",
+  "notas": "No se modifico components/ui/button.tsx ni components/ui/badge.tsx (esos ya migraron a src/shared/ui/ en N-01.0a/N-01.0b; las rutas verificadas hoy en el worktree confirman que las del encargo eran las correctas, las del spec original ya estaban desactualizadas). No se toco CURRENT.md mas alla de la frase puntual de §1.4/H-1 (fila E1/E2 y el resto del archivo quedan igual). destinoOscuro (badge.tsx) no se edito -- sigue en 7.40:1, sobre AA -- solo se corrigio el numero documentado en /design-system que ya no coincidia con la medicion real."
+}
