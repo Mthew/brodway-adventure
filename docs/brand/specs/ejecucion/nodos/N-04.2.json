@@ -1,0 +1,36 @@
+{
+  "id": "N-04.2",
+  "titulo": "Racionalización de iconos: un concepto, un icono",
+  "estado": "cerrado",
+  "abierto_en": "2026-09-18T00:00:00Z",
+  "cerrado_en": "2026-09-18T00:00:00Z",
+  "commit_base": "8390fa5",
+  "rama": "fase-1/marca-n-04-2-racionalizar-iconos",
+  "commit": "710e27c",
+  "artefactos": [
+    "app/[locale]/(sitio)/page.tsx",
+    "app/[locale]/(sitio)/nosotros/page.tsx",
+    "app/[locale]/(sitio)/destinos/[slug]/page.tsx",
+    "app/[locale]/(sitio)/gracias/page.tsx",
+    "app/[locale]/(sitio)/design-system/page.tsx"
+  ],
+  "verificacion": {
+    "comando": "pnpm exec tsc --noEmit ; next build ; pnpm exec eslint <archivos tocados> ; grep -rn \"Compass\" app/ src/",
+    "resultado": "PARCIAL — no se pudo llegar a EXIT=0 de `pnpm build` en este worktree por el mismo bloqueo ya documentado en N-04.0.json: falta NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY reales (no hay .env.local en el worktree, solo .env.example). No es un fallo introducido por este nodo: en la primera corrida el build cayó en 'Collecting page data' de /[locale]/ofertas/[slug]; tras instalar dependencias limpias (node_modules no existía) volvió a caer en el mismo punto pero para /[locale]/destinos/[slug], que es exactamente la ruta que este nodo sí toca (usa CalendarBlank/ChatCircleText) — se revisó con cuidado y el error es 'Faltan NEXT_PUBLIC_SUPABASE_URL...' en lib/supabase/client.ts, no un error de tipos ni de import de icono.",
+    "detalle": "`next build` reporta 'Compiled successfully' y 'Finished TypeScript' (75s) sin errores en ambas corridas — cubre los 5 archivos de este nodo con 0 errores de tipos. `pnpm exec eslint` sobre los 5 archivos tocados: 0 errores (se encontraron y corrigieron 2 errores propios de react/no-unescaped-entities en design-system/page.tsx, comillas rectas sin escapar en JSX). `pnpm exec eslint` sobre app/[locale]/lp/[campana]/page.tsx y app/[locale]/(sitio)/ofertas/[slug]/page.tsx (archivos que ya tenían Check/X correctos y no se tocaron, git diff confirma 0 cambios) muestra errores/warnings preexistentes (react-hooks/static-components, no-unused-vars) ajenos a este nodo. `pnpm check:deps`: 0 violaciones (70 módulos, 162 dependencias). `pnpm check:tokens` y `pnpm check:current`: OK.",
+    "recorrido_navegador": "NO HECHO — mismo bloqueo de credenciales Supabase que impide levantar `pnpm dev` contra datos reales en este worktree."
+  },
+  "falso_verde_descartado": "Un grep que exigiera exactamente 1 icono por concepto habría marcado en falso rojo el caso legítimo de 'verificado/respaldo' con 2 iconos (Check vs ShieldCheck), que es precisamente la excepción que autoriza fase-4-sistema-grafico.md §4.2. Se verificó en su lugar: (1) recuento de icons distintos por concepto tras el cambio — 2 para verificado/respaldo, 1 para conversación, 0 para Compass —, y (2) que cada bucket de 2 tiene un criterio escrito real y distinto (ítem de lista/confirmación puntual vs. respaldo institucional), no dos sinónimos co-existiendo por inercia.",
+  "prueba_mutacion": {
+    "accion": "Grep de control tras cada reemplazo: `grep -rn \"Compass\\|CheckCircle\\|SealCheck\\|ChatText\\b\\|ChatCircleDots\" app/ src/` (excluyendo ChatCircleText y ShieldCheck, que sí sobreviven) sobre el árbol completo, no solo los 5 archivos listados en el encargo.",
+    "resultado": "Cero coincidencias de los 5 iconos retirados (Compass, CheckCircle, SealCheck, ChatText, ChatCircleDots) en app/ ni src/. Confirmado además que ninguno de esos 5 nombres sobrevive ni siquiera como import sin uso en otro archivo del repo."
+  },
+  "notas": [
+    "Decisión 'incluido en el plan' -> Check: ya era el patrón dominante y correcto en el repo (offer highlights/incluye en ofertas/[slug].tsx, incluye en lp/[campana].tsx, ambos SIN tocar porque ya usaban el icono correcto). Se extendió a gracias/page.tsx, donde CheckCircle marcaba el éxito del envío del formulario a tamaño size-12 sin círculo de fondo propio en el JSX (era el icono desnudo, no un badge compuesto) — un checkmark de confirmación de una acción individual es la misma familia semántica que un ítem afirmativo de lista, así que comparte Check en vez de sumar un tercer significante para 'algo se cumplió'.",
+    "Decisión 'respaldo institucional' -> ShieldCheck, no SealCheck: se leyó el contexto real de las 4 apariciones antes de elegir. SealCheck aparecía en home (porQue3, 'Puedes verificarnos' / RNT) y en nosotros (sección legal RNT/NIT/afiliaciones); ShieldCheck aparecía en home (franja de confianza/anti-fraude) y en como-pagar (seguridad/anti-fraude). Las cuatro apariciones son la misma idea -- 'somos una agencia legítima y protegida, compruébalo' -- repartida en dos iconos por inercia de quién escribió cada página, no por una distinción real. Se conservó ShieldCheck (ya usado 2/4 veces, cero cambios ahí) y se migraron las 2 apariciones de SealCheck hacia él, en vez de al revés, porque 'shield' (protección/garantía) cubre mejor tanto el registro legal como la seguridad anti-fraude que 'seal' (sello de certificación), que es más estrecho semánticamente. Verificado en el sitio real: se comprobó el contexto textual (mensajes es.json) de cada uso antes de decidir, no solo el nombre del icono.",
+    "Decisión 'conversación' -> ChatCircleText, no ChatText ni ChatCircleDots: solo había 3 apariciones en todo el repo (home: paso1 'Cuéntanos cómo quieres viajar' con ChatText, y porQue2 'Te responde una persona' con ChatCircleText; gracias: botón CTA de WhatsApp con ChatCircleDots). Ninguna de las tres marcaba una distinción de significado real -- las tres son 'invitación a hablar con alguien' -- así que se consolidó en el que ya cubría el caso más numeroso (2 de 3 apariciones antes del cambio consideraciones incluidas) y cuyo dibujo (burbuja con líneas de texto) representa mejor un mensaje/conversación que 'dots' (indicador de escritura, más específico de chat en vivo) o el bocadillo sin circular de ChatText.",
+    "Compass en destinos/[slug]/page.tsx NO estaba sin usar (a diferencia de home, donde sí lo estaba) -- se usaba de verdad en el CTA final de la página ('¿Te suena este destino?' -> botón de WhatsApp). Se leyó el texto (mensajes es.json) antes de decidir: es exactamente el mismo patrón de CTA-para-hablar-con-un-asesor que el resto de 'conversación', así que se reemplazó por ChatCircleText en vez de simplemente borrar el import.",
+    "El icono `List` (menú del panel admin, src/platform/admin/menu.tsx) y `Phone` no estaban entre los 5 archivos del encargo ni se tocaron -- se agregaron solo a la tabla de /design-system para dejar completa la lista de 'resto' que cita fase-4-sistema-grafico.md §4.2, sin modificar su código.",
+    "Colisión conocida con N-01.1/N-05.4/N-06.2 en design-system/page.tsx: se insertó un único Block nuevo ('Iconografía') entre los bloques existentes 'Botones' y 'Etiquetas', sin tocar ni reformatear ningún otro bloque del archivo. El resto de imports/constantes existentes (COLORS, STATES, NEUTRALS, TYPE_SCALE, Block) se dejaron intactos; solo se añadió el import de los iconos usados en la tabla y la constante ICON_CONCEPTS."
+  ]
+}
