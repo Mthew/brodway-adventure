@@ -166,7 +166,7 @@ export default async function DemoCrmPage({
                   <div className="flex flex-col gap-4">
                     <p>{pregunta.porque}</p>
                     {pregunta.bien ? (
-                      <p className="text-body-sm border-brand-turquoise/40 border-l-2 pl-4 text-neutral-600">
+                      <p className="text-body-sm borde-lista border-l-2 pl-4 text-neutral-600">
                         <span className="text-brand-turquoise-text font-semibold">
                           Respuesta que cierra el punto:{" "}
                         </span>

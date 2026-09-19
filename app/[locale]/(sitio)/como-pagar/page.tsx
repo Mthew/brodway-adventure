@@ -74,7 +74,7 @@ export default async function ComoPagarPage({
       {/* La aclaración va destacada, no en letra chica: es lo que evita que alguien
           entienda "cuotas" como financiación. */}
       <Section spacing="compact">
-        <div className="border-brand-turquoise flex max-w-[65ch] flex-col gap-3 border-l-4 pl-6">
+        <div className="borde-lista flex max-w-[65ch] flex-col gap-3 border-l-2 pl-6">
           <h2 className="text-h3 text-brand-navy">{t("aclaracionTitulo")}</h2>
           <p className="text-body text-neutral-700">{t("aclaracionTexto")}</p>
         </div>
@@ -90,7 +90,7 @@ export default async function ComoPagarPage({
 
       <Section>
         <h2 className="text-h2 text-brand-navy mb-8">{t("despuesTitulo")}</h2>
-        <ol className="flex flex-col gap-6 border-l-2 border-neutral-200 pl-6">
+        <ol className="borde-lista flex flex-col gap-6 border-l-2 pl-6">
           {["paso1", "paso2", "paso3"].map((clave) => (
             <li key={clave} className="text-body max-w-[60ch] text-neutral-700">
               {t(clave)}

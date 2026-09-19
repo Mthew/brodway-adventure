@@ -73,7 +73,7 @@ export default async function GraciasPage({
           */}
           <p className="text-body-lg text-neutral-700">{t("expectativa")}</p>
 
-          <ol className="flex flex-col gap-4 border-l-2 border-neutral-200 pl-6">
+          <ol className="borde-lista flex flex-col gap-4 border-l-2 pl-6">
             {["paso1", "paso2", "paso3"].map((clave) => (
               <li key={clave} className="text-body text-neutral-700">
                 {t(clave)}

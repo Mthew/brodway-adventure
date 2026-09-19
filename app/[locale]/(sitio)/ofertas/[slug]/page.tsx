@@ -207,7 +207,7 @@ export default async function OfertaPage({
             {t("itinerarioNota")}
           </p>
 
-          <ol className="flex flex-col gap-6 border-l-2 border-neutral-200 pl-6">
+          <ol className="borde-lista flex flex-col gap-6 border-l-2 pl-6">
             {offer.itinerario.map((dia) => (
               <li key={dia.dia} className="flex flex-col gap-1">
                 <span className="text-caption text-brand-turquoise-text font-semibold">

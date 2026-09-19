@@ -191,6 +191,26 @@ const ICON_CONCEPTS = [
   },
 ] as const;
 
+/**
+ * G-3 (fase-4-sistema-grafico.md §3.2): color de la ruta por contraste y
+ * significado. El naranja de la estela del logo no llega a 3:1 sobre fondo
+ * claro (2.36) — sirve como ruta DECORATIVA ahí (acompaña algo que ya se
+ * lee), nunca como la única portadora de información. Sobre navy, tanto el
+ * naranja como el turquesa pasan 3:1 y sirven para los dos casos.
+ */
+const ROUTE_COLOR_RULES = [
+  {
+    superficie: "Blanco, gris o arena",
+    decorativa: "naranja",
+    informativa: "navy (11.45:1) o turquoise-text (6.18:1)",
+  },
+  {
+    superficie: "Navy",
+    decorativa: "naranja (4.84:1) o turquesa (4.57:1)",
+    informativa: "las mismas",
+  },
+] as const;
+
 const TYPE_SCALE = [
   { token: "text-display", label: "Display" },
   { token: "text-h1", label: "Título 1" },
@@ -588,6 +608,143 @@ export default async function DesignSystemPage({
               ),
             )}
           </div>
+        </Block>
+
+        <Block
+          title="Ruta de marca"
+          description="Dos tratamientos, no cinco (fase-4-sistema-grafico.md §3.2, G-5). RUTA (.line-draw / .line-draw-y): trazo fino, con o sin nodos, que conecta. BORDE DE LISTA (.borde-lista): marca un ítem dentro de un grupo. Antes de este nodo (N-04.1) convivían cinco variantes de línea para lo mismo — la declaración completa está en app/globals.css."
+        >
+          <div className="grid gap-8 lg:grid-cols-2">
+            <div className="flex flex-col gap-4">
+              <p className="text-body-sm font-semibold text-brand-navy">
+                Ruta — trazo con o sin nodos
+              </p>
+
+              <div className="rounded-md border border-neutral-200 p-6">
+                <div
+                  aria-hidden="true"
+                  className="line-draw bg-brand-orange h-px w-full"
+                />
+              </div>
+              <p className="text-caption text-neutral-500">
+                <code className="font-mono">.line-draw</code> (horizontal, se
+                dibuja de izquierda a derecha con el scroll): la familia ya no
+                tiene uso real en el sitio hoy — el separador de &ldquo;Cómo
+                funciona&rdquo; se resolvió con el espinazo vertical de abajo,
+                no con éste. Se documenta porque sigue siendo la variante
+                oficial para el próximo separador dibujado que haga falta;
+                naranja aquí porque es decorativa (G-3, no es la única
+                portadora de significado).
+              </p>
+
+              <div className="bg-brand-navy rounded-md p-6">
+                <ol className="relative flex flex-col gap-6">
+                  <div
+                    aria-hidden="true"
+                    className="line-draw-y bg-brand-turquoise/60 absolute top-5 bottom-5 left-5 w-px"
+                  />
+                  {["Origen", "Destino"].map((paso, i) => (
+                    <li
+                      key={paso}
+                      className="relative flex items-center gap-4"
+                    >
+                      <span className="bg-brand-navy ring-brand-turquoise/40 text-brand-turquoise text-body-sm z-10 flex size-10 shrink-0 items-center justify-center rounded-full font-semibold ring-2">
+                        {i + 1}
+                      </span>
+                      <span className="text-body-sm text-white">{paso}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+              <p className="text-caption text-neutral-500">
+                <code className="font-mono">.line-draw-y</code> con nodos: la
+                única instancia real es &ldquo;Cómo funciona&rdquo; en la
+                home. Un nodo marca origen, decisión o destino (G-2) — nunca
+                se añade uno solo para dar ritmo visual.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <p className="text-body-sm font-semibold text-brand-navy">
+                Borde de lista — una sola variante
+              </p>
+
+              <ul className="flex flex-col gap-3">
+                <li className="borde-lista border-l-2 pl-5">
+                  <p className="text-body-sm text-neutral-700">
+                    Lista vertical —{" "}
+                    <code className="font-mono">border-l-2</code>
+                  </p>
+                </li>
+              </ul>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="borde-lista border-t-2 pt-4">
+                  <p className="text-body-sm text-neutral-700">
+                    Rejilla de columnas —{" "}
+                    <code className="font-mono">border-t-2</code>
+                  </p>
+                </div>
+                <div className="borde-lista border-t-2 pt-4">
+                  <p className="text-body-sm text-neutral-700">
+                    Mismo color, mismo grosor
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-caption text-neutral-500">
+                <code className="font-mono">.borde-lista</code> fija sólo el
+                color (turquesa al 40 %). El lado —izquierda en una lista
+                vertical, arriba en una rejilla de columnas— lo pone la
+                utilidad de Tailwind que corresponde al layout: no es una
+                sexta variante, es la orientación con la que ese layout
+                avanza. 10 usos reales en el sitio hoy, los cinco anteriores
+                (grosores y colores distintos por archivo) quedaron en uno.
+              </p>
+            </div>
+          </div>
+
+          <div className="overflow-hidden rounded-md border border-neutral-200">
+            <table className="text-body-sm w-full">
+              <thead>
+                <tr className="bg-neutral-50 text-left">
+                  <th className="p-2 font-semibold text-brand-navy">
+                    Superficie
+                  </th>
+                  <th className="p-2 font-semibold text-brand-navy">
+                    Ruta decorativa
+                  </th>
+                  <th className="p-2 font-semibold text-brand-navy">
+                    Ruta informativa (único portador de significado)
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {ROUTE_COLOR_RULES.map((rule) => (
+                  <tr
+                    key={rule.superficie}
+                    className="border-t border-neutral-200"
+                  >
+                    <td className="p-2 font-semibold text-neutral-800">
+                      {rule.superficie}
+                    </td>
+                    <td className="p-2 text-neutral-600">
+                      {rule.decorativa}
+                    </td>
+                    <td className="p-2 text-neutral-600">
+                      {rule.informativa}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-caption text-neutral-500">
+            G-1: una sola ruta dominante por composición — si una sección
+            lleva espinazo con nodos, no lleva además borde de lista. G-4: el
+            naranja nunca rellena superficie, es trazo, nodo o punto de
+            atención.
+          </p>
         </Block>
 
         <Block
