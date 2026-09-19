@@ -1,0 +1,49 @@
+{
+  "id": "N-01.0b",
+  "titulo": "Extracción del panel admin",
+  "estado": "cerrado",
+  "abierto_en": "2026-09-18T00:00:00Z",
+  "cerrado_en": "2026-09-18T00:00:00Z",
+  "commit_base": "0a967af7611e76209412dee42be37e28d04819e0",
+  "rama": "arq/n-01-0b-extraer-panel-admin",
+  "commit": "e3f653d",
+  "artefactos": [
+    "src/modules/offers/presentation/admin/campos.tsx",
+    "src/modules/offers/presentation/admin/listado.tsx",
+    "src/modules/offers/presentation/admin/nueva/destino-rapido.tsx",
+    "src/modules/offers/presentation/admin/nueva/formulario.tsx",
+    "src/modules/offers/presentation/admin/nueva/pantalla.tsx",
+    "src/modules/offers/presentation/admin/editar/formulario.tsx",
+    "src/modules/offers/presentation/admin/editar/seccion-avanzada.tsx",
+    "src/modules/offers/presentation/admin/editar/pantalla.tsx",
+    "src/modules/offers/presentation/admin/fotos/comprimir.ts",
+    "src/modules/offers/presentation/admin/fotos/subir.tsx",
+    "src/modules/offers/presentation/admin/fotos/pantalla.tsx",
+    "src/modules/offers/presentation/admin/publicar/formulario.tsx",
+    "src/modules/offers/presentation/admin/publicar/pantalla.tsx",
+    "src/modules/offers/presentation/admin/secciones/formulario.tsx",
+    "src/modules/offers/presentation/admin/secciones/pantalla.tsx",
+    "src/modules/destinations/presentation/admin/campos.tsx",
+    "src/modules/destinations/presentation/admin/listado.tsx",
+    "src/modules/destinations/presentation/admin/nueva/formulario.tsx",
+    "src/modules/destinations/presentation/admin/nueva/pantalla.tsx",
+    "src/modules/destinations/presentation/admin/editar/formulario.tsx",
+    "src/modules/destinations/presentation/admin/editar/subir-imagen.tsx",
+    "src/modules/destinations/presentation/admin/editar/pantalla.tsx",
+    "src/platform/admin/admin-shell.tsx",
+    "src/platform/admin/menu.tsx",
+    "src/platform/admin/piezas.tsx"
+  ],
+  "verificacion": {
+    "comando": "pnpm build",
+    "resultado": "EXIT=0",
+    "detalle": "check:tokens OK, check:current 41/50, check:deps sin violaciones (43 módulos, 95 dependencias cruised, tras corregir .dependency-cruiser.mjs — ver falso_verde_descartado), vitest sin archivos de test, next build: 90 páginas públicas + 21 rutas de admin generadas (13 rutas del panel de ofertas/destinos/piezas/layout + auth/confirmar + entrar/olvide/restablecer + /admin).",
+    "recorrido_navegador": "pnpm dev; curl /admin/entrar (200, <title>Panel · BroWay Adventures</title>, copy 'Entrar'/'Correo'/'Contraseña' presente) y /admin (307, redirect esperado sin sesión). No se pudieron recorrer las 13 rutas que exigen sesión real de Supabase — no hay credenciales de prueba en este entorno. Se documenta explícitamente en vez de fingir el recorrido: se verificó en su lugar que las 13 compilan, generan su entrada de ruta en el build (todas como 'ƒ' dinámicas, esperado por el chequeo de sesión) y que cada page.tsx resultante es un reexport de una sola línea sin JSX ni copy propio (leído archivo por archivo, no solo grep)."
+  },
+  "falso_verde_descartado": "pnpm build fallaba con 82 violaciones 'no-circular' de dependency-cruiser, todas dentro de node_modules (next/dist/client/components/*, @supabase/phoenix, @supabase/auth-js) y ninguna en el código del repo: .dependency-cruiser.mjs no tenía doNotFollow/exclude para node_modules, así que depcruise seguía la resolución de next/font/google (usado en admin-shell.tsx) y @supabase/ssr (usado en subir.tsx/subir-imagen.tsx) hacia adentro de esos paquetes y reportaba sus ciclos internos como si fueran del repo. N-01.0a no lo había notado porque sus componentes (button/badge/section/navbar/cookie-banner/sticky-cta) no importan next/font ni @supabase/ssr, así que depcruise nunca llegaba a node_modules. Corregido agregando doNotFollow/exclude de node_modules a options — ninguna de las 4 reglas de arquitectura existentes cambió.",
+  "prueba_mutacion": {
+    "accion": "Cambiar metadata.title en src/platform/admin/admin-shell.tsx a 'PRUEBA-MUTACION-N-01.0b', con pnpm dev corriendo",
+    "resultado": "curl /admin/entrar reflejó el nuevo <title> de inmediato (hot reload de Turbopack) sin tocar app/admin/layout.tsx — se confirmó con grep que layout.tsx (una sola línea, export { metadata, default } from ...) no contiene ni el texto viejo ni el nuevo. Revertido y reverificado que el título original vuelve a aparecer."
+  },
+  "notas": "Fuera de alcance de este nodo, tal como permite el spec cuando algo no encaja claramente en ofertas/destinos/piezas/layout: app/admin/page.tsx (dashboard que cruza ofertas y destinos a la vez, sin dueño de módulo único — se deja para un nodo futuro o para platform/admin si se ratifica como tal), y app/admin/entrar|olvide|restablecer/** (autenticación, sin regla de negocio de oferta/destino; no encajan en offers/destinations y tampoco estaban listados como 'Toca' de este nodo). Estos tres últimos SÍ importaban @/app/admin/piezas por su ruta vieja, así que se actualizó únicamente esa línea de import a @/src/platform/admin/piezas en cada uno — ningún otro contenido de esos archivos cambió. Rebase limpio sobre main tras el merge de N-01.0a (PR #28, mergeado mientras este nodo estaba en curso): sin conflictos, cero solapamiento de archivos (N-01.0a tocó el sitio público y components/; este nodo toca sólo app/admin/**)."
+}
