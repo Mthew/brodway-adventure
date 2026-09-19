@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { SealCheck } from "@phosphor-icons/react/dist/ssr";
+import { ShieldCheck } from "@phosphor-icons/react/dist/ssr";
 
 import { ButtonLink } from "@/src/shared/ui/button";
 import { Section } from "@/src/shared/ui/section";
@@ -131,7 +131,7 @@ export default async function NosotrosPage({
       <Section background="navy">
         <div className="flex flex-col gap-8">
           <div className="flex max-w-[60ch] flex-col gap-3">
-            <SealCheck
+            <ShieldCheck
               weight="regular"
               className="text-brand-turquoise size-8"
               aria-hidden="true"
