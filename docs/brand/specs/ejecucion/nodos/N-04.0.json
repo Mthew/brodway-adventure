@@ -1,0 +1,36 @@
+{
+  "id": "N-04.0",
+  "titulo": "Migración de componentes restantes de destinations y offers",
+  "estado": "cerrado",
+  "abierto_en": "2026-09-18T00:00:00Z",
+  "cerrado_en": "2026-09-18T00:00:00Z",
+  "commit_base": "8ccfaf8e503e7e13a1148dd44c40b13b08ef259e",
+  "rama": "arq/n-04-0-migrar-destinos-ofertas",
+  "commit": "7e7a1f1",
+  "artefactos": [
+    "src/modules/destinations/presentation/components/category-list.tsx",
+    "src/modules/destinations/presentation/components/category-filter.tsx",
+    "src/modules/offers/presentation/components/offer-gallery.tsx",
+    "src/modules/offers/presentation/components/expired-rate-notice.tsx",
+    "src/modules/offers/presentation/components/price-disclosure.tsx"
+  ],
+  "verificacion": {
+    "comando": "pnpm build",
+    "resultado": "PARCIAL — no se pudo llegar a EXIT=0 en este entorno (worktree de agente sin credenciales Supabase reales, sin .env.local).",
+    "detalle": "check:tokens OK, check:current 41/50, check:deps sin violaciones tras el fix de exclude (25 módulos, 46 dependencias cruised bajo src/). next build: 'Compiled successfully', TypeScript completo sin errores (43s, incluye el type-check de todo el repo, no solo src/). Falla después, en 'Collecting page data' de /[locale]/ofertas/[slug], porque generateStaticParams llama a Supabase y NEXT_PUBLIC_SUPABASE_URL/KEY no están configuradas en este worktree — no tiene relación con los 5 archivos migrados ni con ningún otro import tocado por este nodo. `pnpm exec tsc --noEmit` standalone: 0 errores con los 5 archivos en su lugar. Falta re-correr `pnpm build` completo con credenciales reales antes de mergear.",
+    "recorrido_navegador": "NO HECHO — mismo bloqueo: `pnpm dev` también requiere las credenciales de Supabase para hidratar /destinos y /ofertas/<slug>. Pendiente para quien tenga .env.local con las credenciales reales."
+  },
+  "falso_verde_descartado": "El grep de las 5 rutas absolutas viejas (@/components/destinos/listado-categoria, @/components/ui/filtro-categoria, @/components/oferta/galeria, @/components/oferta/tarifa-vencida, @/components/ui/price-disclosure) dio cero tras el reemplazo, cubriendo app/, components/, src/ y lib/. Se descartó por insuficiente: un grep de coincidencia de ruta no detecta símbolos renombrados (ListadoCategoria/FiltroCategoria/Galeria/TarifaVencida) importados con otro alias o reexportados; se corrió un segundo grep por esos 4 nombres de símbolo en todo el repo (excluyendo node_modules/.git) y sólo apareció una mención en un doc de handoff histórico (docs/handoff/2026-09-06-e3-fases-2-3-4.md), no en código.",
+  "prueba_mutacion": {
+    "accion": "mv src/modules/offers/presentation/components/price-disclosure.tsx a un tmp fuera del repo, luego `pnpm exec tsc --noEmit -p tsconfig.json`",
+    "resultado": "Falló con TS2307 'Cannot find module' en los dos consumidores reales (app/[locale]/(sitio)/design-system/page.tsx y app/[locale]/(sitio)/ofertas/[slug]/page.tsx). Se restauró el archivo y se confirmó `tsc --noEmit` limpio de nuevo (0 errores)."
+  },
+  "notas": [
+    "Convención de nombres: arquitectura-modular.md §2 ya declara los nombres de componente destino para este módulo (CategoryList, CategoryFilter, OfferGallery, ExpiredRateNotice, PriceDisclosure) — no hubo que inventar convención, sólo aplicarla. Se tradujeron también el archivo y el símbolo exportado principal de cada uno; las funciones auxiliares no nombradas por el doc (metadataDeCategoria, tipos ItemFiltrable/ValorFiltro) se dejaron en español para no ampliar el diff más allá de lo que el doc pide.",
+    "N-01.0a (rama arq/n-01-0a-migrar-shared, NO mergeada a main) ya migró Button/Section/Badge a src/shared/ui/ en su propia rama, pero esta rama sale de main (commit_base idéntico al de N-01.0a: 8ccfaf8), que todavía no tiene esos archivos en src/. Los imports internos de los 5 archivos migrados hacia @/components/ui/{button,card,section} y @/components/layout/whatsapp-floating se dejaron intactos (son las rutas reales en main); la integración de N-01.0a + N-04.0 tendrá que reescribir esos imports a @/src/shared/ui/... — no se puede hacer antes sin acoplar este nodo a una rama ajena no mergeada.",
+    "Hallazgo ADR-0004 (no anticipado por la spec del nodo): mover estos 5 archivos a src/ activa por primera vez la regla ESLint no-restricted-syntax de palabras en español (nunca antes se había ejecutado sobre código real, porque src/ no existía). Se tradujeron las variables/parámetros puramente locales (destinos/destino -> destinations/destination en category-list.tsx; vigenciaHasta -> validUntil en expired-rate-notice.tsx; validadaEl -> validatedOn en price-disclosure.tsx). Quedan sin traducir los accesos a campos de Offer/Destination que vienen de lib/types/{offer,destination}.ts (offer.precioDesde, offer.moneda, offer.vigenciaHasta, offer.validadaEl, offer.ciudadOrigen, offer.ocupacionBase) porque traducirlos exige tocar esos tipos y sus otros consumidores (components/ui/card.tsx, lib/destinations, lib/offers), fuera del alcance de 'migración pura' de este nodo — y hay precedente: src/modules/offers/presentation/components/sticky-cta.tsx de N-01.0a deja offer.precioDesde/offer.moneda igual de sin traducir. `pnpm lint` (no forma parte de `pnpm build`) sigue reportando esos 6 identificadores como error; alguien tiene que decidir en qué nodo se migra lib/types/offer.ts y lib/types/destination.ts a inglés.",
+    "Hallazgo no relacionado con ADR-0004: `pnpm lint` reporta 'Missing key prop for element in iterator' en src/modules/destinations/presentation/components/category-list.tsx:73 (el <DestinationCard> dentro de destinations.map(...) nunca tuvo key). Es un bug preexistente idéntico en el archivo original (components/destinos/listado-categoria.tsx en main) — no lo introdujo esta migración y no se corrigió aquí por ser ajeno al alcance de 'migración pura'.",
+    "Hallazgo de tooling (fuera del alcance de los 5 archivos pero necesario para que este nodo compile): .dependency-cruiser.mjs no tenía `options.exclude`, así que depcruise seguía las importaciones dentro de node_modules y reportaba ciclos internos de Next.js/Supabase como si fueran del proyecto (82 'violations' falsas). El check nunca se había ejecutado antes porque `pnpm check:deps` es `if [ -d src ]` — un no-op mientras src/ no existía. N-04.0 es el primer nodo que crea src/modules/, así que es el primero en activarlo y el primero en necesitar el fix. Se agregó `exclude: \"node_modules\"`.",
+    "No se pudo verificar con `pnpm build` completo (EXIT=0) ni con recorrido en navegador por falta de credenciales reales de Supabase en este worktree — ver 'verificacion'. El typecheck completo del repo (`pnpm exec tsc --noEmit`) sí corrió limpio con 0 errores, lo que cubre toda la superficie de tipos de los 7 consumidores actualizados."
+  ]
+}
