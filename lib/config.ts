@@ -6,9 +6,19 @@
  * legales tienen que verificarse antes de publicar (CLAUDE.md §Legal).
  */
 
-/** TODO: VERIFICAR — dominio real antes del primer deploy. */
+/**
+ * TODO: VERIFICAR — dominio real antes del primer deploy.
+ *
+ * `||`, no `??`: en Vercel la variable existe pero está creada vacía (`""`,
+ * placeholder sin rellenar todavía — ver N-02.V). `??` sólo cae al valor por
+ * defecto cuando la variable es `null`/`undefined`; con `""` deja pasar la
+ * cadena vacía, y `new URL("")` en `app/[locale]/layout.tsx` revienta el build
+ * entero de Vercel (`TypeError: Invalid URL`, confirmado en los deploys
+ * fallidos de las ramas de N-02.4/N-02.5). El build local nunca lo detectó
+ * porque el `.env` copiado del checkout principal sí trae un valor real.
+ */
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://browayadventures.com";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://browayadventures.com";
 
 /** Confirmado por el cliente el 2026-08-05. E.164 sin `+`: 57 + 3054513307. */
 export const WHATSAPP_NUMBER = "573054513307";
