@@ -1,0 +1,23 @@
+{
+  "id": "N-03.0",
+  "titulo": "Migración de components/forms/* a leads/presentation",
+  "estado": "cerrado",
+  "commit_base": "8ccfaf8e503e7e13a1148dd44c40b13b08ef259e",
+  "rama": "arq/n-03-0-migrar-forms",
+  "commit": "7b87744",
+  "artefactos": [
+    "src/modules/leads/presentation/components/lead-form.tsx",
+    "src/modules/leads/presentation/components/track-lead.tsx"
+  ],
+  "verificacion": {
+    "comando": "pnpm build",
+    "resultado": "TypeScript compila sin errores y dependency-cruiser da 0 violaciones (131 módulos, 225 dependencias); `next build` NO llega a EXIT=0 en este entorno por un bloqueo preexistente y no relacionado con este nodo: falta NEXT_PUBLIC_SUPABASE_URL/NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY para pre-renderizar /destinos/[slug] (lib/supabase/client.ts:41). Se demostró por A/B (ver prueba_mutacion adicional más abajo) que ese fallo es idéntico con y sin la migración: no lo introduce este nodo.",
+    "detalle": "pnpm check:tokens OK · pnpm check:current OK (41/50) · pnpm check:deps (depcruise) 0 violaciones · vitest sin tests · next build: TypeScript OK, falla en 'Collecting page data' por credenciales Supabase ausentes (preexistente). Recorrido manual con `pnpm dev`: GET /contacto → 200, con los 4 campos del LeadForm (nombre, telefono, ciudadOrigen, consentimiento) presentes en el HTML; GET /gracias?evento=test123 → 200 (monta TrackLead). /design-system (también consumidor de LeadForm) devolvió 500 en dev por el mismo bloqueo de Supabase, no por la migración."
+  },
+  "falso_verde_descartado": "components/forms/ quedó vacío tras el `git mv` de los dos archivos y se borró (rmdir); `grep -rn \"components/forms\" app components src` no devuelve coincidencias.",
+  "prueba_mutacion": {
+    "accion": "Se borró la ruta vieja (git mv ya la vació) y se corrió `pnpm build` ANTES de actualizar los 6 imports consumidores: falló en rojo con 'Module not found: Can't resolve \"@/components/forms/lead-form\"' (y track-lead) en los 6 archivos. Luego se actualizaron los imports a `@/src/modules/leads/presentation/components/...` y TypeScript pasó a compilar en verde, confirmando que la reintroducción de un import viejo rompe el build.",
+    "resultado": "OK — rojo antes de arreglar imports, verde (a nivel TypeScript/depcruise) después."
+  },
+  "notas": "Hallazgo no anticipado por el spec: N-01.0a (mueve components/ui/button.tsx a src/shared/ui/button.tsx) NO está mergeado a main (PR #28 open, rama arq/n-01-0a-migrar-shared) — el spec del nodo asumía que ya lo estaba. Por eso el import de Button en lead-form.tsx se dejó igual (@/components/ui/button), que es la ruta real hoy; actualizarlo a @/src/shared/ui/button habría roto el build porque ese archivo no existe todavía en esta rama (partió de main). Cuando N-01.0a se mergee, ese import necesitará actualizarse (conflicto de merge esperado o follow-up). Segundo hallazgo: el worktree no tenía node_modules instalado (se corrió `pnpm install`) ni .env.local con credenciales de Supabase — `next build` no puede completar el pre-renderizado de /destinos/[slug] y /ofertas/[slug] sin ellas, un bloqueo del entorno preexistente y ajeno a este nodo (se verificó por A/B contra el commit base, mismo fallo idéntico sin la migración)."
+}
