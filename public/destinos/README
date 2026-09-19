@@ -1,0 +1,77 @@
+# Fotos provisionales en public/destinos/ y lista priorizada de reemplazo
+
+> Decisión **D-D** (`docs/brand/aprobaciones.md`, 2026-09-11): la Fase 5 de fotografía se
+> ejecuta **sin esperar** la fotografía propia del cliente. Las fotos marcadas abajo como
+> **provisionales** se publican igual —un sitio sin fotos no es una opción— mientras se
+> gestiona su reemplazo con el material real de BroWay Adventures.
+>
+> Fuente del veredicto: `docs/brand/specs/fase-5-fotografia.md` §5 y el inventario completo
+> de las 22 imágenes en `docs/brand/specs/ejecucion/N-05.1-inventario-fotos.md` (nodo
+> `N-05.1`). Las 8 filas de esta lista son exactamente las 8 que ese inventario marcó como
+> **"se reemplaza"** — no hay ninguna foto aquí que no esté en esa tabla, y ninguna de esa
+> tabla con ese veredicto falta aquí.
+
+## Fotos provisionales (8)
+
+Estas 8 imágenes están publicadas hoy pero **no cumplen los seis criterios de marca**
+(`fase-5-fotografia.md` §3) de una forma que no se arregla recortando — por eso su veredicto
+en N-05.1 es "se reemplaza" y no "se re-encuadra". Cada una se queda en producción hasta que
+llegue su reemplazo.
+
+| Archivo | Dónde se usa hoy | Por qué es provisional (N-05.1) |
+|---|---|---|
+| `home-hero.webp` | Hero de home, foto 1 del ciclo (`app/[locale]/(sitio)/page.tsx`) | Paisaje sin personas; el hero de home exige personas de forma obligatoria (§3.1) |
+| `home-hero-movil.webp` | Recorte móvil de la misma foto 1 del hero de home | Mismo defecto de fondo que `home-hero.webp` (misma foto, sin gente) — se reemplaza junto con ella, no por separado |
+| `nosotros.webp` | Página "Nosotros" (`app/[locale]/(sitio)/nosotros/page.tsx`) | Grupo de espaldas, sin rostros — stock genérico, sin diversidad reconocible del público colombiano |
+| `eje-cafetero-campana.webp` | Hero de campaña (`lib/mock/campaigns.ts`) | Cielo gris y plano, tormentoso, **y** sin personas — el hero de campaña también las exige de forma obligatoria (§3.1). Incumple dos reglas a la vez |
+| `eje-cafetero-3.webp` | Galería de la oferta "Eje Cafetero 4 días" (`lib/mock/offers.ts`) | Cielo gris y plano; ladera reconocible pero apagada |
+| `cartagena-hero.webp` | Ciclo hero de home (slide 2), hero de destino Cartagena y `imagenHero` del mock "Guatapé" (`lib/mock/destinations.ts`) | Composición llena borde a borde, sin tercio inferior izquierdo limpio para el titular (§4); luz plana de día nublado |
+| `santa-marta.webp` | Tarjeta de destino Santa Marta | Primer plano de palmeras genérico — no es reconocible como Santa Marta específicamente, podría ser cualquier trópico |
+| `cancun-3.webp` | Ninguno — huérfana, no referenciada en ningún `.ts`/`.tsx` del repo | Muestra banderas con texto/logo que podría ser de un hotel o mayorista, sin poder confirmarlo con certeza a la resolución disponible (posible marca de tercero, §6 "qué se rechaza") |
+
+## Lista priorizada de reemplazo, para pedir al cliente
+
+Orden de urgencia y su razón — no es solo una lista, es el orden en que conviene resolverlas:
+
+1. **Foto de personas para el hero de home** (reemplaza `home-hero.webp` y
+   `home-hero-movil.webp`, misma foto en dos recortes). Es la primera imagen que ve cualquier
+   visitante y hoy contradice el principio visual de la fase ("cómo se siente viajar, no solo
+   cómo luce"). Máxima visibilidad, máximo impacto de marca. (Prioridad declarada en
+   `fase-5-fotografia.md` §5.)
+2. **Foto para "Nosotros"** (reemplaza `nosotros.webp`). Es la página que presenta a las
+   personas detrás de la marca — mostrar stock genérico de espaldas ahí es el hueco más
+   visible después del hero, y es la segunda prioridad que ya declara `fase-5-fotografia.md`
+   §5.
+3. **Foto para el hero de campaña** (reemplaza `eje-cafetero-campana.webp`). Se prioriza por
+   delante de la otra foto de luz plana porque un hero de campaña recibe tráfico pagado
+   directo — cada visita ahí ya costó dinero — y porque incumple dos reglas a la vez (luz y
+   ausencia obligatoria de personas), no solo una.
+4. **Foto para el hero de destino de Cartagena** (reemplaza `cartagena-hero.webp`). Se
+   prioriza por delante de las dos siguientes porque se reutiliza en tres lugares a la vez
+   (slide del hero de home, hero de destino Cartagena y hero del mock "Guatapé"): un solo
+   reemplazo resuelve tres apariciones.
+5. **Foto de detalle para la galería "Eje Cafetero 4 días"** (reemplaza
+   `eje-cafetero-3.webp`). Misma familia de defecto que la #3 (cielo gris y plano), pero en
+   una miniatura de galería secundaria, no en un hero de tráfico pagado — de ahí que vaya
+   después.
+6. **Foto de tarjeta para el destino Santa Marta** (reemplaza `santa-marta.webp`). Un solo
+   uso (tarjeta de destino) y el defecto es de reconocibilidad, no de ausencia de personas ni
+   de luz — menor urgencia que las anteriores, pero sigue siendo una ficha de destino visible
+   en el catálogo.
+7. **Foto para `cancun-3.webp`, o decisión de retirarla.** Va última porque hoy es huérfana
+   —no se usa en ninguna página— así que no hay urgencia de tráfico. Aun así no debe
+   activarse en ningún lugar nuevo sin resolver antes si las banderas visibles llevan marca de
+   un tercero (hotel o mayorista): si el cliente confirma que sí, se retira sin reemplazo; si
+   confirma que no, puede promoverse de "provisional" a "se queda".
+
+## Lo que no cambia con este README
+
+- El `alt` de las tres fotos del hero de home ya se corrigió en `messages/es.json` y
+  `messages/en.json` (nodo N-05.1) para describir lo que sí está en la foto — eso no depende
+  de que llegue el reemplazo.
+- Las 13 fotos con veredicto "se queda" y la 1 con veredicto "se re-encuadra"
+  (`punta-cana.webp`, ya recortada) no están en esta lista: cumplen los seis criterios para
+  su uso y no se piden como reemplazo.
+- Este documento no reemplaza al inventario completo (`N-05.1-inventario-fotos.md`), que
+  tiene las 22 filas con su análisis detallado. Este README es solo la vista de "qué se pide
+  al cliente y en qué orden".

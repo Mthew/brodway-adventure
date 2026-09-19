@@ -1,0 +1,31 @@
+{
+  "id": "N-05.2",
+  "titulo": "README de fotos provisionales y lista priorizada de reemplazo",
+  "estado": "completado",
+  "fecha": "2026-09-18",
+  "rama": "fase-1/marca-n-05-2-readme-fotos",
+  "objetivo": "public/destinos/README declara que fotos son provisionales (D-D: se ejecuta sin esperar la fotografia real del cliente) y trae la lista priorizada de reemplazo que se le pide al cliente, cruzada 1:1 con el veredicto 'se reemplaza' del inventario de N-05.1.",
+  "artefactos": [
+    "public/destinos/README (nuevo archivo, no existia)"
+  ],
+  "metodo": {
+    "verificacion_previa": "public/README SI existe (creado por N-02.1) pero es un archivo DISTINTO: documenta procedencia de logos/favicons de marca en public/brand y public/app, no fotos de destinos. No se toco. public/destinos/README no existia -- se creo desde cero.",
+    "cruce_1_a_1": "Se tomaron las 8 filas con veredicto 'se reemplaza' de docs/brand/specs/ejecucion/N-05.1-inventario-fotos.md (home-hero, home-hero-movil, cartagena-hero, santa-marta, eje-cafetero-3, eje-cafetero-campana, nosotros, cancun-3) y se listaron las 8, sin agregar ni quitar ninguna, con el motivo textual de N-05.1 resumido por fila. No se invento una lista generica aparte."
+  },
+  "prioridad_declarada": [
+    "1. home-hero.webp + home-hero-movil.webp (misma foto, dos recortes) -- primera imagen del sitio, hero de home exige personas de forma obligatoria (fase-5 §3.1); prioridad ya declarada en fase-5-fotografia.md §5",
+    "2. nosotros.webp -- pagina que presenta a las personas de la marca, hoy stock de espaldas; segunda prioridad ya declarada en fase-5 §5",
+    "3. eje-cafetero-campana.webp -- hero de campana (trafico pagado directo) que incumple dos reglas a la vez: luz plana Y ausencia de personas obligatoria en hero de campana",
+    "4. cartagena-hero.webp -- se reutiliza en 3 lugares a la vez (slide hero home, hero destino Cartagena, hero mock Guatape): un reemplazo resuelve tres apariciones",
+    "5. eje-cafetero-3.webp -- misma familia de defecto que #3 (cielo gris y plano) pero en miniatura de galeria secundaria, no en hero de trafico pagado",
+    "6. santa-marta.webp -- un solo uso (tarjeta de destino), defecto de reconocibilidad, no de personas ni luz",
+    "7. cancun-3.webp -- huerfana (no se usa en ningun lado hoy), va ultima por falta de urgencia de trafico, pero con nota de no activarla sin resolver antes si las banderas visibles llevan marca de un tercero"
+  ],
+  "falso_verde_evitado": "El encargo advertia explicitamente que podia existir una lista de reemplazo generica que no coincidiera con lo que N-05.1 marco como 'se reemplaza'. Se verifico fila por fila contra la tabla de 22 imagenes de N-05.1-inventario-fotos.md: las 8 filas de esta lista son exactamente las 8 con veredicto 'se reemplaza' en esa tabla, ni una mas ni una menos (cartagena-hero, santa-marta, eje-cafetero-3, eje-cafetero-campana, nosotros, cancun-3, home-hero, home-hero-movil).",
+  "notas": [
+    "No se toco CURRENT.md (instruccion explicita del encargo); pnpm check:current confirma 41/50 lineas, sin cambios.",
+    "No se corrigio ningun alt en este nodo: los 3 alt del hero de home ya se corrigieron en N-05.1 y se referencian aqui solo como nota informativa.",
+    "No se reasigno ninguna foto (ej. promover cartagena-3.webp) ni se elimino cancun-3.webp: ambas son decisiones de arquitectura/contenido fuera del alcance de un README.",
+    "El caso cancun-3.webp se documento con una salida doble (retirar si se confirma marca de tercero / promover a 'se queda' si se confirma que no la lleva) en vez de forzarla a una sola resolucion, porque N-05.1 no pudo confirmar el logo con certeza a la resolucion disponible."
+  ]
+}
