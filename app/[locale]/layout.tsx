@@ -6,6 +6,7 @@ import { Manrope } from "next/font/google";
 
 import { SITE_URL } from "@/lib/config";
 import { routing } from "@/lib/i18n/routing";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo/og-image";
 import { THEME_COLOR_NAVY } from "@/lib/theme-color";
 import { CookieBanner } from "@/src/modules/tracking/presentation/components/cookie-banner";
 import "../globals.css";
@@ -99,16 +100,12 @@ export async function generateMetadata({
       // esa frontera de segmento dinámico para adjuntar imágenes estáticas —
       // verificado por mutación (ver más abajo). Se referencia a mano en su
       // lugar; `metadataBase` (arriba) la vuelve absoluta.
-      images: [
-        {
-          url: "/opengraph-image.png",
-          width: 1200,
-          height: 630,
-          alt: "Firma de BroWay Adventures sobre fondo navy de marca.",
-        },
-      ],
+      images: [DEFAULT_OG_IMAGE],
       // Páginas con foto propia (oferta, destino, campaña) sobrescriben este
-      // array con su propia foto — fuera de este nodo (N-02.5).
+      // array con su propia foto (N-02.5, `lib/seo/og-image.ts`). Esas páginas
+      // vuelven a caer en `DEFAULT_OG_IMAGE` cuando el registro no tiene foto,
+      // porque declarar `openGraph` en la página reemplaza ENTERO el de este
+      // layout — no se combinan (`generate-metadata.md` §Merging).
     },
     twitter: {
       card: "summary_large_image",
