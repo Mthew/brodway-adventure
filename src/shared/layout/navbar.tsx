@@ -115,30 +115,49 @@ export function Navbar() {
 
   /*
    * El separador inferior va como sombra interior y NO como `border-b`.
-   * El contenido de la barra mide exactamente 80px, que es el techo del
+   * El contenido de la barra mide exactamente 80px (`h-20` explícito, no
+   * derivado de `py-*` + altura del contenido), que es el techo del
    * Pre-Flight §11.B; un borde de 1px lo dejaba en 81 e incumplía la casilla por
    * un píxel. Una sombra interior se dibuja dentro de la caja y no suma altura.
+   *
+   * N-02.2 fija la altura con `h-20` (antes: `py-3` + la altura del logo, que
+   * variaba entre 68px en móvil y 80px en escritorio porque el logo se
+   * dimensionaba por ALTURA). Con `h-20` fijo la barra mide 80px en TODOS los
+   * breakpoints, sin importar el tamaño del logo — ver nota sobre el panel móvil
+   * más abajo, que dependía de la altura variable anterior.
    */
   return (
     <header className="bg-surface-base sticky top-0 z-50 shadow-[inset_0_-1px_0_var(--color-neutral-200),0_1px_2px_rgba(0,48,98,0.06)]">
-      {/* La zona de seguridad del logo (py-3 + gap) respeta el mínimo del manual de marca. */}
-      <nav className="mx-auto flex max-w-6xl items-center gap-6 px-6 py-3 md:px-8">
-        <Link href="/" aria-label={t("irAlInicio")} className="shrink-0">
+      <nav className="mx-auto flex h-20 max-w-6xl items-center gap-6 px-6 md:px-8">
+        <Link href="/" aria-label={t("irAlInicio")} className="mr-2 shrink-0">
           {/*
-            N-02.1 solo reemplaza el archivo por la firma horizontal oficial del kit
-            (docs/brand/Kit_Marca_BroWay_Adventures/, ver public/README). El
-            dimensionado por ALTURA (h-11/h-14) es el mismo de antes a propósito:
-            pasar a ancho fijo con el mínimo de 180px del manual y la zona de
-            seguridad es alcance de N-02.2 (fase-2-la-firma.md §3.1, §4.1), no de
-            este nodo. width/height sí reflejan ya el tamaño real del archivo.
+            N-02.2 (fase-2-la-firma.md §3.1): SÍMBOLO, no la firma horizontal
+            completa. La firma completa (`public/brand/logo-horizontal.png`) es
+            matemáticamente incompatible con esta barra: su archivo trae un
+            margen interno de exportación del kit (lienzo 1759×894, arte real
+            1444×464) que hace que 180px de ancho midan ~91px de alto — ya por
+            sí solo más que el techo de 80px de la barra, antes de sumar aire
+            vertical. El manual ya contempla esta salida para navegaciones
+            angostas: "usar el símbolo en la navegación (mínimo 40px)".
+
+            `public/brand/simbolo.png` se recortó del símbolo aislado del kit
+            (`03_Favicons/BroWay_Favicon_Fondo_Blanco_1024.png`, bbox de tinta
+            701×611 dentro del lienzo de 1024×1024) con el blanco convertido a
+            transparencia real (canal alfa por distancia al blanco, sin premultiplicar) —
+            no es un recorte cuadrado con fondo blanco pegado encima del
+            `bg-surface-base` de la barra. A 48px de alto (bien por encima del
+            mínimo de 40px) da ~55px de ancho.
+
+            Ver docs/brand/specs/ejecucion/nodos/N-02.2.json para el detalle de
+            la medición que descartó la firma completa.
           */}
           <Image
-            src="/brand/logo-horizontal.png"
+            src="/brand/simbolo.png"
             alt="BroWay Adventures"
-            width={1759}
-            height={894}
+            width={724}
+            height={634}
             priority
-            className="h-11 w-auto md:h-14"
+            className="h-12 w-auto"
           />
         </Link>
 
@@ -235,7 +254,16 @@ export function Navbar() {
           id="menu-movil"
           ref={panelRef}
           className={cn(
-            "bg-surface-base fixed inset-x-0 top-[65px] bottom-0 z-50 lg:hidden",
+            /*
+             * N-02.2: antes `top-[65px]`, un valor afinado a ojo para la altura
+             * MÓVIL anterior (44px de logo + 24px de padding = 68px, tampoco 65
+             * exactos). Con `h-20` la barra mide 80px fijos en TODOS los
+             * breakpoints (ver comentario en el <nav> de arriba), así que el
+             * panel debe empezar exactamente en `top-20` — con 65px quedaría
+             * 15px por debajo del borde real de la barra, superponiéndose a su
+             * franja inferior.
+             */
+            "bg-surface-base fixed inset-x-0 top-20 bottom-0 z-50 lg:hidden",
             "flex flex-col gap-2 overflow-y-auto px-6 py-6",
           )}
         >

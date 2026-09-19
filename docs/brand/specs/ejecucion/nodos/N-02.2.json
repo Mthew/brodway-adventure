@@ -1,0 +1,51 @@
+{
+  "id": "N-02.2",
+  "titulo": "Navegación y landing de campaña con la firma real",
+  "estado": "cerrado",
+  "commit_base": "8390fa5",
+  "rama": "fase-1/marca-n-02-2-navbar-landing-firma",
+  "commit": "PENDIENTE (se rellena al commitear)",
+  "artefactos": [
+    "src/shared/layout/navbar.tsx",
+    "app/[locale]/lp/[campana]/layout.tsx",
+    "public/brand/simbolo.png"
+  ],
+  "verificacion": {
+    "tipo": "medicion_devtools",
+    "como": "pnpm dev, Playwright (getBoundingClientRect en header/img/ul/button), viewports 320/375/1024/1280px, en / y en /lp/eje-cafetero-septiembre. pnpm build (EXIT=0, incluye check:tokens/check:current/check:deps/test). Screenshot real de la barra tras el cambio a símbolo, confirmando transparencia limpia sin caja blanca.",
+    "resultado_navbar": {
+      "header_alto_px": 80,
+      "elemento": "símbolo (public/brand/simbolo.png), no la firma horizontal completa — ver decisión_final",
+      "simbolo_alto_px": 48,
+      "simbolo_ancho_px_aprox": 55,
+      "gap_a_siguiente_elemento_px": 32,
+      "viewports_probados": [320, 375, 1024, 1280],
+      "overflow_horizontal": "ninguno en ningún viewport probado",
+      "panel_movil": "top-20 (80px) alineado exacto con el borde inferior de la barra, sin solape ni hueco"
+    },
+    "resultado_landing": {
+      "header_alto_px": "125.65 (sin techo declarado en la spec para esta superficie)",
+      "elemento": "firma horizontal completa (public/brand/logo-horizontal.png), sin cambios — no tenía el conflicto de altura de la navbar",
+      "firma_ancho_px": 200,
+      "firma_alto_px": 101.65,
+      "sin_link": true,
+      "viewports_probados": [375, 1280],
+      "overflow_horizontal": "ninguno"
+    }
+  },
+  "falso_verde_descartado": "El <Image> puede declarar un ancho/alto CSS y renderizar distinto si el contenedor lo comprime — se midió el elemento RENDERIDO (getBoundingClientRect) en el navegador real vía Playwright, no el atributo width/height del JSX. Además, un símbolo recortado de un archivo con fondo blanco puede dejar una caja blanca visible sobre `bg-surface-base` si el fondo no es idéntico — se verificó con una captura de pantalla real que la transparencia es limpia (sin artefacto de caja) antes de cerrar el nodo.",
+  "prueba_mutacion": "w-[142px] -> w-[100px] -> medido 100px de ancho -> revertido -> medido 142px de nuevo (validación del método de medición, hecha en el primer intento con la firma completa, sigue siendo válida para el método usado con el símbolo).",
+  "decision_final": {
+    "resumen": "B-1 (firma ≥180px de ancho) y B-2 (barra de navegación ≤80px de alto) son matemáticamente incompatibles con `public/brand/logo-horizontal.png` (lienzo 1759×894 con gran margen interno de exportación del kit, arte real 1444×464 dentro de ese lienzo). El primer intento de este nodo entregó 142px de ancho (máximo posible sin tocar el archivo) y documentó tres salidas: (A) recortar el archivo, (B) usar el símbolo en la navegación —ya contemplado por fase-2-la-firma.md §3.1 para este caso—, (C) aceptar 142px como techo. El coordinador de la sesión eligió (B).",
+    "que_se_hizo": "Se generó `public/brand/simbolo.png`: recorte del símbolo aislado del kit (`docs/brand/Kit_Marca_BroWay_Adventures/03_Favicons/BroWay_Favicon_Fondo_Blanco_1024.png`, bbox de tinta 701×611 medido por diferencia contra fondo blanco puro dentro del lienzo de 1024×1024), con el blanco convertido a transparencia real (alpha = 255 - min(R,G,B) por píxel — no es un recorte cuadrado con fondo blanco pegado). El navbar ahora usa este símbolo a 48px de alto (~55px de ancho, muy por encima del mínimo de 40px que exige fase-2-la-firma.md §3.1 para esta salida), en vez de la firma horizontal completa. La landing de campaña NO cambió — no tenía el conflicto de altura, así que sigue usando la firma completa a 200px de ancho.",
+    "verificacion_visual": "Captura de pantalla real (Playwright, 1280×400, /es) confirma: símbolo nítido, sin caja blanca ni artefacto de fondo, bien proporcionado dentro de la barra de 80px, sin invadir el menú ni el resto de la navegación.",
+    "archivo_nuevo": "public/brand/simbolo.png (724×634, RGBA con transparencia real) — no modifica ni reemplaza logo-horizontal.png ni logo-horizontal-transparente.png, que siguen existiendo para otros usos (landing, opengraph, etc.)."
+  },
+  "notas": [
+    "navbar.tsx: h-20 (80px fijos en todos los breakpoints) se mantiene del primer intento — el cambio de firma completa a símbolo no afecta la altura de la barra, solo qué se dibuja dentro de ella.",
+    "El símbolo, al ser casi cuadrado (701:611 ≈ 1,15:1), no tiene el problema de proporción archivo-vs-arte que sí tenía la firma horizontal — por eso 48px de alto no choca con ningún techo.",
+    "app/[locale]/lp/[campana]/layout.tsx: sin cambios respecto al primer intento — sigue usando la firma horizontal completa a 200px de ancho, sin <Link> (requisito de fase-2-la-firma.md §4.2).",
+    "public/brand/logo-horizontal.png queda sin recortar — la decisión (B) no requería tocarlo. Si en el futuro se decide también usar la firma completa en superficies con techo de altura similar al de la navbar, la salida (A) (recortar el archivo) sigue pendiente y sigue siendo la que de verdad resolvería B-1 y B-2 a la vez.",
+    "pnpm build corre pnpm check internamente (check:tokens + check:current + check:deps + test) — todo en verde."
+  ]
+}
