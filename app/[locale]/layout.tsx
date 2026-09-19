@@ -2,55 +2,41 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Caveat, Lato, Montserrat } from "next/font/google";
+import { Manrope } from "next/font/google";
 
 import { routing } from "@/lib/i18n/routing";
 import { CookieBanner } from "@/src/modules/tracking/presentation/components/cookie-banner";
 import "../globals.css";
 
 /**
- * TIPOGRAFÍAS OFICIALES DE MARCA. Confirmadas por el cliente el 2026-08-05.
+ * TIPOGRAFÍA OFICIAL DE MARCA. Manrope, una sola familia (D-A, decidido
+ * 2026-09-11, `docs/brand/aprobaciones.md`). Sustituye a las tres familias con
+ * función separada del manual v2.0 — ver `docs/brand/specs/fase-6-tipografia.md`
+ * §3.1.
  *
- * Sólo se cargan los pesos que el manual autoriza. Cada peso extra es descarga
- * que paga el 83% de tráfico móvil, y aquí no hay ninguno de adorno:
+ * Se cargan los cinco pesos que la jerarquía del manual necesita: 400 Regular
+ * (párrafos) · 500 Medium · 600 SemiBold (H4, botones, cuerpo con énfasis) ·
+ * 700 Bold (H2, H3) · 800 ExtraBold (H1). La familia anterior de cuerpo no
+ * tenía 500/600 (su salto era 400→700); Manrope sí, así que la jerarquía se
+ * cumple tal como la escribe el manual por primera vez.
  *
- *   Montserrat  600 SemiBold (H4, botones) · 700 Bold (H2, H3) · 800 ExtraBold (H1)
- *   Lato        400 Regular · 700 Bold      (el manual recomienda hasta SemiBold,
- *                                            que Lato no tiene: su salto es 400→700)
- *   Caveat      700 Bold, único peso que el manual autoriza
+ * La firma narrativa manuscrita sale del sistema (D-B): «Next Stop» deja de
+ * firmarse en cursiva. Tenía cero usos en componentes, así que retirarla no
+ * toca ningún JSX — ver `docs/brand/aprobaciones.md` para el porqué.
  *
- * `display: "swap"` en las tres: el texto se ve con la fuente de respaldo desde
- * el primer frame en vez de quedar invisible mientras descarga, que es lo que
- * arruina el LCP en una conexión móvil.
+ * `display: "swap"`: el texto se ve con la fuente de respaldo desde el primer
+ * frame en vez de quedar invisible mientras descarga, que es lo que arruina
+ * el LCP en una conexión móvil.
  */
-const montserrat = Montserrat({
-  // Deliberadamente NO se llama `--font-display`: ese es el token de globals.css
-  // y se declara como `var(--font-montserrat), …`. Usar el mismo nombre en los dos
-  // lados crea una autorreferencia que mata la cadena de respaldo.
-  variable: "--font-montserrat",
+const manrope = Manrope({
+  // Deliberadamente NO se llama `--font-display` ni `--font-body`: esos son
+  // los tokens de globals.css, que se declaran como `var(--font-manrope), …`.
+  // Usar el mismo nombre en los dos lados crea una autorreferencia que mata
+  // la cadena de respaldo (el mismo defecto que tenía el panel, corregido
+  // aquí en los dos layouts a la vez — fase-6-tipografia.md §1.2 y §2.2).
+  variable: "--font-manrope",
   subsets: ["latin"],
-  weight: ["600", "700", "800"],
-  display: "swap",
-});
-
-const lato = Lato({
-  variable: "--font-lato",
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap",
-});
-
-/**
- * Caveat. Firma narrativa y nada más.
- *
- * El manual la limita a 8-10 palabras y la prohíbe en párrafos, precios,
- * condiciones y mayúsculas sostenidas. Se carga un solo peso para que no haya
- * tentación de usarla como familia de interfaz.
- */
-const caveat = Caveat({
-  variable: "--font-caveat",
-  subsets: ["latin"],
-  weight: ["700"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -105,7 +91,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
-      className={`${montserrat.variable} ${lato.variable} ${caveat.variable} h-full antialiased`}
+      className={`${manrope.variable} h-full antialiased`}
     >
       {/*
         Este layout NO monta navbar ni footer, a propósito.
