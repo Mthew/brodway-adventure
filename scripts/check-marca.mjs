@@ -1,18 +1,21 @@
 /**
  * Verifica que los cinco hex del manual de marca sean los únicos valores de
  * color de marca del repo (docs/brand/specs/fase-1-paleta-y-superficies.md §9),
- * y que el copy respete el nombre, el léxico y la firma «Next Stop» que fija
- * docs/brand/specs/fase-3-identidad-verbal.md §4 y §6.
+ * que el copy respete el nombre, el léxico y la firma «Next Stop» que fija
+ * docs/brand/specs/fase-3-identidad-verbal.md §4 y §6, y que los defectos de
+ * contraste, logo, radios, iconografía y tipografía que este repo ya sufrió
+ * una vez no puedan volver a colarse sin que el `build` falle
+ * (docs/brand/specs/fase-7-gobierno.md §3).
  *
  * POR QUÉ EXISTE:
  * Nada frenaba a alguien de escribir un hex "parecido" directamente en un
  * componente, ni de escribir "Bro Way" o una de las ocho promesas prohibidas
- * del manual en una cadena nueva. Este script cubre, del check:marca completo
- * de la Fase 7 (fase-7-gobierno.md §3), las cinco reglas contables de las
- * Fases 1 y 3 — R-1/R-2 (hex, N-01.2) y R-3/R-4/R-5 (texto, N-03.5).
+ * del manual en una cadena nueva. Este script implementa el check:marca
+ * completo de la Fase 7 (fase-7-gobierno.md §3): R-1/R-2 (hex, N-01.2),
+ * R-3/R-4/R-5 (texto, N-03.5) y R-6 a R-10 (contraste, logo, radios, iconos,
+ * tipografía — N-07.1).
  *
- * CINCO REGLAS (R-6 a R-10 — gráfico, tipografía, contraste — quedan para la
- * Fase 7):
+ * DIEZ REGLAS:
  *
  *   1. Los tres hex antiguos no aparecen en ningún sitio fuera de la lista
  *      blanca (`history/`, que archiva el defecto ya corregido, y
@@ -35,9 +38,52 @@
  *   5. «Next Stop» no se repite dentro del mismo archivo — la firma se usa
  *      una sola vez por pieza (sistema-de-identidad.md §3, V-6).
  *
+ *   6. `text-white` no convive con `bg-brand-orange` ni con
+ *      `bg-brand-turquoise` en la misma lista de clases de un elemento:
+ *      blanco sobre cualquiera de esos dos fondos mide 2.36:1, no llega a
+ *      3:1 — es el defecto real que ya envió a producción los cuatro botones
+ *      del panel (fase-1-paleta-y-superficies.md §6.1).
+ *
+ *   7. Ninguna referencia a `logo-broway.png`/`logo-broway-adventures.png` ni
+ *      a otro archivo de la firma anterior, retirada por N-02.1 (CLAUDE.md,
+ *      sección "Naming note"; sistema-de-identidad.md §6).
+ *
+ *   8. Ningún `rounded-` —incluidas las variantes por esquina
+ *      (`rounded-t-…`, `rounded-tl-…`…)— fuera de los cuatro valores que
+ *      N-04.3 dejó como el sistema: `sm`, `md`, `lg`, `full`. Esta regla es
+ *      el guardián permanente de esa normalización.
+ *
+ *   9. Ningún icono importado de un paquete que no sea
+ *      `@phosphor-icons/react` (cualquier subruta, p.ej. `/dist/ssr`), y
+ *      ningún prop `weight` con un valor explícito distinto de `"regular"`
+ *      — el Pre-Flight §11.B ya lo exigía sin forma de comprobarlo.
+ *
+ *   10. Ninguna familia tipográfica cargada vía `next/font/google` o
+ *       `next/font/local` que no sea Manrope (D-A,
+ *       docs/brand/aprobaciones.md) — Montserrat, Lato y Caveat salieron del
+ *       sistema en la Fase 6 y no pueden volver a cargarse.
+ *
  * La segunda regla es la que impide que la desviación de color se repita:
  * comparar solo contra los tres hex viejos no detecta que alguien escriba un
  * cuarto hex "parecido" directo en un componente en lugar de usar el token.
+ *
+ * LÍMITES DECLARADOS DE R-6 Y R-9 (mismo criterio que el de R-3 más abajo: no
+ * se inventa una certeza que el patrón mecánico no tiene):
+ *
+ *   - R-6 sólo compara texto y fondo dentro del MISMO literal de cadena — el
+ *     defecto real (el botón navy a 1.19:1, documentado en CLAUDE.md) era
+ *     exactamente eso, una sola cadena de clases mal resuelta. Clases
+ *     repartidas entre argumentos distintos de `cn(...)`
+ *     (p.ej. `cn("...", condicion && "bg-brand-turquoise")` sin `text-white`
+ *     en ningún argumento) no se combinan entre sí: no son "la misma lista"
+ *     en el código fuente, aunque puedan terminar en el mismo atributo
+ *     renderizado. Ampliar la regla a cruzar argumentos de `cn(...)`
+ *     requeriría parsear JSX de verdad, no `grep` — coherente con el mismo
+ *     límite que ya declara R-3 para lo no contable.
+ *   - R-9 detecta paquetes de iconos ajenos por una lista blanca inversa de
+ *     nombres conocidos (`lucide-react`, `react-icons`…), no por análisis de
+ *     tipos: un paquete de iconos nuevo que no esté en esa lista no se
+ *     detecta hasta que se añade a ella.
  *
  * LÍMITE DECLARADO DE R-3 (no se inventa lo que el manual no hace contable):
  * de las ocho promesas prohibidas, siete son frases literales y se buscan tal
@@ -169,6 +215,66 @@ const EXTENSIONES_REGLA_2 = new Set([
 const EXTENSIONES_TEXTO = new Set(
   [...EXTENSIONES].filter((extension) => extension !== ".css"),
 );
+
+// Reglas 6/7/9/10: código que se ejecuta (JSX/TS/JS). Ni una hoja de estilos
+// ni un `.md`/`.json` importan paquetes, declaran props ni construyen listas
+// de clases en JSX — mismo criterio de exclusión que ya usa la Regla 2 para
+// lo que no pinta.
+const EXTENSIONES_CODIGO = new Set([".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs"]);
+
+// Regla 6: blanco sobre naranja/turquesa no llega a 3:1 (2.36:1 medido,
+// fase-1-paleta-y-superficies.md §6.1). Se busca dentro de un mismo literal
+// de cadena — ver el límite declarado en la cabecera del archivo.
+const FONDOS_PROHIBIDOS_CON_TEXTO_BLANCO = ["bg-brand-orange", "bg-brand-turquoise"];
+const LITERAL_DE_CADENA_REGEX = /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g;
+
+// Regla 7: cualquier referencia a la firma anterior, retirada por N-02.1
+// (CLAUDE.md, "Naming note"; sistema-de-identidad.md §6). El logo vigente no
+// se llama "logo-broway", así que el patrón no puede reengancharse al
+// archivo actual por accidente.
+const LOGO_ANTERIOR_REGEX = /logo-broway(?:-adventures)?\.(?:png|jpe?g|svg|webp|gif)/gi;
+
+// Regla 8: los cuatro valores que N-04.3 dejó como el sistema de radios.
+// El grupo opcional de esquina cubre `rounded-t-lg`, `rounded-tl-full`, etc.
+// para que la regla no tenga un lado ciego por variante direccional.
+const RADIOS_PERMITIDOS = new Set(["sm", "md", "lg", "full"]);
+const REDONDEO_REGEX =
+  /\brounded(?:-(?:tl|tr|bl|br|ss|se|es|ee|t|r|b|l|s|e))?-([a-z0-9]+)\b/g;
+
+// Regla 9: iconografía. (a) cualquier import de un paquete de iconos que no
+// sea el oficial (cualquier subruta, p.ej. `/dist/ssr`); (b) cualquier prop
+// `weight` explícito distinto de "regular". Ver el límite declarado en la
+// cabecera: la lista de paquetes ajenos es una lista blanca inversa, no un
+// análisis de tipos.
+const PAQUETE_ICONOS_OFICIAL = "@phosphor-icons/react";
+const OTROS_PAQUETES_DE_ICONOS = [
+  "lucide-react",
+  "react-icons",
+  "@heroicons/react",
+  "@mui/icons-material",
+  "@radix-ui/react-icons",
+  "@ant-design/icons",
+  "react-feather",
+  "@fortawesome/react-fontawesome",
+];
+const IMPORT_DESDE_REGEX = /\bfrom\s+["']([^"']+)["']/g;
+const WEIGHT_PROP_REGEX =
+  /\bweight\s*=\s*(?:"([^"]*)"|'([^']*)'|\{\s*["']([^"']*)["']\s*\})/g;
+
+// Regla 10: la única familia declarada por la marca (D-A,
+// docs/brand/aprobaciones.md). Cubre las dos formas en que este repo puede
+// cargar una tipografía: `next/font/google` y `next/font/local`.
+const FONT_LOADER_IMPORT_REGEX =
+  /import\s*\{([^}]+)\}\s*from\s*["']next\/font\/(?:google|local)["']/g;
+const FAMILIA_TIPOGRAFICA_PERMITIDA = "Manrope";
+
+// Convierte un índice de carácter dentro de `contenido` en un número de
+// línea (1-based) — necesario porque las Reglas 6/9/10 detectan coincidencias
+// sobre literales que pueden extenderse varias líneas (template literals),
+// así que no alcanza con recorrer `contenido.split("\n")` línea por línea.
+function numeroDeLinea(contenido, indiceCaracter) {
+  return contenido.slice(0, indiceCaracter).split("\n").length;
+}
 
 function fueraDeCodigoFuente(rutaRelativa) {
   return (
@@ -345,6 +451,104 @@ for (const rutaAbsoluta of archivos) {
       }
     });
   }
+
+  // Reglas 6/7/8/9/10: sólo código que se ejecuta (JSX/TS/JS) dentro de
+  // messages/app/components/lib/src, y sólo fuera de comentarios — mismo
+  // criterio que las reglas anteriores. Es lo que evita que el bloque
+  // THESIS/OWN-WORLD de admin-shell.tsx, que cita "Montserrat" y "Lato" como
+  // parte de su narrativa de diseño ya superada, se lea como una tipografía
+  // realmente cargada.
+  if (enAlcanceTexto(rutaRelativa) && EXTENSIONES_CODIGO.has(extension)) {
+    const contenidoCodigo = quitarComentarios(contenido);
+
+    // Regla 6: `text-white` + fondo prohibido dentro del mismo literal de
+    // cadena (ver el límite declarado en la cabecera del archivo).
+    for (const coincidencia of contenidoCodigo.matchAll(LITERAL_DE_CADENA_REGEX)) {
+      const literal = coincidencia[0];
+      if (!literal.includes("text-white")) continue;
+      for (const fondo of FONDOS_PROHIBIDOS_CON_TEXTO_BLANCO) {
+        if (literal.includes(fondo)) {
+          violaciones.push({
+            regla: 6,
+            archivo: rutaRelativa,
+            linea: numeroDeLinea(contenidoCodigo, coincidencia.index),
+            detalle: `"text-white" junto a "${fondo}" en la misma lista de clases — no llega a 3:1 (mide 2.36:1, fase-1-paleta-y-superficies.md §6.1)`,
+          });
+        }
+      }
+    }
+
+    // Regla 7: referencia a la firma anterior, retirada por N-02.1.
+    for (const coincidencia of contenidoCodigo.matchAll(LOGO_ANTERIOR_REGEX)) {
+      violaciones.push({
+        regla: 7,
+        archivo: rutaRelativa,
+        linea: numeroDeLinea(contenidoCodigo, coincidencia.index),
+        detalle: `referencia a "${coincidencia[0]}" — la firma anterior ya no existe (CLAUDE.md, "Naming note")`,
+      });
+    }
+
+    // Regla 8: radios fuera de sm/md/lg/full (incluidas variantes por
+    // esquina, p.ej. `rounded-t-xl`).
+    for (const coincidencia of contenidoCodigo.matchAll(REDONDEO_REGEX)) {
+      const valor = coincidencia[1];
+      if (!RADIOS_PERMITIDOS.has(valor)) {
+        violaciones.push({
+          regla: 8,
+          archivo: rutaRelativa,
+          linea: numeroDeLinea(contenidoCodigo, coincidencia.index),
+          detalle: `"${coincidencia[0]}" — el sistema de radios sólo admite sm/md/lg/full (N-04.3)`,
+        });
+      }
+    }
+
+    // Regla 9a: icono importado de un paquete que no sea el oficial.
+    for (const coincidencia of contenidoCodigo.matchAll(IMPORT_DESDE_REGEX)) {
+      const paquete = coincidencia[1];
+      const esPaqueteDeIconosAjeno = OTROS_PAQUETES_DE_ICONOS.some(
+        (otro) => paquete === otro || paquete.startsWith(`${otro}/`),
+      );
+      if (esPaqueteDeIconosAjeno) {
+        violaciones.push({
+          regla: 9,
+          archivo: rutaRelativa,
+          linea: numeroDeLinea(contenidoCodigo, coincidencia.index),
+          detalle: `icono importado de "${paquete}" — el único paquete de iconos permitido es "${PAQUETE_ICONOS_OFICIAL}"`,
+        });
+      }
+    }
+
+    // Regla 9b: prop `weight` con un valor explícito distinto de "regular".
+    for (const coincidencia of contenidoCodigo.matchAll(WEIGHT_PROP_REGEX)) {
+      const valor = coincidencia[1] ?? coincidencia[2] ?? coincidencia[3];
+      if (valor !== "regular") {
+        violaciones.push({
+          regla: 9,
+          archivo: rutaRelativa,
+          linea: numeroDeLinea(contenidoCodigo, coincidencia.index),
+          detalle: `weight="${valor}" — los iconos de Phosphor sólo se usan con weight="regular"`,
+        });
+      }
+    }
+
+    // Regla 10: familia tipográfica cargada que no sea Manrope.
+    for (const coincidencia of contenidoCodigo.matchAll(FONT_LOADER_IMPORT_REGEX)) {
+      const nombres = coincidencia[1]
+        .split(",")
+        .map((nombre) => nombre.split(/\s+as\s+/)[0].trim())
+        .filter(Boolean);
+      for (const nombre of nombres) {
+        if (nombre !== FAMILIA_TIPOGRAFICA_PERMITIDA) {
+          violaciones.push({
+            regla: 10,
+            archivo: rutaRelativa,
+            linea: numeroDeLinea(contenidoCodigo, coincidencia.index),
+            detalle: `familia tipográfica "${nombre}" cargada — la única familia de marca es "${FAMILIA_TIPOGRAFICA_PERMITIDA}" (D-A, docs/brand/aprobaciones.md)`,
+          });
+        }
+      }
+    }
+  }
 }
 
 if (violaciones.length === 0) {
@@ -368,6 +572,14 @@ console.error(
     "  §3.5) en messages/, app/, components/, lib/ o src/**.\n" +
     "  Regla 4: el nombre se escribe \"BroWay Adventures\" — B y W mayúsculas, una\n" +
     "  sola palabra. Nunca \"Bro Way\", \"Broway\", \"Bro-Way\" ni \"BRO WAY\".\n" +
-    "  Regla 5: «Next Stop» se firma una sola vez por archivo/pieza.\n",
+    "  Regla 5: «Next Stop» se firma una sola vez por archivo/pieza.\n" +
+    "  Regla 6: \"text-white\" no convive con \"bg-brand-orange\" ni con\n" +
+    "  \"bg-brand-turquoise\" en la misma lista de clases — no llega a 3:1.\n" +
+    "  Regla 7: ninguna referencia a la firma anterior (logo-broway*.png/svg/…).\n" +
+    "  Regla 8: \"rounded-\" sólo admite sm/md/lg/full (incluidas variantes por\n" +
+    "  esquina, p.ej. rounded-t-lg).\n" +
+    "  Regla 9: los iconos sólo se importan de \"@phosphor-icons/react\" y sólo\n" +
+    "  con weight=\"regular\".\n" +
+    "  Regla 10: la única familia tipográfica cargada es \"Manrope\" (D-A).\n",
 );
 process.exit(1);
