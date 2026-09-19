@@ -4,7 +4,7 @@ import { ChatCircleDots, CheckCircle } from "@phosphor-icons/react/dist/ssr";
 
 import { ButtonLink } from "@/src/shared/ui/button";
 import { Section } from "@/src/shared/ui/section";
-import { TrackLead } from "@/components/forms/track-lead";
+import { TrackLead } from "@/src/modules/leads/presentation/components/track-lead";
 import { Link } from "@/lib/i18n/navigation";
 import { buildWhatsAppUrl } from "@/lib/config";
 

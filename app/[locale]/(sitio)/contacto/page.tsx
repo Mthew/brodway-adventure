@@ -4,7 +4,7 @@ import { Clock, MapPin, Phone } from "@phosphor-icons/react/dist/ssr";
 
 import { ButtonLink } from "@/src/shared/ui/button";
 import { Section } from "@/src/shared/ui/section";
-import { LeadForm } from "@/components/forms/lead-form";
+import { LeadForm } from "@/src/modules/leads/presentation/components/lead-form";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
 import { buildWhatsAppUrl, CONTACT } from "@/lib/config";
 

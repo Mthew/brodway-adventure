@@ -9,7 +9,7 @@ import { ButtonLink } from "@/src/shared/ui/button";
 import { PackageCard } from "@/components/ui/card";
 import { PriceDisclosure } from "@/components/ui/price-disclosure";
 import { Section } from "@/src/shared/ui/section";
-import { LeadForm } from "@/components/forms/lead-form";
+import { LeadForm } from "@/src/modules/leads/presentation/components/lead-form";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-floating";
 import { Galeria } from "@/components/oferta/galeria";
 import { StickyCta } from "@/src/modules/offers/presentation/components/sticky-cta";

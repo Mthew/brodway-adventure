@@ -6,7 +6,7 @@ import { Badge } from "@/src/shared/ui/badge";
 import { Button } from "@/src/shared/ui/button";
 import { Card, PackageCard } from "@/components/ui/card";
 import { Checkbox, Input, Select, Textarea } from "@/components/ui/field";
-import { LeadForm } from "@/components/forms/lead-form";
+import { LeadForm } from "@/src/modules/leads/presentation/components/lead-form";
 import { Hero } from "@/components/ui/hero";
 import { PriceDisclosure } from "@/components/ui/price-disclosure";
 import { Section } from "@/src/shared/ui/section";
