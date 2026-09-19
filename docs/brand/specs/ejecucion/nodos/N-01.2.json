@@ -1,0 +1,40 @@
+{
+  "id": "N-01.2",
+  "titulo": "scripts/check-marca.mjs — reglas R-1/R-2 (hex)",
+  "estado": "cerrado",
+  "commit_base": "8390fa5",
+  "rama": "fase-1/marca-n-01-2-check-marca-hex",
+  "objetivo": "pnpm check falla si los tres hex antiguos reaparecen fuera de history/ y docs/brand/**, y falla si cualquiera de los cinco hex oficiales aparece fuera de app/globals.css (con la única excepción declarada de design-system/page.tsx).",
+  "nota_de_fusion": "Este nodo se escribió en paralelo con N-01.1, que también necesitaba (y creó) scripts/check-marca.mjs para poder verificar su propio cierre. Al mergear ambos PRs por separado había dos implementaciones de check-marca.mjs — no dos features distintas, la misma regla escrita dos veces. Se resolvió quedándose con la versión de N-01.1 (ya probada contra el repo real, con quitarComentarios() para no marcar hex citados en prosa dentro de un comentario, y auto-exclusión de sí mismo por ruta relativa) y añadiéndole de este PR lo que le faltaba: el modo de prueba CHECK_MARCA_ROOT y los tres fixtures sintéticos (clean/mutated-r1/mutated-r2). El resultado es un único script, más completo que cualquiera de los dos originales.",
+  "artefactos": [
+    "scripts/check-marca.mjs (versión fusionada)",
+    "package.json (check:marca ya estaba en la cadena de check vía N-01.1; se mantuvo su orden)",
+    "scripts/__fixtures__/check-marca/clean/** (fixture sintético, 0 violaciones)",
+    "scripts/__fixtures__/check-marca/mutated-r1/** (fixture con hex antiguo insertado en components/Bad.tsx, fuera de whitelist)",
+    "scripts/__fixtures__/check-marca/mutated-r2/** (fixture con hex oficial hardcodeado en lib/theme.ts, fuera de app/globals.css)"
+  ],
+  "implementacion": {
+    "r1": "Recorre TODO el árbol de extensiones de texto (excluyendo node_modules/.git/.next/.vercel/coverage/.turbo/__fixtures__) buscando los tres hex antiguos, con o sin '#', case-insensitive, comentarios incluidos (un hex antiguo citado en un comentario sigue siendo un hex antiguo citado). Whitelist exacta: rutas que empiezan con 'history/' o 'docs/brand/'.",
+    "r2": "Aplica solo a extensiones de código que pinta (.ts/.tsx/.js/.jsx/.mjs/.cjs/.css), excluyendo docs/history/.impeccable, después de quitar comentarios (un hex en el bloque THESIS/OWN-WORLD de un componente no es un token escrito a mano). Única excepción de ruta: app/globals.css y design-system/page.tsx.",
+    "modo_prueba": "Variable de entorno CHECK_MARCA_ROOT=<ruta> reemplaza la raíz de escaneo por un directorio de fixtures aislado, sin tocar el repo real — añadido en este PR sobre la base de N-01.1.",
+    "auto_exclusion": "El propio script se excluye de su recorrido por ruta relativa exacta (tiene que citar los hex literalmente para definirlos), y scripts/__fixtures__/ se excluye siempre del modo normal (por nombre de directorio, igual que node_modules) — sin esto, correr check:marca contra el repo real marca sus propios fixtures como violaciones (falso positivo real, encontrado y corregido durante esta fusión)."
+  },
+  "verificacion": {
+    "tipo": "comando",
+    "como": "pnpm check:marca / node scripts/check-marca.mjs",
+    "resultado_fixture_limpio": "CHECK_MARCA_ROOT=scripts/__fixtures__/check-marca/clean node scripts/check-marca.mjs → 0 violaciones, exit 0",
+    "resultado_fixture_mutado_r1": "CHECK_MARCA_ROOT=scripts/__fixtures__/check-marca/mutated-r1 node scripts/check-marca.mjs → 1 violación (components/Bad.tsx:3, #003062), exit 1",
+    "resultado_fixture_mutado_r2": "CHECK_MARCA_ROOT=scripts/__fixtures__/check-marca/mutated-r2 node scripts/check-marca.mjs → 1 violación (lib/theme.ts:2, #0d3b66), exit 1",
+    "resultado_repo_real_tras_fusion": "node scripts/check-marca.mjs sobre el repo real (ya con N-01.1 y N-01.2 mergeados) → 0 violaciones sobre 217 archivos, exit 0. Antes de excluir __fixtures__ del recorrido normal, el mismo comando marcaba 38 violaciones falsas dentro de scripts/__fixtures__/ — falso positivo real que esta fusión corrigió, no una violación del repo real."
+  },
+  "prueba_por_mutacion": {
+    "ejecutada_como": "Los tres fixtures (clean/mutated-r1/mutated-r2), corridos con CHECK_MARCA_ROOT apuntando a cada uno, contra el script YA FUSIONADO (no el original de este PR) — para confirmar que la fusión no rompió el modo de prueba.",
+    "resultado": "OK — el script fusionado detecta ambas mutaciones con archivo y línea correctos, y el fixture limpio sigue en 0 violaciones."
+  },
+  "falso_verde_evitado": "Dos falsos verdes distintos, uno de cada PR original y uno nuevo de la fusión: (1) grafo.json advertía que el check podía pasar en verde si sus patrones solo cubrían app/y components/ mientras el código ya vivía en src/ — la versión de N-01.1 ya cubre el árbol completo, no solo dos carpetas. (2) Al fusionar, correr el script contra el repo real con los fixtures nuevos ya commiteados dio 38 violaciones falsas (los propios fixtures, que a propósito contienen hex antiguo/oficial) — se corrigió excluyendo scripts/__fixtures__/ del recorrido normal, y se re-verificó que los tres fixtures seguían detectándose correctamente vía CHECK_MARCA_ROOT después del cambio.",
+  "notas": [
+    "No se tocó CLAUDE.md ni CURRENT.md en este PR — su limpieza ya la hizo N-01.1, que mergeó antes.",
+    "check:marca ya estaba en la cadena 'check' de package.json desde el merge de N-01.1; este PR solo tuvo un conflicto trivial de orden de scripts en el rebase, resuelto manteniendo el orden ya mergeado.",
+    "La versión de check-marca.mjs que queda en main es más completa que cualquiera de las dos que llegaron por separado: tiene la auto-exclusión y el quitarComentarios() de N-01.1 MÁS el modo de prueba con fixtures de N-01.2."
+  ]
+}
