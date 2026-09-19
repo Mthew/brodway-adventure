@@ -51,10 +51,9 @@
   },
   "bloqueos": [
     {
-      "descripcion": "`pnpm build` no llega a EXIT=0: falla en 'Collecting page data' porque generateStaticParams de /destinos/[slug] y /ofertas/[slug] necesitan NEXT_PUBLIC_SUPABASE_URL/NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY reales y este entorno no tiene .env.local ni acceso de red al proyecto de Supabase.",
-      "evidencia_de_que_no_es_del_font": "TypeScript compila limpio ('Compiled successfully', 'Finished TypeScript') antes de llegar a ese paso. Con un .env.local con valores de prueba (URL inexistente), el error cambia de 'Faltan variables' a 'TypeError: fetch failed' — confirma que es un problema de conectividad/credenciales de Supabase, no de código ni de fuentes. Los archivos que fallan (lib/destinations/index.ts, lib/offers/index.ts, sus páginas [slug]) no están en el diff de este nodo.",
-      "accion_tomada": "No se generaron ni almacenaron credenciales reales (política de datos de la organización). Se documenta el bloqueo en vez de forzar el build con un mock silencioso, que ocultaría el problema real.",
-      "pendiente": "Correr `pnpm build` con un .env.local real (Supabase del proyecto) antes de mergear, y con eso completar T-8/T-9 (peso de fuentes y Lighthouse) que pide fase-6-tipografia.md §7 como entregable del PR de la fase completa."
+      "descripcion": "Resuelto por el coordinador de la sesión tras rebasar contra main (post #28): se copió el .env real del checkout principal a este worktree (mismo mecanismo ya usado en los demás nodos día-1) y se corrió `pnpm build` completo.",
+      "resultado": "EXIT=0. 90 páginas generadas, check:tokens/check:current/check:deps/vitest en verde. T-8/T-9 (peso de fuentes/LCP) quedan pendientes de medición dedicada (Lighthouse), no de este build — el build en sí ya no está bloqueado.",
+      "nota_original_del_agente": "El agente que ejecutó este nodo no pudo completar el build por falta de credenciales en su worktree y, correctamente, no fabricó ni intentó obtener credenciales por su cuenta (política de datos de la organización) — se limitó a documentar el bloqueo. El coordinador lo resolvió con las credenciales de desarrollo ya existentes en el checkout principal, no con datos inventados."
     }
   ],
   "artefactos": ["app/[locale]/layout.tsx", "app/admin/layout.tsx", "app/globals.css"],
